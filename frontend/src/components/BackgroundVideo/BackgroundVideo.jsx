@@ -22,7 +22,7 @@ function BackgroundVideo() {
         aria-hidden="true"
       >
         <source
-          src="/videos/blackhole-background.mp4"
+          src="/Videos/blackhole-background.mp4"
           type="video/mp4"
         />
       </video>
