@@ -1,0 +1,38 @@
+.background-video-container {
+  /*
+    Lock the video permanently to the browser window.
+    Route changes and scrolling will not move it.
+  */
+  position: fixed;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  background: #000;
+
+  z-index: 0;
+
+  /*
+    The background must never block buttons or links.
+  */
+  pointer-events: none;
+}
+
+
+.background-video {
+  width: 100%;
+  height: 100%;
+
+  /*
+    Cover every pixel of the browser without stretching.
+  */
+  object-fit: cover;
+
+  object-position: center;
+
+  display: block;
+}

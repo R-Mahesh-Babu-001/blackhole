@@ -1,0 +1,12 @@
+#root {
+  /*
+    React should always have access
+    to the complete browser width.
+  */
+  width: 100%;
+
+  /*
+    At minimum, fill the complete browser height.
+  */
+  min-height: 100vh;
+}

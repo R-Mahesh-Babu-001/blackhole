@@ -1,0 +1,36 @@
+.home {
+  /*
+    Home becomes the main website container.
+  */
+  position: relative;
+
+  width: 100%;
+  min-height: 100vh;
+
+  /*
+    Creates a clean stacking environment for
+    our background and foreground layers.
+  */
+  isolation: isolate;
+}
+
+
+.home-content {
+  /*
+    This layer sits above our background video.
+  */
+  position: relative;
+
+  /*
+    Background video = 0
+    Website GUI      = 1
+  */
+  z-index: 1;
+
+  width: 100%;
+  min-height: 100vh;
+}
+.home-page {
+  width: 100%;
+  min-height: 100vh;
+}

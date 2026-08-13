@@ -1,0 +1,26 @@
+.app-layout {
+  position: relative;
+
+  width: 100%;
+  min-height: 100vh;
+
+  /*
+    Helps keep our video/content layers predictable.
+  */
+  isolation: isolate;
+}
+
+
+.route-content {
+  position: relative;
+
+  width: 100%;
+  min-height: 100vh;
+
+  /*
+    Video = layer 0
+    Pages = layer 10
+    Navbar = layer 1000
+  */
+  z-index: 10;
+}

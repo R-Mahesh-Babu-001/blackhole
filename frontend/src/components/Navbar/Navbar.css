@@ -1,0 +1,150 @@
+.navbar {
+  /*
+    Navbar follows the browser instead of the page.
+  */
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  /*
+    Small vertical padding keeps the navbar
+    close to the top border.
+  */
+  padding: 14px 54px;
+
+  /*
+    Navbar has absolutely no visible rectangle.
+  */
+  background: transparent;
+
+  border: none;
+
+  box-shadow: none;
+
+  z-index: 1000;
+}
+
+
+/* =========================================
+   BlackHole Logo
+========================================= */
+
+.navbar-logo {
+  color: #ffffff;
+
+  font-size: 26px;
+  font-weight: 700;
+
+  letter-spacing: -0.5px;
+
+  text-decoration: none;
+
+  white-space: nowrap;
+
+  transition:
+    color 0.25s ease,
+    text-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+
+.navbar-logo:hover {
+  /*
+    Warm sunlight yellow that fits
+    the BlackHole background.
+  */
+  color: #ffd84d;
+
+  text-shadow:
+    0 0 8px rgba(255, 216, 77, 0.55),
+    0 0 20px rgba(255, 216, 77, 0.25);
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================
+   Right Navigation
+========================================= */
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+
+  gap: 38px;
+}
+
+
+.navbar-link {
+  color: rgba(255, 255, 255, 0.88);
+
+  font-size: 15px;
+  font-weight: 500;
+
+  text-decoration: none;
+
+  white-space: nowrap;
+
+  /*
+    There is deliberately no ::after underline.
+  */
+  transition:
+    color 0.25s ease,
+    text-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+
+.navbar-link:hover {
+  color: #ffd84d;
+
+  text-shadow:
+    0 0 7px rgba(255, 216, 77, 0.5),
+    0 0 17px rgba(255, 216, 77, 0.2);
+
+  transform: translateY(-1px);
+}
+
+
+/*
+  Current page stays slightly highlighted.
+*/
+.navbar-link-active {
+  color: #ffd84d;
+
+  text-shadow:
+    0 0 7px rgba(255, 216, 77, 0.35);
+}
+
+
+/* =========================================
+   Responsive
+========================================= */
+
+@media (max-width: 700px) {
+  .navbar {
+    padding: 13px 22px;
+  }
+
+
+  .navbar-logo {
+    font-size: 22px;
+  }
+
+
+  .navbar-links {
+    gap: 18px;
+  }
+
+
+  .navbar-link {
+    font-size: 13px;
+  }
+}

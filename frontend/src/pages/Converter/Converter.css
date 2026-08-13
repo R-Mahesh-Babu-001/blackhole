@@ -1,0 +1,772 @@
+.converter-page {
+  /*
+    The converter must fit exactly inside one browser screen.
+  */
+  width: 100%;
+  height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /*
+    Space for our fixed navbar at the top.
+  */
+  padding: 64px 32px 18px;
+
+  /*
+    Nothing on this page should create another screen.
+  */
+  overflow: hidden;
+}
+
+
+/* ==================================================
+   Main Converter Container
+================================================== */
+
+.converter-glass {
+  /*
+    We keep the existing class name so Converter.jsx
+    does not need to change.
+
+    But there is NO glass effect anymore.
+  */
+  position: relative;
+
+  width: min(900px, 100%);
+
+  /*
+    Keep the complete interface compact enough
+    to fit inside one browser viewport.
+  */
+  max-height: calc(100vh - 82px);
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 18px 38px 12px;
+
+  /*
+    Completely transparent.
+    BlackHole is directly visible behind everything.
+  */
+  background: transparent;
+
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+
+  border: none;
+
+  border-radius: 0;
+
+  box-shadow: none;
+
+  overflow: hidden;
+}
+
+
+/*
+  Remove the old decorative light/glass layer completely.
+*/
+.converter-glass::before {
+  display: none;
+}
+
+
+/* ==================================================
+   Header
+================================================== */
+
+.converter-header {
+  position: relative;
+
+  text-align: center;
+
+  max-width: 680px;
+
+  /*
+    Reduced spacing so everything stays on one screen.
+  */
+  margin: 0 auto 18px;
+
+  z-index: 1;
+}
+
+
+.converter-kicker {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #ffd84d;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 2.4px;
+}
+
+
+.converter-header h1 {
+  margin: 0;
+
+  color: #ffffff;
+
+  /*
+    Slightly smaller than before so the
+    interface remains compact.
+  */
+  font-size:
+    clamp(
+      34px,
+      4vw,
+      48px
+    );
+
+  font-weight: 700;
+
+  letter-spacing: -1.5px;
+
+  line-height: 1;
+}
+
+
+.converter-header p {
+  max-width: 620px;
+
+  margin: 11px auto 0;
+
+  color:
+    rgba(255, 255, 255, 0.62);
+
+  font-size: 14px;
+
+  line-height: 1.45;
+}
+
+
+/* ==================================================
+   Conversion Selector
+================================================== */
+
+.conversion-selector {
+  position: relative;
+
+  z-index: 1;
+
+  width: fit-content;
+
+  display: flex;
+
+  gap: 5px;
+
+  margin: 0 auto 18px;
+
+  /*
+    Keep only a very subtle transparent holder
+    around the two mode buttons.
+  */
+  padding: 4px;
+
+  background:
+    rgba(0, 0, 0, 0.18);
+
+  border: none;
+
+  border-radius: 11px;
+}
+
+
+.conversion-option {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 9px 16px;
+
+  color:
+    rgba(255, 255, 255, 0.6);
+
+  background: transparent;
+
+  border: none;
+
+  border-radius: 8px;
+
+  font-family: inherit;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.conversion-option:hover {
+  color: #ffffff;
+}
+
+
+.conversion-option-active {
+  color: #111111;
+
+  background: #ffd84d;
+
+  box-shadow:
+    0 5px 18px rgba(255, 216, 77, 0.15);
+}
+
+
+.conversion-option-active:hover {
+  color: #111111;
+}
+
+
+.conversion-arrow {
+  opacity: 0.55;
+}
+
+
+/* ==================================================
+   Upload Area
+================================================== */
+
+.upload-zone {
+  position: relative;
+
+  z-index: 1;
+
+  /*
+    Flexible height keeps it large while still
+    fitting inside one browser screen.
+  */
+  flex: 1;
+
+  width: min(760px, 100%);
+
+  min-height: 0;
+
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px 30px;
+
+  /*
+    Completely transparent.
+  */
+  background: transparent;
+
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+
+  border: none;
+
+  border-radius: 0;
+
+  box-shadow: none;
+
+  transition:
+    transform 0.2s ease;
+}
+
+
+/*
+  No visible box on normal hover.
+*/
+.upload-zone:hover {
+  background: transparent;
+
+  box-shadow: none;
+}
+
+
+/*
+  When the user drags a file over the page,
+  give only a small visual response.
+*/
+.upload-zone-dragging {
+  transform: scale(1.01);
+}
+
+
+/*
+  Native file input stays hidden.
+*/
+.file-input {
+  display: none;
+}
+
+
+/* ==================================================
+   Upload Icon
+================================================== */
+
+.upload-symbol {
+  width: 54px;
+  height: 54px;
+
+  display: grid;
+  place-items: center;
+
+  margin-bottom: 13px;
+
+  color: #ffd84d;
+
+  /*
+    No circular glass background anymore.
+  */
+  background: transparent;
+
+  border: none;
+
+  border-radius: 0;
+
+  box-shadow: none;
+}
+
+
+/* ==================================================
+   Upload Text
+================================================== */
+
+.upload-text {
+  text-align: center;
+}
+
+
+.upload-text h2 {
+  max-width: 620px;
+
+  margin: 0;
+
+  color: #ffffff;
+
+  font-size: 19px;
+  font-weight: 600;
+
+  overflow-wrap: anywhere;
+}
+
+
+.upload-text p {
+  margin: 7px 0 0;
+
+  color:
+    rgba(255, 255, 255, 0.52);
+
+  font-size: 13px;
+}
+
+
+/* ==================================================
+   Select File Button
+================================================== */
+
+.select-file-button {
+  min-width: 215px;
+
+  margin-top: 18px;
+
+  padding: 12px 23px;
+
+  color: #111111;
+
+  background: #ffd84d;
+
+  border: none;
+
+  border-radius: 9px;
+
+  font-family: inherit;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 28px rgba(255, 216, 77, 0.13);
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.select-file-button:hover {
+  background: #ffe36d;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 30px rgba(255, 216, 77, 0.2);
+}
+
+
+.select-file-button:active {
+  transform: translateY(0);
+}
+
+
+/* ==================================================
+   Selected File
+================================================== */
+
+.selected-file {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  margin-top: 11px;
+
+  color:
+    rgba(255, 255, 255, 0.55);
+
+  font-size: 11px;
+}
+
+
+.file-ready-dot {
+  width: 6px;
+  height: 6px;
+
+  background: #ffd84d;
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 10px rgba(255, 216, 77, 0.7);
+}
+
+
+.file-info-separator {
+  opacity: 0.4;
+}
+
+
+/* ==================================================
+   Footer
+================================================== */
+
+.converter-footer {
+  position: relative;
+
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  margin-top: 8px;
+
+  color:
+    rgba(255, 255, 255, 0.34);
+
+  font-size: 10px;
+}
+
+
+.footer-dot {
+  width: 5px;
+  height: 5px;
+
+  background:
+    rgba(255, 216, 77, 0.7);
+
+  border-radius: 50%;
+}
+
+
+/* ==================================================
+   Short Laptop Screens
+================================================== */
+
+@media (max-height: 760px) {
+  .converter-page {
+    padding-top: 56px;
+    padding-bottom: 8px;
+  }
+
+
+  .converter-glass {
+    padding-top: 10px;
+    padding-bottom: 8px;
+  }
+
+
+  .converter-header {
+    margin-bottom: 12px;
+  }
+
+
+  .converter-header h1 {
+    font-size: 38px;
+  }
+
+
+  .converter-header p {
+    margin-top: 7px;
+
+    font-size: 13px;
+  }
+
+
+  .conversion-selector {
+    margin-bottom: 10px;
+  }
+
+
+  .conversion-option {
+    padding:
+      7px
+      14px;
+  }
+
+
+  .upload-symbol {
+    width: 44px;
+    height: 44px;
+
+    margin-bottom: 8px;
+  }
+
+
+  .upload-text h2 {
+    font-size: 17px;
+  }
+
+
+  .upload-text p {
+    font-size: 12px;
+  }
+
+
+  .select-file-button {
+    margin-top: 12px;
+
+    padding:
+      10px
+      20px;
+  }
+
+
+  .converter-footer {
+    margin-top: 4px;
+  }
+}
+
+.converter-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  margin-top: 16px;
+}
+
+
+.secondary-file-button {
+  padding: 11px 19px;
+
+  color: rgba(255, 255, 255, 0.8);
+
+  background: rgba(0, 0, 0, 0.3);
+
+  border: none;
+
+  border-radius: 9px;
+
+  font-family: inherit;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.secondary-file-button:hover {
+  color: #ffffff;
+
+  background: rgba(255, 255, 255, 0.1);
+
+  transform: translateY(-1px);
+}
+
+
+.convert-file-button {
+  padding: 11px 22px;
+
+  color: #111111;
+
+  background: #ffd84d;
+
+  border: none;
+
+  border-radius: 9px;
+
+  font-family: inherit;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 28px
+    rgba(255, 216, 77, 0.14);
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.convert-file-button:hover {
+  background: #ffe36d;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 30px
+    rgba(255, 216, 77, 0.2);
+}
+
+
+.convert-file-button:active {
+  transform: translateY(0);
+}
+
+
+.converter-status {
+  margin: 8px 0 0;
+
+  color: #ffd84d;
+
+  font-size: 11px;
+
+  text-align: center;
+}
+
+
+.converter-error {
+  margin: 8px 0 0;
+
+  color: #ff7878;
+
+  font-size: 11px;
+
+  text-align: center;
+}
+
+
+@media (max-width: 700px) {
+  .converter-actions {
+    width: min(320px, 100%);
+  }
+
+
+  .secondary-file-button,
+  .convert-file-button {
+    flex: 1;
+  }
+}
+/* ==================================================
+   Mobile
+================================================== */
+
+@media (max-width: 700px) {
+  .converter-page {
+    height: 100dvh;
+
+    padding:
+      70px
+      16px
+      12px;
+  }
+
+
+  .converter-glass {
+    max-height:
+      calc(
+        100dvh - 82px
+      );
+
+    padding:
+      12px
+      10px
+      8px;
+  }
+
+
+  .converter-header {
+    margin-bottom: 14px;
+  }
+
+
+  .converter-header h1 {
+    font-size: 34px;
+  }
+
+
+  .converter-header p {
+    font-size: 13px;
+  }
+
+
+  .conversion-selector {
+    width: 100%;
+
+    margin-bottom: 12px;
+  }
+
+
+  .conversion-option {
+    flex: 1;
+
+    justify-content: center;
+
+    padding:
+      8px
+      6px;
+
+    font-size: 12px;
+  }
+
+
+  .upload-zone {
+    padding:
+      12px
+      10px;
+  }
+
+
+  .select-file-button {
+    width: min(280px, 100%);
+
+    min-width: 0;
+  }
+}

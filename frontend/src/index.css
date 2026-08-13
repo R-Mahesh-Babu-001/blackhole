@@ -1,0 +1,62 @@
+/*
+  Make element sizing predictable throughout BlackHole.
+*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+
+  margin: 0;
+  padding: 0;
+}
+
+
+html {
+  background: #000;
+}
+
+
+body {
+  min-width: 320px;
+
+  overflow-x: hidden;
+
+  background: #000;
+
+  /*
+    Use the same typography throughout the application.
+  */
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+/*
+  Controls should inherit our BlackHole typography.
+*/
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
