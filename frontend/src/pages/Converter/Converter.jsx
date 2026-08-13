@@ -187,7 +187,7 @@ function Converter() {
         Send the file to our Jupytext backend.
       */
       const response = await fetch(
-        "https://blackhole-foku.onrender.com",
+        "https://blackhole-foku.onrender.com/convert",
         {
           method: "POST",
           body: formData,
