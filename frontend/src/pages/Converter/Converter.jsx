@@ -187,7 +187,7 @@ function Converter() {
         Send the file to our Jupytext backend.
       */
       const response = await fetch(
-        "http://localhost:8000/convert",
+        "https://blackhole-cdf3bbgkcecchvfe.malaysiawest-01.azurewebsites.net/convert",
         {
           method: "POST",
           body: formData,
