@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { getBackendBaseUrl } from "../../services/api";
 import "./Converter.css";
 
 function Converter() {
@@ -171,7 +172,7 @@ function Converter() {
     try {
       setError("");
 
-      setStatus("Converting...");
+      setStatus("Converting (waking up backend if idle)...");
 
 
       /*
@@ -186,8 +187,9 @@ function Converter() {
       /*
         Send the file to our Jupytext backend.
       */
+      const backendUrl = getBackendBaseUrl();
       const response = await fetch(
-        "https://blackhole-foku.onrender.com/convert",
+        `${backendUrl}/convert`,
         {
           method: "POST",
           body: formData,

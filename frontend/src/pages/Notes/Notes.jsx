@@ -1,27 +1,13 @@
+import DocumentWorkspace from "../../components/DocumentWorkspace/DocumentWorkspace";
 import "./Notes.css";
 
-function Notes() {
+export default function Notes() {
   return (
-    <section className="simple-page">
-
-      <div className="simple-page-glass">
-
-        <span className="simple-page-kicker">
-          BLACKHOLE
-        </span>
-
-        <h1>
-          Notes
-        </h1>
-
-        <p>
-          Notes workspace will be built here.
-        </p>
-
-      </div>
-
+    <section className="notes-page-workspace">
+      <DocumentWorkspace
+        workspaceType="notes"
+        defaultFileType="md"
+      />
     </section>
   );
 }
-
-export default Notes;

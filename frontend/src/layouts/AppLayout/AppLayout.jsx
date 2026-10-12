@@ -1,73 +1,26 @@
-import {
-  useState,
-} from "react";
+import { Outlet } from "react-router";
 
-import {
-  Outlet,
-} from "react-router";
-
-import BackgroundVideo
-  from "../../components/BackgroundVideo/BackgroundVideo";
-
-import Navbar
-  from "../../components/Navbar/Navbar";
-
-import ChatAssistant
-  from "../../components/ChatAssistant/ChatAssistant";
+import Navbar from "../../components/Navbar/Navbar";
 
 import "./AppLayout.css";
 
-
 function AppLayout() {
-  const [
-    assistantOpen,
-    setAssistantOpen,
-  ] = useState(false);
-
-
-  const toggleAssistant = () => {
-    setAssistantOpen(
-      (current) => !current,
-    );
-  };
-
-
-  const closeAssistant = () => {
-    setAssistantOpen(false);
-  };
-
-
   return (
     <div className="app-layout">
-
-      <BackgroundVideo />
-
-
-      <Navbar
-        assistantOpen={assistantOpen}
-        onAssistantToggle={toggleAssistant}
-      />
+      <Navbar />
 
 
-      <main
-        className={
-          assistantOpen
-            ? "route-content assistant-workspace-open"
-            : "route-content"
-        }
-      >
+      {/*
+        React Router only changes whatever is rendered here.
+
+        Home → Converter → Notes → Lab
+      */}
+      <main className="route-content">
         <Outlet />
       </main>
-
-
-      <ChatAssistant
-        open={assistantOpen}
-        onClose={closeAssistant}
-      />
 
     </div>
   );
 }
-
 
 export default AppLayout;

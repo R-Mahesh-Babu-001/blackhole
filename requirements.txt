@@ -1,6 +1,7 @@
-fastapi
-uvicorn
-python-multipart
-jupytext
-nbformat
-gunicorn
+fastapi>=0.100.0
+uvicorn[standard]>=0.22.0
+python-multipart>=0.0.6
+jupytext>=1.15.0
+nbformat>=5.9.0
+gunicorn>=21.2.0
+pydantic>=2.0.0

@@ -1,7 +1,4 @@
 .converter-page {
-  /*
-    The converter must fit exactly inside one browser screen.
-  */
   width: 100%;
   height: 100vh;
 
@@ -9,14 +6,8 @@
   align-items: center;
   justify-content: center;
 
-  /*
-    Space for our fixed navbar at the top.
-  */
   padding: 64px 32px 18px;
-
-  /*
-    Nothing on this page should create another screen.
-  */
+  background: #000000;
   overflow: hidden;
 }
 

@@ -24,6 +24,10 @@ html {
 }
 
 
+:root {
+  --font-terminal: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'SF Mono', Consolas, 'Liberation Mono', Menlo, Monaco, monospace;
+}
+
 body {
   min-width: 320px;
 
@@ -32,12 +36,10 @@ body {
   background: #000;
 
   /*
-    Use the same typography throughout the application.
+    Use professional terminal typography throughout BlackHole.
   */
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
+  font-family: var(--font-terminal);
+  letter-spacing: -0.015em;
 
   -webkit-font-smoothing: antialiased;
 
@@ -46,17 +48,42 @@ body {
 
 
 /*
-  Controls should inherit our BlackHole typography.
+  Controls should inherit our BlackHole terminal typography.
 */
 button,
 input,
 textarea,
 select {
-  font: inherit;
+  font-family: var(--font-terminal);
+  font-feature-settings: "liga" 0;
 }
 
 
 button,
 a {
   -webkit-tap-highlight-color: transparent;
+}
+
+/*
+  Universal Yellow Accent & Selection (Zero Blue across platform)
+*/
+::selection {
+  background: rgba(255, 216, 77, 0.35);
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background: rgba(255, 216, 77, 0.35);
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 2px solid #ffd84d;
+  outline-offset: 2px;
+}
+
+input,
+textarea,
+select {
+  accent-color: #ffd84d;
 }

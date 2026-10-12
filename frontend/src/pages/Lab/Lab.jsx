@@ -1,27 +1,13 @@
+import DocumentWorkspace from "../../components/DocumentWorkspace/DocumentWorkspace";
 import "./Lab.css";
 
-function Lab() {
+export default function Lab() {
   return (
-    <section className="lab-page">
-
-      <div className="lab-page-glass">
-
-        <span className="lab-page-kicker">
-          BLACKHOLE
-        </span>
-
-        <h1>
-          Lab
-        </h1>
-
-        <p>
-          Lab workspace will be built here.
-        </p>
-
-      </div>
-
+    <section className="lab-page-workspace">
+      <DocumentWorkspace
+        workspaceType="lab"
+        defaultFileType="ipynb"
+      />
     </section>
   );
 }
-
-export default Lab;
