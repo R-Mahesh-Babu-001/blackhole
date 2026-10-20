@@ -154,42 +154,14 @@ export default function DocumentWorkspace({
         setFileType("ipynb");
         setFileName(
           workspaceType === "lab"
-            ? "blackhole_lab_simulation.ipynb"
+            ? "lab_simulation.ipynb"
             : "computational_notes.ipynb"
         );
         setNotebookCells([
           {
             id: "cell-1",
-            type: "markdown",
-            source: `# BlackHole Computational Laboratory\n*Relativistic Gravitational Mechanics & Accretion Inflow Simulation*\n\nThis notebook executes live Python code directly in your browser using the **BlackHole Python SDK (WebAssembly)**. Click **Run** on any code cell below to calculate metrics in real time.`,
-          },
-          {
-            id: "cell-2",
             type: "code",
-            source: `# 1. Physical constants in SI units\nG = 6.67430e-11   # Gravitational constant (m^3 kg^-1 s^-2)\nc = 299792458     # Speed of light in vacuum (m/s)\nM_sun = 1.989e30  # Solar mass (kg)\n\nprint("Astrophysical constants loaded successfully!")\nprint(f"Speed of light c: {c:,} m/s")\nprint(f"Solar mass M_sun: {M_sun:.3e} kg")`,
-            output: "",
-            error: "",
-            executionCount: null,
-            isRunning: false,
-          },
-          {
-            id: "cell-3",
-            type: "markdown",
-            source: `### 2. Schwarzschild Event Horizon Calculation\n\nThe radius of the event horizon of a non-rotating spherically symmetric black hole is given by:\n$$\\mathcal{R}_s = \\frac{2GM}{c^2}$$\n\nBelow, we compute $\\mathcal{R}_s$ across stellar, intermediate, and supermassive black hole mass scales:`,
-          },
-          {
-            id: "cell-4",
-            type: "code",
-            source: `def schwarzschild_radius(solar_masses):\n    mass_kg = solar_masses * M_sun\n    rs_meters = (2 * G * mass_kg) / (c ** 2)\n    return rs_meters / 1000  # Return in kilometers\n\n# Compute for diverse black hole classes\ntargets = [\n    ("Stellar Black Hole (Cygnus X-1)", 21.2),\n    ("Intermediate Black Hole (HLX-1)", 20000.0),\n    ("Sagittarius A* (Milky Way Center)", 4.3e6),\n    ("M87* (Supermassive Giant)", 6.5e9),\n]\n\nprint(f"{'Target Object':<36} | {'Mass (M_sun)':<12} | {'Horizon Radius (km)':<20}")\nprint("-" * 75)\nfor name, mass in targets:\n    radius_km = schwarzschild_radius(mass)\n    print(f"{name:<36} | {mass:<12.1e} | {radius_km:<20,.2f}")`,
-            output: "",
-            error: "",
-            executionCount: null,
-            isRunning: false,
-          },
-          {
-            id: "cell-5",
-            type: "code",
-            source: `# 3. Gravitational Time Dilation Factor\n# Calculates time dilation factor relative to an observer at infinity:\n# t_local = t_infinity * sqrt(1 - (Rs / r))\nimport math\n\ndef time_dilation(r_over_rs):\n    if r_over_rs <= 1.0:\n        return 0.0\n    return math.sqrt(1.0 - (1.0 / r_over_rs))\n\nranges = [1.05, 1.2, 1.5, 2.0, 3.0, 5.0, 10.0, 50.0]\nprint("Relative Distance (r / Rs) -> Local Time Flow Rate Factor:")\nfor r in ranges:\n    factor = time_dilation(r)\n    print(f"  At {r:5.2f} Rs  =>  dilation rate = {factor:.4f}")`,
+            source: "",
             output: "",
             error: "",
             executionCount: null,
@@ -200,59 +172,10 @@ export default function DocumentWorkspace({
         setFileType("md");
         setFileName(
           workspaceType === "notes"
-            ? "cosmic_field_notes.md"
-            : "experiment_documentation.md"
+            ? "notes.md"
+            : "document.md"
         );
-        setMarkdownContent(
-          `# Cosmic Field Research & Astrophysical Observations
-
-> *BlackHole Unified Workspace — Live Split View Editor & Preview*
-
----
-
-## 1. Relativistic Accretion Dynamics
-
-When matter falls toward a compact relativistic object, gravitational potential energy is converted into thermal radiation with exceptional efficiency:
-
-$$\\eta = 1 - \\sqrt{1 - \\frac{2GM}{r_{isco} c^2}}$$
-
-* For a **Schwarzschild black hole**, the innermost stable circular orbit (ISCO) is $r_{isco} = 6 \\frac{GM}{c^2}$, yielding an accretion efficiency $\\eta \\approx 5.7\\%$.
-* For a **maximally rotating Kerr black hole** ($a = 1$), $r_{isco} = \\frac{GM}{c^2}$, elevating radiative efficiency up to $\\eta \\approx 42.3\\%$.
-
----
-
-## 2. Experimental Verification Checklist
-
-- [x] Calibrate interferometric baselines for millimeter VLBI arrays
-- [x] Correlate accretion disk Doppler frequency shift and photon ring geometry
-- [ ] Compute magnetohydrodynamic jet collimation profiles
-- [ ] Measure frame-dragging precession frequencies
-
----
-
-## 3. Observational Metrics Table
-
-| Metric | Schwarzschild ($a = 0$) | Moderate Kerr ($a = 0.7$) | Extreme Kerr ($a = 0.998$) |
-| :--- | :--- | :--- | :--- |
-| **Photon Sphere Radius** | $3.0\\, R_g$ | $2.31\\, R_g$ | $1.07\\, R_g$ |
-| **Marginally Stable Orbit (ISCO)** | $6.0\\, R_g$ | $3.39\\, R_g$ | $1.23\\, R_g$ |
-| **Maximum Radiative Efficiency** | $5.72\\%$ | $10.4\\%$ | $32.4\\%$ |
-
----
-
-\`\`\`python
-# Accretion Luminosity Calculation
-def accretion_luminosity(mass_accretion_rate_kg_s, efficiency=0.1):
-    c = 299792458
-    return efficiency * mass_accretion_rate_kg_s * (c ** 2)
-
-l_watts = accretion_luminosity(1e15, 0.42)
-print(f"Luminosity: {l_watts:.3e} Watts")
-\`\`\`
-
-*Notes are live-synced between the Markdown editor and live preview pane.*
-`
-        );
+        setMarkdownContent("");
       }
     },
     [workspaceType]
@@ -438,10 +361,7 @@ print(f"Luminosity: {l_watts:.3e} Watts")
     const newCell = {
       id: `cell-${Date.now()}`,
       type: type,
-      source:
-        type === "code"
-          ? `# New Python Cell\nprint("Executing inside BlackHole Python SDK")`
-          : `### New Section\nWrite notes here...`,
+      source: "",
       output: "",
       error: "",
       executionCount: null,
@@ -903,7 +823,7 @@ print(f"Luminosity: {l_watts:.3e} Watts")
                   <div
                     className="markdown-rendered-view"
                     dangerouslySetInnerHTML={{
-                      __html: marked.parse(markdownContent || "*Empty document. Type on the left or upload a file.*"),
+                      __html: marked.parse(markdownContent || ""),
                     }}
                   />
                 </div>
@@ -912,7 +832,7 @@ print(f"Luminosity: {l_watts:.3e} Watts")
               {/* Unified Partitioned Footer (Exact 50/50 Symmetry) */}
               <div className="unified-panel-footer">
                 <div className="footer-partition-left">
-                  <span>Lines: {markdownContent.split("\n").length}</span>
+                  <span>Lines: {markdownContent ? markdownContent.split("\n").length : 0}</span>
                   <span>Characters: {markdownContent.length}</span>
                 </div>
 
