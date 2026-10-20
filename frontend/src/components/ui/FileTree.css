@@ -1,0 +1,183 @@
+/* ==================================================
+   FileTree Styles
+   shadcn AI Elements File Tree Specification
+   Obsidian Dark Aesthetics with Rotating Chevron
+================================================== */
+
+.ui-file-tree {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1px;
+  font-family: inherit;
+  font-size: 11.5px;
+  user-select: none;
+}
+
+.file-tree-folder {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.file-tree-folder-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start !important;
+  gap: 6px;
+  width: 100%;
+  height: 26px;
+  padding: 0 6px !important;
+  border-radius: 5px;
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  font-size: 11.5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.file-tree-folder-btn:hover {
+  background: #141420 !important;
+  color: #ffd84d;
+}
+
+.file-tree-chevron {
+  color: rgba(255, 255, 255, 0.4);
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+}
+
+.group-data-panel-open\/button .file-tree-chevron,
+.collapsible-open .file-tree-chevron {
+  transform: rotate(90deg);
+  color: #ffd84d;
+}
+
+.file-tree-folder-icon {
+  color: #ffd84d;
+  flex-shrink: 0;
+}
+
+.file-tree-children {
+  margin-left: 14px;
+  border-left: 1px solid #1a1a2a;
+  padding-left: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+/* File Row */
+.file-tree-file-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  position: relative;
+}
+
+.file-tree-file-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start !important;
+  gap: 6px;
+  flex: 1;
+  width: 100%;
+  height: 25px;
+  padding: 0 6px !important;
+  border-radius: 5px;
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 400;
+  font-size: 11px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-tree-file-btn:hover {
+  background: #141420 !important;
+  color: #ffffff;
+}
+
+.file-tree-file-btn.is-selected {
+  background: rgba(255, 216, 77, 0.12) !important;
+  color: #ffd84d;
+  font-weight: 500;
+}
+
+.file-tree-icon {
+  flex-shrink: 0;
+}
+
+.file-tree-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-tree-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  flex-shrink: 0;
+}
+
+.file-tree-file-row:hover .file-tree-actions {
+  opacity: 1;
+}
+
+/* Changed Files Card Container */
+.changed-files-card {
+  width: 100%;
+  margin: 6px 0;
+  background: #08080d;
+  border: 1px solid #1a1a28;
+  border-radius: 8px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.changed-files-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 12px;
+  background: #0d0d14;
+  border-bottom: 1px solid #181826;
+}
+
+.changed-files-header-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #ffffff;
+}
+
+.changed-files-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.changed-files-badge {
+  padding: 1px 6px;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #ffd84d;
+  background: rgba(255, 216, 77, 0.1);
+  border: 1px solid rgba(255, 216, 77, 0.25);
+  border-radius: 10px;
+}
+
+.changed-files-body {
+  padding: 6px 8px;
+}

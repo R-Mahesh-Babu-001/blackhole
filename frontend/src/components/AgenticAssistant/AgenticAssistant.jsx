@@ -46,6 +46,7 @@ import {
   BubbleContent,
   ConversationDownload,
 } from "../ui/Chat";
+import { ChangedFilesCard } from "../ui/FileTree";
 import "./AgenticAssistant.css";
 
 const MODEL_CONTEXT_LIMIT = 128000;
@@ -490,6 +491,9 @@ export default function AgenticAssistant({
                 subagent: completedPlan.subagent,
                 checkpoint: completedPlan.checkpoint,
                 diffLines: completedPlan.diffLines,
+                changedTree: completedPlan.changedTree,
+                changedFiles: completedPlan.changedFiles,
+                changedTreeTitle: completedPlan.changedTreeTitle,
                 metadata: {
                   usage: {
                     inputTokens: Math.round(((text?.length || 0) + (activeFileName?.length || 0) * 12) / 4) + 1480,
@@ -536,21 +540,23 @@ export default function AgenticAssistant({
           </div>
         </div>
 
-        <button
-          type="button"
-          className="assistant-toggle-btn"
-          onClick={onToggle}
-          title={isOpen ? "Collapse Assistant" : "Expand Assistant"}
-          aria-label={isOpen ? "Collapse Assistant" : "Expand Assistant"}
-        >
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2">
-            {isOpen ? (
-              <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-            ) : (
-              <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
-            )}
-          </svg>
-        </button>
+        <div className="assistant-header-controls">
+          <button
+            type="button"
+            className="assistant-toggle-btn"
+            onClick={onToggle}
+            title={isOpen ? "Collapse Assistant" : "Expand Assistant"}
+            aria-label={isOpen ? "Collapse Assistant" : "Expand Assistant"}
+          >
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2">
+              {isOpen ? (
+                <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+              ) : (
+                <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
+              )}
+            </svg>
+          </button>
+        </div>
       </div>
 
       {isOpen && (
@@ -558,7 +564,7 @@ export default function AgenticAssistant({
           {/* Active Document Context Pill & Model Context Window Tracker */}
           <div className="assistant-context-bar">
             <div className="context-file-info">
-              <span className="context-kicker">ACTIVE:</span>
+              <span className="context-type-badge">{activeFileType.toUpperCase()}</span>
               <span className="context-filename" title={activeFileName}>
                 {activeFileName}
               </span>
@@ -591,7 +597,6 @@ export default function AgenticAssistant({
             </div>
           )}
 
-
           {/* Chat Thread with Message Scroller (shadcn AI Elements Chat) */}
           <MessageScrollerProvider autoScroll={true}>
             <MessageScroller className="assistant-thread-scroller">
@@ -601,36 +606,77 @@ export default function AgenticAssistant({
                     <div className="assistant-empty-slate">
                       <div className="empty-slate-badge">
                         <span className="empty-badge-dot" />
-                        <span>CHAT · SCROLLER · TRACE READY</span>
+                        <span>BLACKHOLE AGENTIC WORKSPACE</span>
                       </div>
-                      <h4>Agentic Assistant</h4>
+                      <h4>Workspace Assistant</h4>
                       <p>
-                        Powered by <strong>Chat</strong> with <strong>Message Scroller</strong> anchoring, step-by-step reasoning, and tool approvals.
+                        Autonomous agent with chain-of-thought reasoning, tool execution traces, verified approvals, and file tree synthesis.
                       </p>
-                      <div className="empty-slate-actions">
+
+                      <div className="empty-starter-grid">
                         <button
                           type="button"
-                          className="empty-run-trace-btn"
+                          className="starter-card"
                           onClick={() =>
                             handleSendMessage(
-                              `Run agent execution trace on active document "${activeFileName}"`
+                              "Calculate Kerr black hole ISCO radius and frame-dragging coordinates"
                             )
                           }
                         >
-                          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5">
-                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                          </svg>
-                          <span>Run Agent Trace</span>
+                          <div className="starter-card-icon">⚡</div>
+                          <div className="starter-card-body">
+                            <span className="starter-card-title">Derive Kerr ISCO & Geodesics</span>
+                            <span className="starter-card-desc">Deep reasoning chain & numerical derivation</span>
+                          </div>
                         </button>
+
                         <button
                           type="button"
-                          className="empty-run-confirm-btn"
-                          onClick={() => handleRequestConfirmation("rm -rf dist", "The command runs in this project.")}
+                          className="starter-card"
+                          onClick={() =>
+                            handleSendMessage(
+                              `Run full agent execution trace on active workspace "${activeFileName}"`
+                            )
+                          }
                         >
-                          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                          </svg>
-                          <span>Ask for Tool Approval</span>
+                          <div className="starter-card-icon">🔍</div>
+                          <div className="starter-card-body">
+                            <span className="starter-card-title">Audit Workspace AST & Trace</span>
+                            <span className="starter-card-desc">Multi-step execution trace & Pyodide runtime check</span>
+                          </div>
+                        </button>
+
+                        <button
+                          type="button"
+                          className="starter-card"
+                          onClick={() =>
+                            handleSendMessage(
+                              "Generate relativistic simulation suite with folder tree"
+                            )
+                          }
+                        >
+                          <div className="starter-card-icon">📁</div>
+                          <div className="starter-card-body">
+                            <span className="starter-card-title">Generate Simulation Suite</span>
+                            <span className="starter-card-desc">Hierarchical file tree with collapsible directories</span>
+                          </div>
+                        </button>
+
+                        <button
+                          type="button"
+                          className="starter-card"
+                          onClick={() =>
+                            handleRequestConfirmation(
+                              "rm -rf dist/",
+                              "Clean workspace build cache and transient artifacts."
+                            )
+                          }
+                        >
+                          <div className="starter-card-icon">🛡️</div>
+                          <div className="starter-card-body">
+                            <span className="starter-card-title">Sandbox Tool Approval</span>
+                            <span className="starter-card-desc">Item confirmation with user Approve / Deny</span>
+                          </div>
                         </button>
                       </div>
                     </div>
@@ -647,7 +693,27 @@ export default function AgenticAssistant({
                           {msg.role === "assistant" && (
                             <Message align="start" className="assistant-message-turn">
                               <MessageContent className="assistant-msg-bundle">
-                                {/* Tool Confirmation Item (shadcn AI Elements Confirmation) */}
+                                {/* 1. Chain of Thought Reasoning (at top of turn) */}
+                                {msg.chainOfThought && (
+                                  <div className="assistant-cot-wrapper">
+                                    <ChainOfThoughtBlock
+                                      summary={msg.chainOfThought.summary}
+                                      status={msg.chainOfThought.status}
+                                      duration={msg.chainOfThought.duration}
+                                      steps={msg.chainOfThought.steps}
+                                      defaultOpen={msg.chainOfThought.status === "running"}
+                                    />
+                                  </div>
+                                )}
+
+                                {/* 2. Agent Execution Trace (sequential tool steps) */}
+                                {msg.trace && (
+                                  <div className="assistant-trace-wrapper">
+                                    <AgentTrace trace={msg.trace} />
+                                  </div>
+                                )}
+
+                                {/* 3. Tool Confirmation (Approval request or outcome) */}
                                 {msg.confirmation && (
                                   <div className="assistant-confirmation-wrapper">
                                     <ToolConfirmation
@@ -662,27 +728,7 @@ export default function AgenticAssistant({
                                   </div>
                                 )}
 
-                                {/* Render Agentic Trace Steps Component */}
-                                {msg.trace && (
-                                  <div className="assistant-trace-wrapper">
-                                    <AgentTrace trace={msg.trace} />
-                                  </div>
-                                )}
-
-                                {/* Render Chain of Thought Reasoning Component */}
-                                {msg.chainOfThought && (
-                                  <div className="assistant-cot-wrapper">
-                                    <ChainOfThoughtBlock
-                                      summary={msg.chainOfThought.summary}
-                                      status={msg.chainOfThought.status}
-                                      duration={msg.chainOfThought.duration}
-                                      steps={msg.chainOfThought.steps}
-                                      defaultOpen={msg.chainOfThought.status === "running"}
-                                    />
-                                  </div>
-                                )}
-
-                                {/* Render Subagent Trace Card */}
+                                {/* 4. Subagent Execution Card (if present) */}
                                 {msg.subagent && (
                                   <div className="assistant-subagent-wrapper">
                                     <Subagent
@@ -703,7 +749,26 @@ export default function AgenticAssistant({
                                   </div>
                                 )}
 
-                                {/* Render diff lines visualization if available */}
+                                {/* 5. Changed Files Folder Tree (shadcn AI Elements FileTree & Collapsible) */}
+                                {(msg.changedTree || (msg.changedFiles && msg.changedFiles.length > 0)) && (
+                                  <div className="assistant-filetree-wrapper">
+                                    <ChangedFilesCard
+                                      title={msg.changedTreeTitle || "Generated Simulation Files"}
+                                      tree={msg.changedTree}
+                                      files={msg.changedFiles || []}
+                                      onSelectFile={(path) => {
+                                        if (onInsertSnippet) {
+                                          onInsertSnippet(
+                                            `# Selected from File Tree: ${path}\nprint("Inspecting ${path}...")\n`,
+                                            "code"
+                                          );
+                                        }
+                                      }}
+                                    />
+                                  </div>
+                                )}
+
+                                {/* 6. Code diff lines if available */}
                                 {msg.diffLines && (
                                   <div style={{ marginTop: "6px" }}>
                                     <CodeBlock size="sm">
@@ -727,7 +792,7 @@ export default function AgenticAssistant({
                                   </div>
                                 )}
 
-                                {/* Standalone code without subagent */}
+                                {/* 7. Standalone code without subagent */}
                                 {!msg.subagent && msg.code && (
                                   <CodeBlockCard
                                     title={activeFileType === "ipynb" ? "simulation_cell.py" : "relativistic_notes.md"}
@@ -738,19 +803,14 @@ export default function AgenticAssistant({
                                   />
                                 )}
 
-                                {/* Text bubble using Bubble component */}
-                                {!msg.subagent && !msg.chainOfThought && !msg.confirmation && msg.text && (
+                                {/* 8. Text bubble using Bubble component */}
+                                {msg.text && (!msg.subagent || msg.subagent.result !== msg.text) && (
                                   <Bubble align="start" variant="default" className="ai-bubble">
                                     <BubbleContent>{msg.text}</BubbleContent>
                                   </Bubble>
                                 )}
-                                {msg.confirmation && msg.text && (
-                                  <Bubble align="start" variant="default" className="ai-bubble" style={{ marginTop: "6px" }}>
-                                    <BubbleContent>{msg.text}</BubbleContent>
-                                  </Bubble>
-                                )}
 
-                                {/* Turn Context Usage (AI Elements Context) */}
+                                {/* 9. Turn Context Usage Badge (AI Elements Context) */}
                                 {msg.metadata?.usage && (
                                   <div className="assistant-turn-context-row">
                                     <Context
@@ -766,7 +826,7 @@ export default function AgenticAssistant({
                                               <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
                                               <path d="M22 12A10 10 0 0 0 12 2v10z" />
                                             </svg>
-                                            <span>{Math.round((((msg.metadata.usage.inputTokens || 0) + (msg.metadata.usage.outputTokens || 0)) / MODEL_CONTEXT_LIMIT) * 100)}% turn context</span>
+                                            <span>{Math.round((((msg.metadata.usage.inputTokens || 0) + (msg.metadata.usage.outputTokens || 0)) / MODEL_CONTEXT_LIMIT) * 100)}% turn tokens</span>
                                           </button>
                                         }
                                       />
@@ -931,110 +991,56 @@ export default function AgenticAssistant({
             />
 
             <form
-              className="assistant-input-box"
+              className="assistant-composer-form"
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSendMessage();
               }}
             >
-              {/* Paperclip Attach Button */}
-              <button
-                type="button"
-                className="assistant-attach-btn"
-                title="Attach files or images"
-                aria-label="Attach files or images"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-                </svg>
-              </button>
+              <div className="composer-input-container">
+                <textarea
+                  ref={inputRef}
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Ask assistant to reason, write code, or analyze..."
+                  rows="2"
+                  className="composer-textarea"
+                />
 
-              {/* Trace Action Button */}
-              <button
-                type="button"
-                className="assistant-action-btn-trace"
-                title="Run Agent Trace (AI Elements Trace)"
-                aria-label="Run Agent Trace"
-                onClick={() => {
-                  const q = inputMessage.trim() || `Run agent execution trace on active document "${activeFileName}"`;
-                  handleSendMessage(q);
-                }}
-              >
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                </svg>
-                <span>Trace</span>
-              </button>
-
-              {/* Confirmation Action Button */}
-              <button
-                type="button"
-                className="assistant-action-btn-confirm"
-                title="Request Tool Confirmation (AI Elements Confirmation)"
-                aria-label="Request Tool Confirmation"
-                onClick={() => {
-                  handleRequestConfirmation();
-                }}
-              >
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                </svg>
-                <span>Confirm</span>
-              </button>
-
-              {/* Context Action Button (AI Elements Context) */}
-              <Context
-                usedTokens={cumulativeUsage.totalUsed}
-                maxTokens={MODEL_CONTEXT_LIMIT}
-                usage={cumulativeUsage}
-                modelId={MODEL_ID}
-              >
-                <ContextTrigger
-                  render={
+                <div className="composer-bottom-bar">
+                  <div className="composer-actions-left">
                     <button
                       type="button"
-                      className="assistant-action-btn-context"
-                      title="Inspect Context Window Usage (AI Elements Context)"
-                      aria-label="Inspect Context Window Usage"
+                      className="composer-attach-btn"
+                      title="Attach file or image"
+                      aria-label="Attach file or image"
+                      onClick={() => fileInputRef.current?.click()}
                     >
-                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
-                        <path d="M22 12A10 10 0 0 0 12 2v10z" />
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
                       </svg>
-                      <span>Context</span>
                     </button>
-                  }
-                />
-                <ContextContent align="end" side="top">
-                  <ContextContentHeader title="Conversation Context Window" />
-                  <ContextContentBody />
-                  <ContextContentFooter />
-                </ContextContent>
-              </Context>
+                    <span className="composer-hint-label">Shift + Enter for new line</span>
+                  </div>
 
-              <textarea
-                ref={inputRef}
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Ask assistant to reason, write code, or analyze..."
-                rows="1"
-              />
-
-              <button
-                type="submit"
-                className="assistant-send-btn"
-                disabled={!inputMessage.trim() && attachedFiles.length === 0}
-                title="Send instruction to assistant"
-              >
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
+                  <button
+                    type="submit"
+                    className="composer-send-btn"
+                    disabled={!inputMessage.trim() && attachedFiles.length === 0}
+                    title="Send to assistant"
+                    aria-label="Send to assistant"
+                  >
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
             </form>
+
             <span className="assistant-keyboard-hint">
-              Enter to send · Shift+Enter for new line · 🚩 Checkpoints let you restore turns
+              Press Enter to send · 🚩 Checkpoints enable turn rollbacks
             </span>
           </div>
 
@@ -1221,6 +1227,41 @@ function planSubagentForQuery(query, fileType, fileName, attachments = []) {
         { name: `read_attachment_stream(file="${firstAtt.name}")`, status: "running" },
         { name: "extract_multimodal_features()", status: "running" },
         { name: `cross_reference_workspace(file="${fileName}")`, status: "running" },
+      ],
+    };
+  }
+
+  if (
+    q.includes("tree") ||
+    q.includes("file") ||
+    q.includes("suite") ||
+    q.includes("folder") ||
+    q.includes("simulation")
+  ) {
+    return {
+      name: "Simulation Suite Architect",
+      checkpointLabel: "Simulation suite scaffolded",
+      task: `Scaffold modular relativistic simulation directory tree and python modules for "${fileName}".`,
+      model: "gemini-1.5-flash",
+      cotSteps: [
+        {
+          title: "Designed modular package architecture for gravitational simulations",
+          description: "Organized Kerr and Schwarzschild solvers into separate subdirectories.",
+          searchResults: ["docs.astropy.org", "scipy.org/packages"],
+        },
+        {
+          title: "Created folder tree and validated relative module imports",
+          description: "Configured telemetry logging and mathematical parameter boundaries.",
+        },
+        {
+          title: "Synthesized Kerr ISCO and frame-dragging solvers",
+          description: "Implemented Bardeen-Petterson alignment equations.",
+        },
+      ],
+      tools: [
+        { name: "scaffold_directory_tree(root='simulations/')", status: "running" },
+        { name: "compile_kerr_geodesic_solver()", status: "running" },
+        { name: "validate_file_hierarchy()", status: "running" },
       ],
     };
   }
@@ -1454,6 +1495,105 @@ function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAtt
           fileType === "ipynb"
             ? `# Geodesic integration from attached data\nimport json\n\ndef evaluate_isco_telemetry(isco_km=8.86):\n    return f"Stable orbit confirmed outside horizon at {isco_km} km."\n\nprint(evaluate_isco_telemetry())`
             : `### Geodesic Correlation Findings\n- **Source Attachment:** \`${firstAtt.name}\`\n- **Confidence:** $99.2\\%$\n- **Derived ISCO Radius:** $8.86\\text{ km}$`,
+      },
+    };
+  }
+
+  if (
+    q.includes("tree") ||
+    q.includes("file") ||
+    q.includes("suite") ||
+    q.includes("folder") ||
+    q.includes("simulation")
+  ) {
+    const simulationTree = [
+      {
+        name: "simulations",
+        type: "folder",
+        path: "simulations",
+        defaultOpen: true,
+        children: [
+          {
+            name: "kerr",
+            type: "folder",
+            path: "simulations/kerr",
+            defaultOpen: true,
+            children: [
+              { name: "isco_solver.py", type: "file", path: "simulations/kerr/isco_solver.py" },
+              { name: "frame_dragging.py", type: "file", path: "simulations/kerr/frame_dragging.py" },
+              { name: "ergosphere_flux.py", type: "file", path: "simulations/kerr/ergosphere_flux.py" },
+            ],
+          },
+          {
+            name: "schwarzschild",
+            type: "folder",
+            path: "simulations/schwarzschild",
+            defaultOpen: false,
+            children: [
+              { name: "geodesic_integrator.py", type: "file", path: "simulations/schwarzschild/geodesic_integrator.py" },
+              { name: "orbital_precession.py", type: "file", path: "simulations/schwarzschild/orbital_precession.py" },
+            ],
+          },
+          { name: "README.md", type: "file", path: "simulations/README.md" },
+        ],
+      },
+      {
+        name: "telemetry",
+        type: "folder",
+        path: "telemetry",
+        defaultOpen: false,
+        children: [
+          { name: "curvature_tensor.json", type: "file", path: "telemetry/curvature_tensor.json" },
+          { name: "energy_flux.csv", type: "file", path: "telemetry/energy_flux.csv" },
+        ],
+      },
+    ];
+
+    return {
+      checkpoint: { label: "Simulation suite synthesized" },
+      chainOfThought: finalizedCot,
+      changedTree: simulationTree,
+      changedFiles: [
+        { name: "isco_solver.py", path: "simulations/kerr/isco_solver.py" },
+        { name: "frame_dragging.py", path: "simulations/kerr/frame_dragging.py" },
+        { name: "ergosphere_flux.py", path: "simulations/kerr/ergosphere_flux.py" },
+        { name: "geodesic_integrator.py", path: "simulations/schwarzschild/geodesic_integrator.py" },
+        { name: "orbital_precession.py", path: "simulations/schwarzschild/orbital_precession.py" },
+        { name: "README.md", path: "simulations/README.md" },
+        { name: "curvature_tensor.json", path: "telemetry/curvature_tensor.json" },
+        { name: "energy_flux.csv", path: "telemetry/energy_flux.csv" },
+      ],
+      changedTreeTitle: "Generated Relativistic Simulation Suite (8 files)",
+      subagent: {
+        name: "Simulation Suite Architect",
+        task: `Generate modular relativistic simulation package across directory hierarchies for "${fileName}".`,
+        model: "gemini-1.5-flash",
+        status: "completed",
+        duration: `${randomMs}ms`,
+        tools: [
+          {
+            name: "scaffold_directory_tree(root='simulations/')",
+            status: "completed",
+            output: "created 2 directories, 8 files",
+          },
+          {
+            name: "compile_kerr_geodesic_solver()",
+            status: "completed",
+            output: "AST compiled with 0 errors",
+          },
+          {
+            name: "validate_file_hierarchy()",
+            status: "completed",
+            output: "all imports and relative paths resolved",
+          },
+        ],
+        result:
+          "Successfully scaffolded the relativistic simulation package. Below is the interactive folder tree of files created by the agent. You can expand folders and select files to inspect or insert them:",
+        attachments: [],
+        code:
+          fileType === "ipynb"
+            ? `# simulations/kerr/isco_solver.py\nimport math\n\ndef kerr_isco_radius(m_solar, spin_a):\n    # Spin parameter -1 <= a <= 1\n    z1 = 1 + (1 - spin_a**2)**(1/3) * ((1 + spin_a)**(1/3) + (1 - spin_a)**(1/3))\n    z2 = math.sqrt(3 * spin_a**2 + z1**2)\n    sign = -1 if spin_a > 0 else 1\n    return 3 + z2 - sign * math.sqrt((3 - z1) * (3 + z1 + 2*z2))\n\nprint("Prograde ISCO (a=0.998):", kerr_isco_radius(10.0, 0.998), "Rs")`
+            : `### Simulation Package Overview\n- **Root:** \`simulations/\`\n- **Subpackages:** \`kerr/\`, \`schwarzschild/\`, \`telemetry/\`\n- **Primary Entrypoint:** \`simulations/kerr/isco_solver.py\``,
       },
     };
   }
