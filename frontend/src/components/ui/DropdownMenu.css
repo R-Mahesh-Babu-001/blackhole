@@ -1,0 +1,188 @@
+/* ==================================================
+   Dropdown Menu Component Styles
+   shadcn/ui Dropdown Menu Specification
+   Monochrome Pitch Black & White Theme
+================================================== */
+
+.ui-dropdown-menu-root {
+  position: relative;
+  display: inline-flex;
+}
+
+.ui-dropdown-menu-trigger {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: all 0.16s ease;
+}
+
+.ui-dropdown-menu-content {
+  position: absolute;
+  min-width: 200px;
+  max-width: 340px;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 9px;
+  padding: 5px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), 0 0 1px rgba(255, 255, 255, 0.2);
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-sizing: border-box;
+  animation: dropdownFadeIn 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Alignment & Siding */
+.ui-dropdown-menu-content.align-start {
+  left: 0;
+}
+
+.ui-dropdown-menu-content.align-end {
+  right: 0;
+}
+
+.ui-dropdown-menu-content.align-center {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ui-dropdown-menu-content.side-bottom {
+  top: 100%;
+}
+
+.ui-dropdown-menu-content.side-top {
+  bottom: 100%;
+}
+
+/* Groups and Labels */
+.ui-dropdown-menu-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ui-dropdown-menu-label {
+  padding: 6px 8px 4px 8px;
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: rgba(255, 255, 255, 0.45);
+  user-select: none;
+}
+
+/* Standard Menu Item */
+.ui-dropdown-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.14s ease;
+  outline: none;
+}
+
+.ui-dropdown-menu-item:hover,
+.ui-dropdown-menu-item:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.ui-dropdown-menu-item.is-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Radio Items */
+.ui-dropdown-menu-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ui-dropdown-menu-radio-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.82);
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.14s ease;
+  outline: none;
+}
+
+.ui-dropdown-menu-radio-item:hover,
+.ui-dropdown-menu-radio-item:focus-visible {
+  background: rgba(255, 255, 255, 0.09);
+  color: #ffffff;
+}
+
+.ui-dropdown-menu-radio-item.is-selected {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+  font-weight: 500;
+}
+
+.ui-dropdown-menu-radio-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: #ffffff;
+}
+
+.radio-dot-placeholder {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.ui-dropdown-menu-radio-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+/* Separator */
+.ui-dropdown-menu-separator {
+  height: 1px;
+  margin: 4px -5px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Shortcuts */
+.ui-dropdown-menu-shortcut {
+  margin-left: auto;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.4);
+}

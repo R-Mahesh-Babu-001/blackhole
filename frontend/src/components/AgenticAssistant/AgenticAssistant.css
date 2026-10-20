@@ -1054,3 +1054,108 @@
   max-width: 95%;
   gap: 6px;
 }
+
+/* ==================================================
+   Model & Effort Selectors inside Assistant Composer
+================================================== */
+
+.assistant-input-group {
+  background: #040404;
+  border: 1px solid #1e1e1e;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.assistant-input-group:focus-within {
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15), 0 4px 18px rgba(0, 0, 0, 0.8);
+  background: #080808;
+}
+
+.composer-addon-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.model-selector-trigger-btn,
+.effort-selector-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 25px;
+  padding: 0 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.model-selector-trigger-btn:hover,
+.effort-selector-trigger-btn:hover,
+.model-selector-trigger-btn.is-open,
+.effort-selector-trigger-btn.is-open {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.model-trigger-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.model-trigger-name,
+.effort-trigger-name {
+  font-size: 11px;
+  letter-spacing: -0.1px;
+}
+
+.model-selector-dropdown-content {
+  min-width: 260px;
+  max-width: 340px;
+  bottom: 100%;
+  margin-bottom: 8px;
+}
+
+.effort-selector-dropdown-content {
+  min-width: 220px;
+  max-width: 280px;
+  bottom: 100%;
+  margin-bottom: 8px;
+}
+
+.model-item-row,
+.effort-item-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+.model-item-title,
+.effort-item-title {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.model-item-badge {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.effort-item-desc {
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.45);
+}
+

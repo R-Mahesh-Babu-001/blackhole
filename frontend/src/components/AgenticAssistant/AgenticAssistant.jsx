@@ -55,11 +55,26 @@ import {
 import { ChangedFilesCard } from "../ui/FileTree";
 import { InlineCitation } from "../ui/InlineCitation";
 import { Sources } from "../ui/Sources";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+} from "../ui/DropdownMenu";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupTextarea,
+} from "../ui/InputGroup";
 import { getBackendBaseUrl } from "../../services/api";
 import "./AgenticAssistant.css";
 
 const MODEL_CONTEXT_LIMIT = 128000;
-const MODEL_ID = "gemini-1.5-flash";
 
 export default function AgenticAssistant({
   activeFileType,
@@ -75,8 +90,61 @@ export default function AgenticAssistant({
   const [selectedAttachment, setSelectedAttachment] = useState(null);
   const [restoreNotice, setRestoreNotice] = useState("");
   const [feedbackState, setFeedbackState] = useState({});
+  const [selectedModel, setSelectedModel] = useState("gemini-1.5-flash");
+  const [effort, setEffort] = useState("medium");
 
   const [messages, setMessages] = useState([]);
+
+  const getModelLabel = (modelId) => {
+    switch (modelId) {
+      case "gemini-1.5-flash":
+        return "Gemini 1.5 Flash";
+      case "gemini-1.5-pro":
+        return "Gemini 1.5 Pro";
+      case "claude-3-5-sonnet":
+        return "Claude 3.5 Sonnet";
+      case "claude-3-5-haiku":
+        return "Claude 3.5 Haiku";
+      case "gpt-4o":
+        return "GPT-4o";
+      case "deepseek-r1":
+        return "DeepSeek-R1";
+      default:
+        return "Gemini 1.5 Flash";
+    }
+  };
+
+  const getModelIcon = (modelId) => {
+    if (modelId.includes("claude")) {
+      return (
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M12 2L2 22h5l2.5-5h5l2.5 5h5L12 2zm-1 12l2.5-5.5L16 14h-5z" />
+        </svg>
+      );
+    }
+    if (modelId.includes("gpt")) {
+      return (
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 6v6l4 2" />
+        </svg>
+      );
+    }
+    if (modelId.includes("deepseek")) {
+      return (
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M8 12h8" />
+          <path d="M12 8v8" />
+        </svg>
+      );
+    }
+    return (
+      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2z" />
+      </svg>
+    );
+  };
 
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -402,7 +470,9 @@ export default function AgenticAssistant({
       text || `Analyze attached ${currentAttachments.map((a) => a.name).join(", ")}`,
       activeFileType,
       activeFileName,
-      currentAttachments
+      currentAttachments,
+      selectedModel,
+      effort
     );
 
     // Append user message with attachments + preliminary running chain of thought, trace & subagent
@@ -502,7 +572,9 @@ export default function AgenticAssistant({
         activeFileName,
         documentContent,
         currentAttachments,
-        liveTree
+        liveTree,
+        selectedModel,
+        effort
       );
 
       const randomMs = Math.floor(Math.random() * 140 + 110);
@@ -582,10 +654,17 @@ export default function AgenticAssistant({
                 changedTreeTitle: completedPlan.changedTreeTitle,
                 sources: completedPlan.sources || finalizedTrace.steps.find((s) => s.id === "step-sources")?.sources || [],
                 metadata: {
+                  model: selectedModel,
+                  effort: effort,
                   usage: {
                     inputTokens: Math.round(((text?.length || 0) + (activeFileName?.length || 0) * 12) / 4) + 1480,
                     outputTokens: Math.round(((completedPlan.subagent?.code?.length || 0) + (completedPlan.subagent?.result?.length || 0)) / 4) + 380,
-                    reasoningTokens: completedPlan.chainOfThought?.steps?.length ? completedPlan.chainOfThought.steps.length * 190 : 380,
+                    reasoningTokens:
+                      effort === "high"
+                        ? (completedPlan.chainOfThought?.steps?.length || 4) * 280
+                        : effort === "low"
+                        ? (completedPlan.chainOfThought?.steps?.length || 2) * 90
+                        : (completedPlan.chainOfThought?.steps?.length || 3) * 190,
                   },
                 },
               }
@@ -1121,8 +1200,8 @@ export default function AgenticAssistant({
                 handleSendMessage();
               }}
             >
-              <div className="composer-input-container">
-                <textarea
+              <InputGroup className="assistant-input-group">
+                <InputGroupTextarea
                   ref={inputRef}
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
@@ -1132,10 +1211,12 @@ export default function AgenticAssistant({
                   className="composer-textarea"
                 />
 
-                <div className="composer-bottom-bar">
+                <InputGroupAddon align="block-end" className="composer-addon-bar">
                   <div className="composer-actions-left">
-                    <button
+                    <InputGroupButton
                       type="button"
+                      variant="ghost"
+                      size="icon-sm"
                       className="composer-attach-btn"
                       title="Attach file or image"
                       aria-label="Attach file or image"
@@ -1144,13 +1225,123 @@ export default function AgenticAssistant({
                       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
                       </svg>
-                    </button>
-                    <span className="composer-hint-label">Shift + Enter for new line</span>
+                    </InputGroupButton>
+
+                    {/* Model Selector Menu (shadcn DropdownMenu / ModelSelector) */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        render={
+                          <InputGroupButton size="sm" variant="outline" className="model-selector-trigger-btn">
+                            <span className="model-trigger-icon">{getModelIcon(selectedModel)}</span>
+                            <span className="model-trigger-name">{getModelLabel(selectedModel)}</span>
+                            <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2">
+                              <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                          </InputGroupButton>
+                        }
+                      />
+                      <DropdownMenuContent align="start" side="top" className="model-selector-dropdown-content">
+                        <DropdownMenuRadioGroup value={selectedModel} onValueChange={setSelectedModel}>
+                          <DropdownMenuGroup>
+                            <DropdownMenuLabel>Google Gemini</DropdownMenuLabel>
+                            <DropdownMenuRadioItem value="gemini-1.5-flash" closeOnClick>
+                              <div className="model-item-row">
+                                <span className="model-item-title">Gemini 1.5 Flash</span>
+                                <span className="model-item-badge">Fast · 1M Context</span>
+                              </div>
+                            </DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem value="gemini-1.5-pro" closeOnClick>
+                              <div className="model-item-row">
+                                <span className="model-item-title">Gemini 1.5 Pro</span>
+                                <span className="model-item-badge">Deep Analysis · 2M Context</span>
+                              </div>
+                            </DropdownMenuRadioItem>
+                          </DropdownMenuGroup>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuGroup>
+                            <DropdownMenuLabel>Anthropic</DropdownMenuLabel>
+                            <DropdownMenuRadioItem value="claude-3-5-sonnet" closeOnClick>
+                              <div className="model-item-row">
+                                <span className="model-item-title">Claude 3.5 Sonnet</span>
+                                <span className="model-item-badge">Code & Geodesics</span>
+                              </div>
+                            </DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem value="claude-3-5-haiku" closeOnClick>
+                              <div className="model-item-row">
+                                <span className="model-item-title">Claude 3.5 Haiku</span>
+                                <span className="model-item-badge">Fast Subagent</span>
+                              </div>
+                            </DropdownMenuRadioItem>
+                          </DropdownMenuGroup>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuGroup>
+                            <DropdownMenuLabel>OpenAI & DeepSeek</DropdownMenuLabel>
+                            <DropdownMenuRadioItem value="gpt-4o" closeOnClick>
+                              <div className="model-item-row">
+                                <span className="model-item-title">GPT-4o</span>
+                                <span className="model-item-badge">Omni Reasoning</span>
+                              </div>
+                            </DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem value="deepseek-r1" closeOnClick>
+                              <div className="model-item-row">
+                                <span className="model-item-title">DeepSeek-R1</span>
+                                <span className="model-item-badge">Open Relativistic Reasoner</span>
+                              </div>
+                            </DropdownMenuRadioItem>
+                          </DropdownMenuGroup>
+                        </DropdownMenuRadioGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    {/* Reasoning Effort Menu (shadcn DropdownMenu) */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        render={
+                          <InputGroupButton size="sm" variant="outline" className="effort-selector-trigger-btn">
+                            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2">
+                              <circle cx="12" cy="12" r="3" />
+                              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                            </svg>
+                            <span className="effort-trigger-name">{effort.charAt(0).toUpperCase() + effort.slice(1)}</span>
+                            <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2">
+                              <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                          </InputGroupButton>
+                        }
+                      />
+                      <DropdownMenuContent align="start" side="top" className="effort-selector-dropdown-content">
+                        <DropdownMenuRadioGroup value={effort} onValueChange={setEffort}>
+                          <DropdownMenuGroup>
+                            <DropdownMenuLabel>Thinking & Reasoning Effort</DropdownMenuLabel>
+                            <DropdownMenuRadioItem value="low" closeOnClick>
+                              <div className="effort-item-row">
+                                <span className="effort-item-title">Low</span>
+                                <span className="effort-item-desc">Fast responses, minimal reasoning tokens</span>
+                              </div>
+                            </DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem value="medium" closeOnClick>
+                              <div className="effort-item-row">
+                                <span className="effort-item-title">Medium</span>
+                                <span className="effort-item-desc">Balanced depth and verification</span>
+                              </div>
+                            </DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem value="high" closeOnClick>
+                              <div className="effort-item-row">
+                                <span className="effort-item-title">High</span>
+                                <span className="effort-item-desc">Deep chain-of-thought analysis</span>
+                              </div>
+                            </DropdownMenuRadioItem>
+                          </DropdownMenuGroup>
+                        </DropdownMenuRadioGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
 
-                  <button
+                  <InputGroupButton
                     type="submit"
-                    className="composer-send-btn"
+                    variant="default"
+                    size="icon-sm"
+                    className="composer-send-btn ml-auto"
                     disabled={!inputMessage.trim() && attachedFiles.length === 0}
                     title="Send to assistant"
                     aria-label="Send to assistant"
@@ -1158,9 +1349,9 @@ export default function AgenticAssistant({
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
-                  </button>
-                </div>
-              </div>
+                  </InputGroupButton>
+                </InputGroupAddon>
+              </InputGroup>
             </form>
 
             <span className="assistant-keyboard-hint">
@@ -1318,14 +1509,42 @@ function getFileIcon(fileName = "", fileType = "") {
   );
 }
 
+function adaptCotStepsForEffort(baseSteps, effort) {
+  if (effort === "high") {
+    return [
+      ...baseSteps,
+      {
+        title: "Extended Relativistic Chain-of-Thought Formulation",
+        description: "Evaluated high-order perturbation terms, affine parameter geodesics, and invariant tensor contractions.",
+      },
+      {
+        title: "Rigorous Mathematical Convergence & Boundary Verification",
+        description: "Verified numerical stability across asymptotic limits with 0 coordinate divergences.",
+      },
+    ];
+  }
+  if (effort === "low") {
+    return baseSteps.slice(0, Math.min(baseSteps.length, 2));
+  }
+  return baseSteps;
+}
+
 /**
  * Creates subagent and chain of thought plan configuration based on query intent and attached assets
  */
-function planSubagentForQuery(query, fileType, fileName, attachments = []) {
+function planSubagentForQuery(
+  query,
+  fileType,
+  fileName,
+  attachments = [],
+  model = "gemini-1.5-flash",
+  effort = "medium"
+) {
   const q = query.toLowerCase();
   const hasAttachments = attachments && attachments.length > 0;
 
-  if (hasAttachments) {
+  const getRawPlan = () => {
+    if (hasAttachments) {
     const firstAtt = attachments[0];
     return {
       name: "Multimodal Research Subagent",
@@ -1587,6 +1806,14 @@ function planSubagentForQuery(query, fileType, fileName, attachments = []) {
       { name: `synthesize_response(query="${query.slice(0, 30)}")`, status: "running" },
     ],
   };
+  };
+
+  const raw = getRawPlan();
+  return {
+    ...raw,
+    model: model || raw.model || "gemini-1.5-flash",
+    cotSteps: adaptCotStepsForEffort(raw.cotSteps || [], effort),
+  };
 }
 
 function countTreeNodes(tree) {
@@ -1677,13 +1904,24 @@ function renderTextWithCitations(text, sources = []) {
 /**
  * Finalizes subagent and chain of thought execution with tool results, timing, code, attachments, and checkpoint
  */
-function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAttachments = [], liveTree = null) {
+function finalizeSubagentPlan(
+  plan,
+  query,
+  fileType,
+  fileName,
+  _content,
+  userAttachments = [],
+  liveTree = null,
+  model = "gemini-1.5-flash",
+  effort = "medium"
+) {
   const q = query.toLowerCase();
   const randomMs = Math.floor(Math.random() * 160 + 130);
   const cotMs = Math.floor(randomMs * 0.7);
 
+  const effortBadge = effort === "high" ? " · High Reasoning Effort" : effort === "low" ? " · Low Effort" : "";
   const finalizedCot = {
-    summary: `Reasoned in ${plan.cotSteps.length} steps`,
+    summary: `Reasoned in ${plan.cotSteps.length} steps${effortBadge}`,
     status: "completed",
     duration: `${cotMs}ms`,
     steps: plan.cotSteps.map((s) => ({
