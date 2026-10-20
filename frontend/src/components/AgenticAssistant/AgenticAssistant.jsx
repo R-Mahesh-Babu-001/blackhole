@@ -56,6 +56,16 @@ import { ChangedFilesCard } from "../ui/FileTree";
 import { InlineCitation } from "../ui/InlineCitation";
 import { Sources } from "../ui/Sources";
 import {
+  Plan,
+  PlanHeader,
+  PlanTitle,
+  PlanDescription,
+  PlanContent,
+  PlanStep,
+  PlanIcon,
+  PlanRouteIcon,
+} from "../ui/Plan";
+import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
@@ -487,6 +497,15 @@ export default function AgenticAssistant({
       {
         id: assistantMsgId,
         role: "assistant",
+        plan: {
+          title: plan.planTitle,
+          description: plan.planDescription,
+          isStreaming: true,
+          steps: (plan.planSteps || []).map((step, idx) => ({
+            ...step,
+            status: idx === 0 ? "completed" : idx === 1 ? "running" : "pending",
+          })),
+        },
         trace: {
           status: "running",
           steps: [
@@ -644,6 +663,15 @@ export default function AgenticAssistant({
           msg.id === assistantMsgId
             ? {
                 ...msg,
+                plan: {
+                  title: plan.planTitle,
+                  description: plan.planDescription,
+                  isStreaming: false,
+                  steps: (plan.planSteps || []).map((s) => ({
+                    ...s,
+                    status: "completed",
+                  })),
+                },
                 trace: finalizedTrace,
                 chainOfThought: completedPlan.chainOfThought,
                 subagent: completedPlan.subagent,
@@ -844,6 +872,22 @@ export default function AgenticAssistant({
                             <span className="starter-card-desc">Item confirmation with user Approve / Deny</span>
                           </div>
                         </button>
+
+                        <button
+                          type="button"
+                          className="starter-card"
+                          onClick={() =>
+                            handleSendMessage(
+                              "Create multi-step execution plan to audit and migrate relativity solver"
+                            )
+                          }
+                        >
+                          <div className="starter-card-icon">🗺️</div>
+                          <div className="starter-card-body">
+                            <span className="starter-card-title">Multi-Step Agent Plan</span>
+                            <span className="starter-card-desc">Step-by-step agent plan with progress counter & statuses</span>
+                          </div>
+                        </button>
                       </div>
                     </div>
                   ) : (
@@ -859,6 +903,33 @@ export default function AgenticAssistant({
                           {msg.role === "assistant" && (
                             <Message align="start" className="assistant-message-turn">
                               <MessageContent className="assistant-msg-bundle">
+                                {/* 0. Pre-Execution Agent Plan (shadcn AI Elements Plan) */}
+                                {msg.plan && (
+                                  <div className="assistant-plan-wrapper">
+                                    <Plan isStreaming={msg.plan.isStreaming} defaultOpen={true}>
+                                      <PlanHeader>
+                                        <PlanIcon>
+                                          <PlanRouteIcon />
+                                        </PlanIcon>
+                                        <PlanTitle>{msg.plan.title}</PlanTitle>
+                                        <PlanDescription>
+                                          {msg.plan.steps.filter((s) => s.status === "completed" || s.status === "done").length} of {msg.plan.steps.length} done
+                                        </PlanDescription>
+                                      </PlanHeader>
+                                      <PlanContent description={msg.plan.description}>
+                                        {msg.plan.steps.map((step) => (
+                                          <PlanStep
+                                            key={step.id}
+                                            status={step.status}
+                                            title={step.title}
+                                            description={step.description}
+                                          />
+                                        ))}
+                                      </PlanContent>
+                                    </Plan>
+                                  </div>
+                                )}
+
                                 {/* 1. Chain of Thought Reasoning (at top of turn) */}
                                 {msg.chainOfThought && (
                                   <div className="assistant-cot-wrapper">
@@ -1809,10 +1880,236 @@ function planSubagentForQuery(
   };
 
   const raw = getRawPlan();
+  const blueprint = generatePlanBlueprint(raw, query, fileName);
   return {
     ...raw,
+    planTitle: blueprint.planTitle,
+    planDescription: blueprint.planDescription,
+    planSteps: blueprint.planSteps,
     model: model || raw.model || "gemini-1.5-flash",
     cotSteps: adaptCotStepsForEffort(raw.cotSteps || [], effort),
+  };
+}
+
+/**
+ * Generates an upfront multi-step execution plan conforming to shadcn AI Elements Plan
+ * built on Trace and TraceCollapsible with progress counter and step statuses.
+ */
+function generatePlanBlueprint(rawPlan, query = "", fileName = "") {
+  const q = (query || "").toLowerCase();
+  const tools = rawPlan.tools || [];
+  const toolStep1 = tools[0]?.name ? tools[0].name.replace(/\(.*\)/, "") : "Inspect workspace context";
+  const toolStep2 = tools[1]?.name ? tools[1].name.replace(/\(.*\)/, "") : "Execute computational analysis";
+
+  let planTitle = `Plan: ${rawPlan.name.replace(/ (Agent|Subagent)/g, "")} workflow`;
+  let planDescription = rawPlan.task || `Execution plan for active document "${fileName}".`;
+  let planSteps = [];
+
+  if (
+    rawPlan.isWorkspaceScan ||
+    q.includes("scan") ||
+    q.includes("audit") ||
+    q.includes("structure") ||
+    q.includes("workspace")
+  ) {
+    planTitle = "Plan: Scan workspace hierarchy & audit manifests";
+    planDescription = "Full recursive directory traversal, module validation, and AST indexing.";
+    planSteps = [
+      {
+        id: "step-plan-1",
+        title: "Index active document buffer and syntax AST",
+        description: `Target: "${fileName}"`,
+        status: "completed",
+      },
+      {
+        id: "step-plan-2",
+        title: "Scan workspace directory hierarchy (backend, frontend, configs)",
+        description: "Fetch live file and folder structure",
+        status: "running",
+      },
+      {
+        id: "step-plan-3",
+        title: "Validate module manifests and dependencies",
+        description: "Check package.json & requirements.txt",
+        status: "pending",
+      },
+      {
+        id: "step-plan-4",
+        title: "Synthesize interactive FileTree and audit report",
+        description: "Render collapsible filesystem navigation",
+        status: "pending",
+      },
+    ];
+  } else if (
+    q.includes("tree") ||
+    q.includes("suite") ||
+    q.includes("scaffold") ||
+    q.includes("simulation")
+  ) {
+    planTitle = "Plan: Scaffold relativistic simulation suite";
+    planDescription = "Generate modular simulation packages, solvers, and telemetry logging.";
+    planSteps = [
+      {
+        id: "step-plan-1",
+        title: `Analyze mathematical requirements in "${fileName}"`,
+        description: "Parse equations and boundary parameters",
+        status: "completed",
+      },
+      {
+        id: "step-plan-2",
+        title: "Scaffold directory structure (simulations/)",
+        description: "Create package manifests and __init__.py modules",
+        status: "running",
+      },
+      {
+        id: "step-plan-3",
+        title: "Compile Kerr geodesic & ISCO orbit solver",
+        description: "Implement numerical integration routines",
+        status: "pending",
+      },
+      {
+        id: "step-plan-4",
+        title: "Assemble file tree artifact with collapsible components",
+        description: "Verify modular imports and test entry points",
+        status: "pending",
+      },
+    ];
+  } else if (
+    q.includes("isco") ||
+    q.includes("think") ||
+    q.includes("reason") ||
+    q.includes("derivation") ||
+    q.includes("frame dragging")
+  ) {
+    planTitle = "Plan: Derive Kerr ISCO & geodesic mechanics";
+    planDescription = "Formulate Einstein Field Equations, effective potential, and horizon limits.";
+    planSteps = [
+      {
+        id: "step-plan-1",
+        title: `Extract metric tensor coordinates from "${fileName}"`,
+        description: "Set up Boyer-Lindquist coordinate frame",
+        status: "completed",
+      },
+      {
+        id: "step-plan-2",
+        title: "Solve timelike geodesic equations & effective potential V_eff(r)",
+        description: "Derive inflection point d²V_eff/dr² = 0",
+        status: "running",
+      },
+      {
+        id: "step-plan-3",
+        title: "Calculate Kerr ISCO radius and frame-dragging coordinates",
+        description: "Evaluate prograde vs retrograde limits",
+        status: "pending",
+      },
+      {
+        id: "step-plan-4",
+        title: "Synthesize verified relativistic code and derivation block",
+        description: "Correlate with NASA HEASARC & arXiv citations",
+        status: "pending",
+      },
+    ];
+  } else if (
+    q.includes("debug") ||
+    q.includes("error") ||
+    q.includes("guard")
+  ) {
+    planTitle = `Plan: Diagnose and guard AST in "${fileName}"`;
+    planDescription = "Audit Python AST for division by zero and coordinate horizon singularities.";
+    planSteps = [
+      {
+        id: "step-plan-1",
+        title: `Parse Python syntax tree for "${fileName}"`,
+        description: "Extract function tokens and variable scopes",
+        status: "completed",
+      },
+      {
+        id: "step-plan-2",
+        title: "Audit singularity boundaries (r -> Rs, v -> c)",
+        description: "Detect unhandled division by zero in lorentz factors",
+        status: "running",
+      },
+      {
+        id: "step-plan-3",
+        title: "Formulate guarded ValueError exception handlers",
+        description: "Ensure graceful fallback outside event horizon",
+        status: "pending",
+      },
+      {
+        id: "step-plan-4",
+        title: "Verify numerical convergence in Pyodide WASM sandbox",
+        description: "Run test assertions and format code diff",
+        status: "pending",
+      },
+    ];
+  } else if (
+    q.includes("migrate") ||
+    q.includes("migration") ||
+    q.includes("plan")
+  ) {
+    planTitle = "Plan: Audit, refactor & migrate relativity engine";
+    planDescription = "Multi-phase agent migration plan: AST inspection, Base UI element upgrades, and test harness execution.";
+    planSteps = [
+      {
+        id: "step-plan-1",
+        title: "Replace legacy Radix primitives with shadcn AI Elements",
+        description: "Migrated to Base UI & Trace component",
+        status: "completed",
+      },
+      {
+        id: "step-plan-2",
+        title: "Rename asChild to render and normalize slot props",
+        description: "Enforce strict monochrome theme tokens",
+        status: "running",
+      },
+      {
+        id: "step-plan-3",
+        title: "Run static type checker and lint validations",
+        description: "Verify 0 errors across frontend & backend",
+        status: "pending",
+      },
+      {
+        id: "step-plan-4",
+        title: "Execute Pyodide WASM astrophysics benchmark suite",
+        description: "Validate convergence and geodesic integration",
+        status: "pending",
+      },
+    ];
+  } else {
+    planTitle = `Plan: Execute ${rawPlan.name.replace(/ (Agent|Subagent)/g, "")}`;
+    planDescription = rawPlan.task || `Step-by-step workflow for "${fileName}".`;
+    planSteps = [
+      {
+        id: "step-plan-1",
+        title: `Inspect active workspace context "${fileName}"`,
+        description: "Verify AST integrity and environment parameters",
+        status: "completed",
+      },
+      {
+        id: "step-plan-2",
+        title: `Execute ${toolStep1}`,
+        description: "Primary agent routine execution",
+        status: "running",
+      },
+      {
+        id: "step-plan-3",
+        title: `Evaluate ${toolStep2}`,
+        description: "Calculate intermediate relativistic matrices",
+        status: "pending",
+      },
+      {
+        id: "step-plan-4",
+        title: "Synthesize verified solution block & artifacts",
+        description: "Finalize citations and response cards",
+        status: "pending",
+      },
+    ];
+  }
+
+  return {
+    planTitle,
+    planDescription,
+    planSteps,
   };
 }
 

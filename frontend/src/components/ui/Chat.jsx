@@ -25,6 +25,23 @@ import {
   MessageResponse,
 } from "./Message";
 import { messagesToMarkdown } from "./chatUtils";
+import {
+  Plan,
+  PlanHeader,
+  PlanTitle,
+  PlanDescription,
+  PlanContent,
+  PlanTrigger,
+  PlanAction,
+  PlanFooter,
+  PlanStep,
+  PlanIcon,
+  TraceIcon,
+  PlanRouteIcon,
+  PlanCircleCheckIcon,
+  PlanCircleDotIcon,
+  PlanCircleIcon,
+} from "./Plan";
 import "./Chat.css";
 
 /**
@@ -172,4 +189,19 @@ export {
   MessageEditAction,
   MessageToolbar,
   MessageResponse,
+  Plan,
+  PlanHeader,
+  PlanTitle,
+  PlanDescription,
+  PlanContent,
+  PlanTrigger,
+  PlanAction,
+  PlanFooter,
+  PlanStep,
+  PlanIcon,
+  TraceIcon,
+  PlanRouteIcon,
+  PlanCircleCheckIcon,
+  PlanCircleDotIcon,
+  PlanCircleIcon,
 };

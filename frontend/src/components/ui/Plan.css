@@ -1,0 +1,197 @@
+/* ==================================================
+   Plan Component Styles
+   shadcn AI Elements Plan Specification
+   Monochrome Pitch Black & Pure White Theme
+================================================== */
+
+.ui-plan-wrapper {
+  width: 100%;
+  margin: 6px 0;
+  box-sizing: border-box;
+}
+
+.ui-plan-trace-root {
+  width: 100%;
+}
+
+.ui-plan-collapsible {
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 9px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+}
+
+.ui-plan-collapsible:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.ui-plan-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: #050505;
+  border-bottom: 1px solid transparent;
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+
+.ui-plan-collapsible.open .ui-plan-header-row {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.ui-plan-header-trigger {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  outline: none;
+  color: inherit;
+  font-family: inherit;
+}
+
+.ui-plan-header-trigger:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.ui-plan-header-line {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 1;
+}
+
+.ui-plan-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: -0.15px;
+}
+
+.ui-plan-description {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 7px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ui-plan-header-action {
+  padding-right: 8px;
+}
+
+.ui-plan-content {
+  padding: 6px 12px 10px 12px;
+  background: #000000;
+}
+
+.ui-plan-detail-description {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.45;
+  padding: 6px 4px 8px 4px;
+  margin-bottom: 4px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+/* Steps list inside Plan */
+.ui-plan-steps-trace {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 2px;
+}
+
+.ui-plan-step-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: transparent;
+  transition: all 0.15s ease;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.ui-plan-step-line:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.ui-plan-step-line.step-done,
+.ui-plan-step-line.step-completed {
+  color: #ffffff;
+}
+
+.ui-plan-step-line.step-running {
+  color: #ffffff;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.ui-plan-step-line.step-pending {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.ui-plan-step-title {
+  font-size: 12px;
+  color: inherit;
+  flex: 1;
+}
+
+.ui-plan-step-desc {
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.ui-plan-action {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ui-plan-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Pulse animation for running dot */
+.ui-plan-running-dot-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ui-plan-running-pulse {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  animation: planPulse 1.4s ease-out infinite;
+}
+
+@keyframes planPulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}

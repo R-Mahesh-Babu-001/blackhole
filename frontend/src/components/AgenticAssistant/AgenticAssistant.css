@@ -1159,3 +1159,13 @@
   color: rgba(255, 255, 255, 0.45);
 }
 
+/* ==================================================
+   Assistant Turn Plan Wrapper (shadcn AI Elements Plan)
+   Pitch Black & Pure White Monochrome Aesthetics
+================================================== */
+.assistant-plan-wrapper {
+  width: 100%;
+  margin-bottom: 8px;
+  display: block;
+}
+
