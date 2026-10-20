@@ -1,0 +1,96 @@
+/* ==================================================
+   MessageScroller Styles
+   shadcn AI Elements Message Scroller
+   Smooth scroll anchoring and bottom detection
+================================================== */
+
+.ui-message-scroller {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+  flex: 1;
+}
+
+.ui-message-scroller-viewport {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  position: relative;
+  background: #07070a;
+}
+
+.ui-message-scroller-viewport::-webkit-scrollbar {
+  width: 4px;
+}
+
+.ui-message-scroller-viewport::-webkit-scrollbar-thumb {
+  background: #1c1c28;
+  border-radius: 4px;
+}
+
+.ui-message-scroller-viewport::-webkit-scrollbar-thumb:hover {
+  background: #2a2a3e;
+}
+
+.ui-message-scroller-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 14px;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+.ui-message-scroller-item {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Floating Scroll to Bottom Button */
+.ui-message-scroller-btn {
+  position: absolute;
+  bottom: 16px;
+  right: 18px;
+  z-index: 45;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(18, 18, 28, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 216, 77, 0.45);
+  color: #ffd84d;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7), 0 0 10px rgba(255, 216, 77, 0.25);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: scrollBtnEnter 0.2s ease forwards;
+}
+
+@keyframes scrollBtnEnter {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ui-message-scroller-btn:hover {
+  background: #ffd84d;
+  color: #040408;
+  border-color: #ffd84d;
+  transform: translateY(-2px) scale(1.06);
+  box-shadow: 0 6px 20px rgba(255, 216, 77, 0.4);
+}

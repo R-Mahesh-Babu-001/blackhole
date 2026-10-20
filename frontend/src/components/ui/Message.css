@@ -1,0 +1,98 @@
+/* ==================================================
+   Message & Bubble Component Styles
+   shadcn AI Elements Message Specification
+   Obsidian Dark Theme with Golden Yellow Accents
+================================================== */
+
+.ui-message {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 3px 0;
+  animation: messageFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes messageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ui-message.message-align-start {
+  align-items: flex-start;
+}
+
+.ui-message.message-align-end {
+  align-items: flex-end;
+}
+
+.ui-message.message-align-center {
+  align-items: center;
+}
+
+.ui-message-content {
+  display: flex;
+  flex-direction: column;
+  max-width: 95%;
+  gap: 6px;
+}
+
+/* ==================================================
+   Bubble Component
+================================================== */
+
+.ui-bubble {
+  position: relative;
+  display: inline-block;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  word-break: break-word;
+  box-sizing: border-box;
+  transition: all 0.18s ease;
+}
+
+.ui-bubble.bubble-align-end {
+  border-bottom-right-radius: 3px;
+}
+
+.ui-bubble.bubble-align-start {
+  border-bottom-left-radius: 3px;
+}
+
+/* Bubble Variants */
+.ui-bubble.bubble-variant-default {
+  background: #101018;
+  border: 1px solid #1c1c2a;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.ui-bubble.bubble-variant-muted {
+  background: #0c0c12;
+  border: 1px solid #181824;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.ui-bubble.bubble-variant-accent {
+  background: #242008;
+  border: 1px solid rgba(255, 216, 77, 0.35);
+  color: #ffffff;
+}
+
+.ui-bubble.bubble-variant-outline {
+  background: transparent;
+  border: 1px solid #222232;
+  color: #e2e8f0;
+}
+
+.ui-bubble-content {
+  margin: 0;
+  padding: 0;
+}

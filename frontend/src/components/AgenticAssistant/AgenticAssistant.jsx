@@ -33,6 +33,19 @@ import {
   ContextContentFooter,
   ContextWindowCard,
 } from "../ui/Context";
+import {
+  MessageScrollerProvider,
+  MessageScroller,
+  MessageScrollerViewport,
+  MessageScrollerContent,
+  MessageScrollerItem,
+  MessageScrollerButton,
+  Message,
+  MessageContent,
+  Bubble,
+  BubbleContent,
+  ConversationDownload,
+} from "../ui/Chat";
 import "./AgenticAssistant.css";
 
 const MODEL_CONTEXT_LIMIT = 128000;
@@ -550,13 +563,18 @@ export default function AgenticAssistant({
                 {activeFileName}
               </span>
             </div>
-            <ContextWindowCard
-              usedTokens={cumulativeUsage.totalUsed}
-              maxTokens={MODEL_CONTEXT_LIMIT}
-              usage={cumulativeUsage}
-              modelId={MODEL_ID}
-              triggerClassName="context-bar-trigger"
-            />
+            <div className="assistant-context-actions">
+              {messages.length > 0 && (
+                <ConversationDownload messages={messages} />
+              )}
+              <ContextWindowCard
+                usedTokens={cumulativeUsage.totalUsed}
+                maxTokens={MODEL_CONTEXT_LIMIT}
+                usage={cumulativeUsage}
+                modelId={MODEL_ID}
+                triggerClassName="context-bar-trigger"
+              />
+            </div>
           </div>
 
           {/* Checkpoint Restore Notification Banner */}
@@ -574,249 +592,268 @@ export default function AgenticAssistant({
           )}
 
 
-          {/* Message Stream */}
-          <div className="assistant-messages-stream">
-            {messages.length === 0 ? (
-              <div className="assistant-empty-slate">
-                <div className="empty-slate-badge">
-                  <span className="empty-badge-dot" />
-                  <span>TRACE · CONFIRMATION · CONTEXT READY</span>
-                </div>
-                <h4>Agentic Assistant</h4>
-                <p>
-                  Powered by <strong>Trace</strong>, <strong>Confirmation</strong>, and <strong>Context</strong> for reasoning, approval flows, and context window tracking.
-                </p>
-                <div className="empty-slate-actions">
-                  <button
-                    type="button"
-                    className="empty-run-trace-btn"
-                    onClick={() =>
-                      handleSendMessage(
-                        `Run agent execution trace on active document "${activeFileName}"`
-                      )
-                    }
-                  >
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                    </svg>
-                    <span>Run Agent Trace</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="empty-run-confirm-btn"
-                    onClick={() => handleRequestConfirmation("rm -rf dist", "The command runs in this project.")}
-                  >
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    </svg>
-                    <span>Ask for Tool Approval</span>
-                  </button>
-                </div>
-              </div>
-            ) : (
-              messages.map((msg) => {
-                return (
-                  <div key={msg.id} className="message-turn-container">
-                    {/* Assistant Turn */}
-                    {msg.role === "assistant" && (
-                      <div className="assistant-msg-bundle">
-                        {/* Tool Confirmation Item (shadcn AI Elements Confirmation) */}
-                        {msg.confirmation && (
-                          <div className="assistant-confirmation-wrapper">
-                            <ToolConfirmation
-                              id={msg.confirmation.id}
-                              command={msg.confirmation.command}
-                              description={msg.confirmation.description}
-                              state={msg.confirmation.state}
-                              output={msg.confirmation.output}
-                              onApprove={() => handleApproveConfirmation(msg.id)}
-                              onDeny={() => handleDenyConfirmation(msg.id)}
-                            />
-                          </div>
-                        )}
+          {/* Chat Thread with Message Scroller (shadcn AI Elements Chat) */}
+          <MessageScrollerProvider autoScroll={true}>
+            <MessageScroller className="assistant-thread-scroller">
+              <MessageScrollerViewport className="assistant-messages-viewport">
+                <MessageScrollerContent className="assistant-messages-content">
+                  {messages.length === 0 ? (
+                    <div className="assistant-empty-slate">
+                      <div className="empty-slate-badge">
+                        <span className="empty-badge-dot" />
+                        <span>CHAT · SCROLLER · TRACE READY</span>
+                      </div>
+                      <h4>Agentic Assistant</h4>
+                      <p>
+                        Powered by <strong>Chat</strong> with <strong>Message Scroller</strong> anchoring, step-by-step reasoning, and tool approvals.
+                      </p>
+                      <div className="empty-slate-actions">
+                        <button
+                          type="button"
+                          className="empty-run-trace-btn"
+                          onClick={() =>
+                            handleSendMessage(
+                              `Run agent execution trace on active document "${activeFileName}"`
+                            )
+                          }
+                        >
+                          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                          </svg>
+                          <span>Run Agent Trace</span>
+                        </button>
+                        <button
+                          type="button"
+                          className="empty-run-confirm-btn"
+                          onClick={() => handleRequestConfirmation("rm -rf dist", "The command runs in this project.")}
+                        >
+                          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                          </svg>
+                          <span>Ask for Tool Approval</span>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    messages.map((msg) => {
+                      return (
+                        <MessageScrollerItem
+                          key={msg.id}
+                          messageId={msg.id}
+                          scrollAnchor={msg.role === "user"}
+                          className="message-turn-container"
+                        >
+                          {/* Assistant Turn */}
+                          {msg.role === "assistant" && (
+                            <Message align="start" className="assistant-message-turn">
+                              <MessageContent className="assistant-msg-bundle">
+                                {/* Tool Confirmation Item (shadcn AI Elements Confirmation) */}
+                                {msg.confirmation && (
+                                  <div className="assistant-confirmation-wrapper">
+                                    <ToolConfirmation
+                                      id={msg.confirmation.id}
+                                      command={msg.confirmation.command}
+                                      description={msg.confirmation.description}
+                                      state={msg.confirmation.state}
+                                      output={msg.confirmation.output}
+                                      onApprove={() => handleApproveConfirmation(msg.id)}
+                                      onDeny={() => handleDenyConfirmation(msg.id)}
+                                    />
+                                  </div>
+                                )}
 
-                        {/* Render Agentic Trace Steps Component */}
-                        {msg.trace && (
-                          <div className="assistant-trace-wrapper">
-                            <AgentTrace trace={msg.trace} />
-                          </div>
-                        )}
+                                {/* Render Agentic Trace Steps Component */}
+                                {msg.trace && (
+                                  <div className="assistant-trace-wrapper">
+                                    <AgentTrace trace={msg.trace} />
+                                  </div>
+                                )}
 
-                        {/* Render Chain of Thought Reasoning Component */}
-                        {msg.chainOfThought && (
-                        <div className="assistant-cot-wrapper">
-                          <ChainOfThoughtBlock
-                            summary={msg.chainOfThought.summary}
-                            status={msg.chainOfThought.status}
-                            duration={msg.chainOfThought.duration}
-                            steps={msg.chainOfThought.steps}
-                            defaultOpen={msg.chainOfThought.status === "running"}
-                          />
-                        </div>
-                      )}
+                                {/* Render Chain of Thought Reasoning Component */}
+                                {msg.chainOfThought && (
+                                  <div className="assistant-cot-wrapper">
+                                    <ChainOfThoughtBlock
+                                      summary={msg.chainOfThought.summary}
+                                      status={msg.chainOfThought.status}
+                                      duration={msg.chainOfThought.duration}
+                                      steps={msg.chainOfThought.steps}
+                                      defaultOpen={msg.chainOfThought.status === "running"}
+                                    />
+                                  </div>
+                                )}
 
-                      {/* Render Subagent Trace Card */}
-                      {msg.subagent && (
-                        <div className="assistant-subagent-wrapper">
-                          <Subagent
-                            name={msg.subagent.name}
-                            task={msg.subagent.task}
-                            model={msg.subagent.model}
-                            tools={msg.subagent.tools}
-                            status={msg.subagent.status}
-                            duration={msg.subagent.duration}
-                            result={msg.subagent.result}
-                            code={msg.subagent.code}
-                            attachments={msg.subagent.attachments}
-                            onPreviewAttachment={setSelectedAttachment}
-                            onInsertCode={onInsertSnippet}
-                            activeFileType={activeFileType}
-                            defaultOpen={true}
-                          />
-                        </div>
-                      )}
+                                {/* Render Subagent Trace Card */}
+                                {msg.subagent && (
+                                  <div className="assistant-subagent-wrapper">
+                                    <Subagent
+                                      name={msg.subagent.name}
+                                      task={msg.subagent.task}
+                                      model={msg.subagent.model}
+                                      tools={msg.subagent.tools}
+                                      status={msg.subagent.status}
+                                      duration={msg.subagent.duration}
+                                      result={msg.subagent.result}
+                                      code={msg.subagent.code}
+                                      attachments={msg.subagent.attachments}
+                                      onPreviewAttachment={setSelectedAttachment}
+                                      onInsertCode={onInsertSnippet}
+                                      activeFileType={activeFileType}
+                                      defaultOpen={true}
+                                    />
+                                  </div>
+                                )}
 
-                      {/* Render diff lines visualization if available */}
-                      {msg.diffLines && (
-                        <div style={{ marginTop: "6px" }}>
-                          <CodeBlock size="sm">
-                            <CodeBlockHeader>
-                              <CodeBlockTitle>
-                                <span className="lang-tag">diff</span>
-                                <span className="title-text">singularity_guard.py</span>
-                              </CodeBlockTitle>
-                              <CodeBlockActions>
-                                <CodeBlockCopyButton value={msg.subagent?.code || ""} />
-                              </CodeBlockActions>
-                            </CodeBlockHeader>
-                            <CodeBlockContent>
-                              {msg.diffLines.map((line, lIdx) => (
-                                <CodeBlockLine key={lIdx} variant={line.variant} lineNumber={lIdx + 1}>
-                                  {line.text}
-                                </CodeBlockLine>
-                              ))}
-                            </CodeBlockContent>
-                          </CodeBlock>
-                        </div>
-                      )}
+                                {/* Render diff lines visualization if available */}
+                                {msg.diffLines && (
+                                  <div style={{ marginTop: "6px" }}>
+                                    <CodeBlock size="sm">
+                                      <CodeBlockHeader>
+                                        <CodeBlockTitle>
+                                          <span className="lang-tag">diff</span>
+                                          <span className="title-text">singularity_guard.py</span>
+                                        </CodeBlockTitle>
+                                        <CodeBlockActions>
+                                          <CodeBlockCopyButton value={msg.subagent?.code || ""} />
+                                        </CodeBlockActions>
+                                      </CodeBlockHeader>
+                                      <CodeBlockContent>
+                                        {msg.diffLines.map((line, lIdx) => (
+                                          <CodeBlockLine key={lIdx} variant={line.variant} lineNumber={lIdx + 1}>
+                                            {line.text}
+                                          </CodeBlockLine>
+                                        ))}
+                                      </CodeBlockContent>
+                                    </CodeBlock>
+                                  </div>
+                                )}
 
-                      {/* Standalone code without subagent */}
-                      {!msg.subagent && msg.code && (
-                        <CodeBlockCard
-                          title={activeFileType === "ipynb" ? "simulation_cell.py" : "relativistic_notes.md"}
-                          language={activeFileType === "ipynb" ? "python" : "markdown"}
-                          code={msg.code}
-                          lineNumbers={true}
-                          onInsert={onInsertSnippet}
-                        />
-                      )}
+                                {/* Standalone code without subagent */}
+                                {!msg.subagent && msg.code && (
+                                  <CodeBlockCard
+                                    title={activeFileType === "ipynb" ? "simulation_cell.py" : "relativistic_notes.md"}
+                                    language={activeFileType === "ipynb" ? "python" : "markdown"}
+                                    code={msg.code}
+                                    lineNumbers={true}
+                                    onInsert={onInsertSnippet}
+                                  />
+                                )}
 
-                      {/* Fallback bubble if plain message text exists */}
-                      {!msg.subagent && !msg.chainOfThought && !msg.confirmation && msg.text && (
-                        <div className="assistant-msg-bubble ai-bubble">
-                          <div className="bubble-text">{msg.text}</div>
-                        </div>
-                      )}
-                      {msg.confirmation && msg.text && (
-                        <div className="assistant-msg-bubble ai-bubble" style={{ marginTop: "6px" }}>
-                          <div className="bubble-text">{msg.text}</div>
-                        </div>
-                      )}
+                                {/* Text bubble using Bubble component */}
+                                {!msg.subagent && !msg.chainOfThought && !msg.confirmation && msg.text && (
+                                  <Bubble align="start" variant="default" className="ai-bubble">
+                                    <BubbleContent>{msg.text}</BubbleContent>
+                                  </Bubble>
+                                )}
+                                {msg.confirmation && msg.text && (
+                                  <Bubble align="start" variant="default" className="ai-bubble" style={{ marginTop: "6px" }}>
+                                    <BubbleContent>{msg.text}</BubbleContent>
+                                  </Bubble>
+                                )}
 
-                      {/* Turn Context Usage (AI Elements Context) */}
-                      {msg.metadata?.usage && (
-                        <div className="assistant-turn-context-row">
-                          <Context
-                            usedTokens={(msg.metadata.usage.inputTokens || 0) + (msg.metadata.usage.outputTokens || 0)}
-                            maxTokens={MODEL_CONTEXT_LIMIT}
-                            usage={msg.metadata.usage}
-                            modelId={MODEL_ID}
-                          >
-                            <ContextTrigger
-                              render={
-                                <button type="button" className="turn-context-mini-badge" title="Inspect Turn Context Usage">
-                                  <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                    <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
-                                    <path d="M22 12A10 10 0 0 0 12 2v10z" />
-                                  </svg>
-                                  <span>{Math.round((((msg.metadata.usage.inputTokens || 0) + (msg.metadata.usage.outputTokens || 0)) / MODEL_CONTEXT_LIMIT) * 100)}% turn context</span>
-                                </button>
+                                {/* Turn Context Usage (AI Elements Context) */}
+                                {msg.metadata?.usage && (
+                                  <div className="assistant-turn-context-row">
+                                    <Context
+                                      usedTokens={(msg.metadata.usage.inputTokens || 0) + (msg.metadata.usage.outputTokens || 0)}
+                                      maxTokens={MODEL_CONTEXT_LIMIT}
+                                      usage={msg.metadata.usage}
+                                      modelId={MODEL_ID}
+                                    >
+                                      <ContextTrigger
+                                        render={
+                                          <button type="button" className="turn-context-mini-badge" title="Inspect Turn Context Usage">
+                                            <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                              <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+                                              <path d="M22 12A10 10 0 0 0 12 2v10z" />
+                                            </svg>
+                                            <span>{Math.round((((msg.metadata.usage.inputTokens || 0) + (msg.metadata.usage.outputTokens || 0)) / MODEL_CONTEXT_LIMIT) * 100)}% turn context</span>
+                                          </button>
+                                        }
+                                      />
+                                      <ContextContent align="start">
+                                        <ContextContentHeader title="Turn Context Window" />
+                                        <ContextContentBody />
+                                        <ContextContentFooter />
+                                      </ContextContent>
+                                    </Context>
+                                  </div>
+                                )}
+                              </MessageContent>
+                            </Message>
+                          )}
+
+                          {/* User Turn */}
+                          {msg.role === "user" && (
+                            <Message align="end" className="user-message-turn">
+                              <MessageContent className="user-msg-bundle">
+                                <Bubble align="end" variant="accent" className="user-bubble">
+                                  <BubbleContent>{msg.text}</BubbleContent>
+                                </Bubble>
+
+                                {/* Render attachments sent with this message */}
+                                {msg.attachments && msg.attachments.length > 0 && (
+                                  <AttachmentGroup className="message-attachments-group">
+                                    {msg.attachments.map((att) => (
+                                      <Attachment
+                                        key={att.id}
+                                        size="xs"
+                                        state={att.state || "done"}
+                                        orientation="horizontal"
+                                      >
+                                        <AttachmentMedia variant={att.variant || "icon"}>
+                                          {att.variant === "image" && att.previewUrl ? (
+                                            <img src={att.previewUrl} alt={att.name} />
+                                          ) : (
+                                            getFileIcon(att.name, att.type)
+                                          )}
+                                        </AttachmentMedia>
+                                        <AttachmentContent>
+                                          <AttachmentTitle>{att.name}</AttachmentTitle>
+                                          <AttachmentDescription>
+                                            {att.description || att.sizeStr}
+                                          </AttachmentDescription>
+                                        </AttachmentContent>
+                                        <AttachmentTrigger
+                                          aria-label={`Preview ${att.name}`}
+                                          onClick={() => setSelectedAttachment(att)}
+                                        />
+                                      </Attachment>
+                                    ))}
+                                  </AttachmentGroup>
+                                )}
+
+                                {msg.code && (
+                                  <CodeBlockCard
+                                    size="sm"
+                                    title="user_snippet.py"
+                                    language={activeFileType === "ipynb" ? "python" : "markdown"}
+                                    code={msg.code}
+                                    lineNumbers={true}
+                                  />
+                                )}
+                              </MessageContent>
+                            </Message>
+                          )}
+
+                          {/* Checkpoint Marker following this turn */}
+                          {msg.checkpoint && (
+                            <Checkpoint
+                              label={msg.checkpoint.label}
+                              onRestore={() =>
+                                handleRestoreCheckpoint(msg.id, msg.checkpoint.label)
                               }
                             />
-                            <ContextContent align="start">
-                              <ContextContentHeader title="Turn Context Window" />
-                              <ContextContentBody />
-                              <ContextContentFooter />
-                            </ContextContent>
-                          </Context>
-                        </div>
-                      )}
-                    </div>
+                          )}
+                        </MessageScrollerItem>
+                      );
+                    })
                   )}
-
-                  {/* User Turn */}
-                  {msg.role === "user" && (
-                    <div className="assistant-msg-bubble user-bubble">
-                      <div className="bubble-text">{msg.text}</div>
-
-                      {/* Render attachments sent with this message */}
-                      {msg.attachments && msg.attachments.length > 0 && (
-                        <AttachmentGroup className="message-attachments-group">
-                          {msg.attachments.map((att) => (
-                            <Attachment
-                              key={att.id}
-                              size="xs"
-                              state={att.state || "done"}
-                              orientation="horizontal"
-                            >
-                              <AttachmentMedia variant={att.variant || "icon"}>
-                                {att.variant === "image" && att.previewUrl ? (
-                                  <img src={att.previewUrl} alt={att.name} />
-                                ) : (
-                                  getFileIcon(att.name, att.type)
-                                )}
-                              </AttachmentMedia>
-                              <AttachmentContent>
-                                <AttachmentTitle>{att.name}</AttachmentTitle>
-                                <AttachmentDescription>
-                                  {att.description || att.sizeStr}
-                                </AttachmentDescription>
-                              </AttachmentContent>
-                              <AttachmentTrigger
-                                aria-label={`Preview ${att.name}`}
-                                onClick={() => setSelectedAttachment(att)}
-                              />
-                            </Attachment>
-                          ))}
-                        </AttachmentGroup>
-                      )}
-
-                      {msg.code && (
-                        <CodeBlockCard
-                          size="sm"
-                          title="user_snippet.py"
-                          language={activeFileType === "ipynb" ? "python" : "markdown"}
-                          code={msg.code}
-                          lineNumbers={true}
-                        />
-                      )}
-                    </div>
-                  )}
-
-                  {/* Checkpoint Marker following this turn */}
-                  {msg.checkpoint && (
-                    <Checkpoint
-                      label={msg.checkpoint.label}
-                      onRestore={() =>
-                        handleRestoreCheckpoint(msg.id, msg.checkpoint.label)
-                      }
-                    />
-                  )}
-                </div>
-              );
-            }))}
-            <div ref={messagesEndRef} />
-          </div>
+                  <div ref={messagesEndRef} />
+                </MessageScrollerContent>
+              </MessageScrollerViewport>
+              <MessageScrollerButton />
+            </MessageScroller>
+          </MessageScrollerProvider>
 
           {/* Input Footer with Attachment Bar and Composer */}
           <div className="assistant-footer">

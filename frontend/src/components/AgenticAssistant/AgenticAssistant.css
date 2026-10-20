@@ -880,3 +880,45 @@
   box-shadow: 0 0 12px rgba(255, 216, 77, 0.35);
   transform: translateY(-1px);
 }
+
+/* ==================================================
+   Chat & Message Scroller Integration Styles
+================================================== */
+
+.assistant-context-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.assistant-thread-scroller {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+.assistant-messages-viewport {
+  background: #07070a;
+}
+
+.assistant-messages-content {
+  padding: 14px;
+  gap: 12px;
+}
+
+.assistant-message-turn {
+  margin: 2px 0;
+}
+
+.user-message-turn {
+  margin: 2px 0;
+}
+
+.user-msg-bundle {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  max-width: 95%;
+  gap: 6px;
+}
