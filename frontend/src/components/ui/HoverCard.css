@@ -1,0 +1,71 @@
+/* ==================================================
+   HoverCard Component Styles
+   Floating popover with Obsidian Dark aesthetics
+================================================== */
+
+.ui-hover-card-root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.ui-hover-card-trigger {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+}
+
+.ui-hover-card-content {
+  position: absolute;
+  z-index: 120;
+  min-width: 250px;
+  max-width: 320px;
+  padding: 12px 14px;
+  background: rgba(9, 9, 15, 0.96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid #222234;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75), 0 0 16px rgba(255, 216, 77, 0.05);
+  box-sizing: border-box;
+  animation: hoverCardFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: auto;
+}
+
+@keyframes hoverCardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(3px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Side Placement */
+.ui-hover-card-content.side-bottom {
+  top: calc(100% + 7px);
+}
+
+.ui-hover-card-content.side-top {
+  bottom: calc(100% + 7px);
+}
+
+/* Align Placement */
+.ui-hover-card-content.align-end {
+  right: 0;
+}
+
+.ui-hover-card-content.align-start {
+  left: 0;
+}
+
+.ui-hover-card-content.align-center {
+  left: 50%;
+  transform: translateX(-50%);
+}

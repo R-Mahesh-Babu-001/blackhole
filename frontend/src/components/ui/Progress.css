@@ -1,0 +1,29 @@
+/* ==================================================
+   Progress Component Styles
+   shadcn/ui Progress for Obsidian Dark Theme
+================================================== */
+
+.ui-progress-root {
+  position: relative;
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  background: #11111a;
+  border: 1px solid #222232;
+  border-radius: 9999px;
+  box-sizing: border-box;
+}
+
+.ui-progress-indicator {
+  height: 100%;
+  background: linear-gradient(90deg, #d97706 0%, #ffd84d 100%);
+  border-radius: 9999px;
+  transition: width 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 8px rgba(255, 216, 77, 0.35);
+}
+
+/* Variant when high usage */
+.ui-progress-root[data-state="high"] .ui-progress-indicator {
+  background: linear-gradient(90deg, #ea580c 0%, #ef4444 100%);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+}

@@ -129,8 +129,9 @@
 .assistant-context-bar {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
-  padding: 8px 14px;
+  padding: 7px 14px;
   background: #07070b;
   border-bottom: 1px solid #161622;
   font-size: 11px;
@@ -803,5 +804,79 @@
   background: #1c1c2a;
   border-color: rgba(255, 216, 77, 0.4);
   color: #ffd84d;
+  transform: translateY(-1px);
+}
+
+/* ==================================================
+   Context Integration Styles in Assistant
+================================================== */
+
+.context-file-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.context-bar-trigger {
+  font-size: 10px !important;
+  height: 22px !important;
+  padding: 0 7px !important;
+  background: #09090f !important;
+  border-color: #202030 !important;
+  border-radius: 5px !important;
+}
+
+.assistant-turn-context-row {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.turn-context-mini-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid #1c1c28;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-family: var(--font-terminal);
+}
+
+.turn-context-mini-badge:hover {
+  color: #ffd84d;
+  background: rgba(255, 216, 77, 0.08);
+  border-color: rgba(255, 216, 77, 0.35);
+}
+
+.assistant-action-btn-context {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 9px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 216, 77, 0.35);
+  background: rgba(255, 216, 77, 0.08);
+  color: #ffd84d;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-terminal);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  flex-shrink: 0;
+}
+
+.assistant-action-btn-context:hover {
+  background: #ffd84d;
+  color: #000000;
+  box-shadow: 0 0 12px rgba(255, 216, 77, 0.35);
   transform: translateY(-1px);
 }

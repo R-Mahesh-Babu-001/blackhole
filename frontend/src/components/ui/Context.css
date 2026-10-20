@@ -1,0 +1,152 @@
+/* ==================================================
+   Context Component Styles
+   shadcn AI Elements Context Window Tracker
+   Obsidian Dark aesthetic with radiant amber accents
+================================================== */
+
+.context-root {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Trigger Button */
+.context-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 24px;
+  padding: 0 8px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  background: #0d0d14;
+  border: 1px solid #222232;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+}
+
+.context-trigger-btn:hover {
+  background: #141420;
+  border-color: rgba(255, 216, 77, 0.45);
+  color: #ffd84d;
+}
+
+.context-trigger-icon {
+  color: #ffd84d;
+  flex-shrink: 0;
+}
+
+/* ContextContent Popover */
+.context-popover-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 270px;
+  padding: 12px 14px;
+  background: #0a0a10;
+  border: 1px solid #222236;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), 0 0 1px rgba(255, 216, 77, 0.25);
+}
+
+/* Header */
+.context-content-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #161624;
+}
+
+.context-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.context-header-title {
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.2px;
+}
+
+.context-header-tokens {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.context-header-progress {
+  margin-top: 2px;
+}
+
+/* Body / Breakdown */
+.context-content-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.context-breakdown-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.breakdown-label {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.breakdown-value {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: #e2e8f0;
+}
+
+/* Footer */
+.context-content-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #161624;
+  font-size: 10px;
+}
+
+.context-model-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 6px;
+  background: rgba(255, 216, 77, 0.08);
+  border: 1px solid rgba(255, 216, 77, 0.2);
+  border-radius: 4px;
+}
+
+.model-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ffd84d;
+  box-shadow: 0 0 5px #ffd84d;
+}
+
+.model-label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #ffd84d;
+}
+
+.context-remaining-text {
+  color: rgba(255, 255, 255, 0.4);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}

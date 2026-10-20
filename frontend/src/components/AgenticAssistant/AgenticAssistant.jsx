@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AgentTrace, Subagent } from "../ui/Trace";
 import {
   Attachment,
@@ -24,7 +24,19 @@ import {
   CodeBlockCard,
 } from "../ui/CodeBlock";
 import { ToolConfirmation } from "../ui/Confirmation";
+import {
+  Context,
+  ContextTrigger,
+  ContextContent,
+  ContextContentHeader,
+  ContextContentBody,
+  ContextContentFooter,
+  ContextWindowCard,
+} from "../ui/Context";
 import "./AgenticAssistant.css";
+
+const MODEL_CONTEXT_LIMIT = 128000;
+const MODEL_ID = "gemini-1.5-flash";
 
 export default function AgenticAssistant({
   activeFileType,
@@ -45,6 +57,52 @@ export default function AgenticAssistant({
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const fileInputRef = useRef(null);
+
+  /**
+   * Dynamically tracks conversation and active document context window usage
+   * Conforms to AI SDK metadata.usage specification
+   */
+  const cumulativeUsage = useMemo(() => {
+    let inputTokens = 2400; // System instructions & environment prompt
+    let outputTokens = 0;
+    let reasoningTokens = 0;
+
+    // Document context tokens
+    if (documentContent) {
+      inputTokens += Math.max(250, Math.round(documentContent.length / 4));
+    }
+
+    messages.forEach((msg) => {
+      if (msg.role === "user") {
+        inputTokens += Math.round((msg.text?.length || 0) / 4) + 120;
+        if (msg.attachments?.length) {
+          inputTokens += msg.attachments.length * 850;
+        }
+      } else if (msg.role === "assistant") {
+        if (msg.metadata?.usage) {
+          inputTokens += msg.metadata.usage.inputTokens || 0;
+          outputTokens += msg.metadata.usage.outputTokens || 0;
+          reasoningTokens += msg.metadata.usage.reasoningTokens || 0;
+        } else {
+          outputTokens += Math.round((msg.text?.length || 0) / 4) + 240;
+          if (msg.subagent?.code) {
+            outputTokens += Math.round(msg.subagent.code.length / 4);
+          }
+          if (msg.chainOfThought?.steps) {
+            reasoningTokens += msg.chainOfThought.steps.length * 180;
+          }
+        }
+      }
+    });
+
+    const totalUsed = inputTokens + outputTokens + reasoningTokens;
+    return {
+      inputTokens,
+      outputTokens,
+      reasoningTokens,
+      totalUsed,
+    };
+  }, [messages, documentContent]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -207,6 +265,13 @@ export default function AgenticAssistant({
         checkpoint: {
           label: "Tool approval requested",
         },
+        metadata: {
+          usage: {
+            inputTokens: 840,
+            outputTokens: 210,
+            reasoningTokens: 160,
+          },
+        },
       },
     ]);
   };
@@ -258,6 +323,13 @@ export default function AgenticAssistant({
           },
           checkpoint: {
             label: `Approval requested: ${targetCmd}`,
+          },
+          metadata: {
+            usage: {
+              inputTokens: 920,
+              outputTokens: 240,
+              reasoningTokens: 180,
+            },
           },
         },
       ]);
@@ -405,6 +477,13 @@ export default function AgenticAssistant({
                 subagent: completedPlan.subagent,
                 checkpoint: completedPlan.checkpoint,
                 diffLines: completedPlan.diffLines,
+                metadata: {
+                  usage: {
+                    inputTokens: Math.round(((text?.length || 0) + (activeFileName?.length || 0) * 12) / 4) + 1480,
+                    outputTokens: Math.round(((completedPlan.subagent?.code?.length || 0) + (completedPlan.subagent?.result?.length || 0)) / 4) + 380,
+                    reasoningTokens: completedPlan.chainOfThought?.steps?.length ? completedPlan.chainOfThought.steps.length * 190 : 380,
+                  },
+                },
               }
             : msg
         )
@@ -463,12 +542,21 @@ export default function AgenticAssistant({
 
       {isOpen && (
         <>
-          {/* Active Document Context Pill */}
+          {/* Active Document Context Pill & Model Context Window Tracker */}
           <div className="assistant-context-bar">
-            <span className="context-kicker">ACTIVE:</span>
-            <span className="context-filename" title={activeFileName}>
-              {activeFileName}
-            </span>
+            <div className="context-file-info">
+              <span className="context-kicker">ACTIVE:</span>
+              <span className="context-filename" title={activeFileName}>
+                {activeFileName}
+              </span>
+            </div>
+            <ContextWindowCard
+              usedTokens={cumulativeUsage.totalUsed}
+              maxTokens={MODEL_CONTEXT_LIMIT}
+              usage={cumulativeUsage}
+              modelId={MODEL_ID}
+              triggerClassName="context-bar-trigger"
+            />
           </div>
 
           {/* Checkpoint Restore Notification Banner */}
@@ -492,11 +580,11 @@ export default function AgenticAssistant({
               <div className="assistant-empty-slate">
                 <div className="empty-slate-badge">
                   <span className="empty-badge-dot" />
-                  <span>TRACE & CONFIRMATION READY</span>
+                  <span>TRACE · CONFIRMATION · CONTEXT READY</span>
                 </div>
                 <h4>Agentic Assistant</h4>
                 <p>
-                  Powered by <strong>Trace</strong> and <strong>Confirmation</strong> for step-by-step reasoning and tool approval flows.
+                  Powered by <strong>Trace</strong>, <strong>Confirmation</strong>, and <strong>Context</strong> for reasoning, approval flows, and context window tracking.
                 </p>
                 <div className="empty-slate-actions">
                   <button
@@ -632,6 +720,35 @@ export default function AgenticAssistant({
                       {msg.confirmation && msg.text && (
                         <div className="assistant-msg-bubble ai-bubble" style={{ marginTop: "6px" }}>
                           <div className="bubble-text">{msg.text}</div>
+                        </div>
+                      )}
+
+                      {/* Turn Context Usage (AI Elements Context) */}
+                      {msg.metadata?.usage && (
+                        <div className="assistant-turn-context-row">
+                          <Context
+                            usedTokens={(msg.metadata.usage.inputTokens || 0) + (msg.metadata.usage.outputTokens || 0)}
+                            maxTokens={MODEL_CONTEXT_LIMIT}
+                            usage={msg.metadata.usage}
+                            modelId={MODEL_ID}
+                          >
+                            <ContextTrigger
+                              render={
+                                <button type="button" className="turn-context-mini-badge" title="Inspect Turn Context Usage">
+                                  <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                    <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+                                    <path d="M22 12A10 10 0 0 0 12 2v10z" />
+                                  </svg>
+                                  <span>{Math.round((((msg.metadata.usage.inputTokens || 0) + (msg.metadata.usage.outputTokens || 0)) / MODEL_CONTEXT_LIMIT) * 100)}% turn context</span>
+                                </button>
+                              }
+                            />
+                            <ContextContent align="start">
+                              <ContextContentHeader title="Turn Context Window" />
+                              <ContextContentBody />
+                              <ContextContentFooter />
+                            </ContextContent>
+                          </Context>
                         </div>
                       )}
                     </div>
@@ -828,6 +945,36 @@ export default function AgenticAssistant({
                 </svg>
                 <span>Confirm</span>
               </button>
+
+              {/* Context Action Button (AI Elements Context) */}
+              <Context
+                usedTokens={cumulativeUsage.totalUsed}
+                maxTokens={MODEL_CONTEXT_LIMIT}
+                usage={cumulativeUsage}
+                modelId={MODEL_ID}
+              >
+                <ContextTrigger
+                  render={
+                    <button
+                      type="button"
+                      className="assistant-action-btn-context"
+                      title="Inspect Context Window Usage (AI Elements Context)"
+                      aria-label="Inspect Context Window Usage"
+                    >
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+                        <path d="M22 12A10 10 0 0 0 12 2v10z" />
+                      </svg>
+                      <span>Context</span>
+                    </button>
+                  }
+                />
+                <ContextContent align="end" side="top">
+                  <ContextContentHeader title="Conversation Context Window" />
+                  <ContextContentBody />
+                  <ContextContentFooter />
+                </ContextContent>
+              </Context>
 
               <textarea
                 ref={inputRef}
