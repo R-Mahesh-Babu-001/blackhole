@@ -7,7 +7,7 @@
   position: relative;
   width: 100%;
   height: 100vh;
-  padding-top: 56px; /* Below fixed navbar */
+  padding-top: 0;
   display: flex;
   overflow: hidden;
   box-sizing: border-box;
@@ -88,6 +88,33 @@
   display: flex;
   align-items: center;
   gap: 14px;
+}
+
+.workspace-brand-cluster {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 14px;
+  border-right: 1px solid #1c1c28;
+}
+
+.workspace-brand-word {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.workspace-brand-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffd84d;
+  box-shadow: 0 0 8px rgba(255, 216, 77, 0.6);
 }
 
 .file-badge-group {
@@ -184,15 +211,29 @@
   text-decoration: none;
 }
 
-.upload-trigger-btn {
+.upload-trigger-btn,
+.import-trigger-btn {
   color: #ffffff;
   background: #14141c;
   border: 1px solid #222230;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-terminal);
 }
 
-.upload-trigger-btn:hover {
+.upload-trigger-btn:hover,
+.import-trigger-btn:hover {
   background: #1c1c28;
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: #ffd84d;
+  color: #ffd84d;
+  box-shadow: 0 0 10px rgba(255, 216, 77, 0.15);
 }
 
 .run-all-btn {

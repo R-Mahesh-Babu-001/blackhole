@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { marked } from "marked";
 import AgenticAssistant from "../AgenticAssistant/AgenticAssistant";
+import Converter from "../../pages/Converter/Converter";
 import { executePython, getPyodide } from "../../services/pythonSdk";
 import "./DocumentWorkspace.css";
 
@@ -46,6 +47,7 @@ export default function DocumentWorkspace({
   const [showShortcutsModal, setShowShortcutsModal] = useState(false);
   const [isKernelBusy, setIsKernelBusy] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [isConverterModalOpen, setIsConverterModalOpen] = useState(false);
 
   // Drag and drop state
   const [isDragging, setIsDragging] = useState(false);
@@ -68,6 +70,18 @@ export default function DocumentWorkspace({
     };
     document.addEventListener("click", handleDocumentClick);
     return () => document.removeEventListener("click", handleDocumentClick);
+  }, []);
+
+  // Global Ctrl+O / Cmd+O shortcut for Import & Converter
+  useEffect(() => {
+    const handleShortcut = (e) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key === "o" || e.key === "O")) {
+        e.preventDefault();
+        setIsConverterModalOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handleShortcut);
+    return () => window.removeEventListener("keydown", handleShortcut);
   }, []);
 
   /**
@@ -734,6 +748,12 @@ print(f"Luminosity: {l_watts:.3e} Watts")
         {/* Top Workspace Toolbar */}
         <header className="workspace-toolbar">
           <div className="toolbar-left">
+            <div className="workspace-brand-cluster">
+              <span className="workspace-brand-word">
+                <span className="workspace-brand-dot" />
+                BlackHole
+              </span>
+            </div>
             <div className="file-badge-group">
               <span className={`file-type-pill ${fileType === "ipynb" ? "pill-ipynb" : "pill-md"}`}>
                 {fileType === "ipynb" ? ".ipynb" : ".md"}
@@ -749,8 +769,9 @@ print(f"Luminosity: {l_watts:.3e} Watts")
             <div className="mode-toggle-group">
               <button
                 type="button"
-                className={`mode-btn ${fileType === "md" ? "mode-btn-active" : ""}`}
+                className={`mode-btn ${fileType === "md" && !isConverterModalOpen ? "mode-btn-active" : ""}`}
                 onClick={() => {
+                  setIsConverterModalOpen(false);
                   if (fileType !== "md") loadDefaultTemplate("md");
                 }}
               >
@@ -758,28 +779,39 @@ print(f"Luminosity: {l_watts:.3e} Watts")
               </button>
               <button
                 type="button"
-                className={`mode-btn ${fileType === "ipynb" ? "mode-btn-active" : ""}`}
+                className={`mode-btn ${fileType === "ipynb" && !isConverterModalOpen ? "mode-btn-active" : ""}`}
                 onClick={() => {
+                  setIsConverterModalOpen(false);
                   if (fileType !== "ipynb") loadDefaultTemplate("ipynb");
                 }}
               >
                 Jupyter Notebook
               </button>
+              <button
+                type="button"
+                className={`mode-btn ${isConverterModalOpen ? "mode-btn-active" : ""}`}
+                onClick={() => {
+                  setIsConverterModalOpen(true);
+                }}
+              >
+                Converter
+              </button>
             </div>
           </div>
 
           <div className="toolbar-right">
-            {/* Upload Button */}
-            <label
-              htmlFor={uploadInputId}
-              className="toolbar-action-btn upload-trigger-btn"
-              title="Upload .md or .ipynb file from your computer"
+            {/* Import & Converter Button */}
+            <button
+              type="button"
+              className="toolbar-action-btn import-trigger-btn"
+              onClick={() => setIsConverterModalOpen(true)}
+              title="Import and convert documents (.ipynb ↔ .md) [Ctrl+O]"
             >
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 16V4M12 4L7.5 8.5M12 4L16.5 8.5M5 14V19H19V14" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              <span>Upload File</span>
-            </label>
+              <span>Import</span>
+            </button>
 
             {/* Notebook Specific Action: Run All */}
             {fileType === "ipynb" && (
@@ -976,11 +1008,12 @@ print(f"Luminosity: {l_watts:.3e} Watts")
                             type="button"
                             className="jupyter-dropdown-item"
                             onClick={() => {
-                              fileInputRef.current?.click();
+                              setIsConverterModalOpen(true);
                               setActiveMenu(null);
                             }}
                           >
-                            <span>Open...</span>
+                            <span>Import / Convert...</span>
+                            <span className="menu-shortcut-badge">Ctrl+O</span>
                           </button>
                           <button
                             type="button"
@@ -1853,6 +1886,15 @@ print(f"Luminosity: {l_watts:.3e} Watts")
           )}
         </div>
       </section>
+
+      {/* Entire Converter Page Modal Popup */}
+      {isConverterModalOpen && (
+        <Converter
+          isModal={true}
+          onClose={() => setIsConverterModalOpen(false)}
+          onLoadFile={handleFileUpload}
+        />
+      )}
     </div>
   );
 }

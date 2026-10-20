@@ -1,8 +1,8 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getBackendBaseUrl } from "../../services/api";
 import "./Converter.css";
 
-function Converter() {
+function Converter({ isModal = false, onClose = null, onLoadFile = null }) {
   /*
     The Converter supports two directions:
 
@@ -25,6 +25,20 @@ function Converter() {
 
   // Reference to our hidden file input
   const fileInputRef = useRef(null);
+
+  // Close modal on Escape key press
+  useEffect(() => {
+    if (!isModal || !onClose) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isModal, onClose]);
 
 
   /*
@@ -274,9 +288,16 @@ function Converter() {
       */
       URL.revokeObjectURL(url);
 
+      // If invoked from workspace, automatically load converted document into workspace
+      if (onLoadFile) {
+        const convertedFile = new File([blob], outputName, {
+          type: outputExtension === ".md" ? "text/markdown" : "application/x-ipynb+json",
+        });
+        onLoadFile(convertedFile);
+      }
 
       setStatus(
-        `Converted successfully to ${outputName}`
+        `Converted successfully to ${outputName}${onLoadFile ? " & loaded into workspace!" : ""}`
       );
 
     } catch (conversionError) {
@@ -295,10 +316,8 @@ function Converter() {
   };
 
 
-  return (
-    <section className="converter-page">
-
-      <div className="converter-glass">
+  const converterBody = (
+    <div className={`converter-glass ${isModal ? "converter-glass-modal" : ""}`}>
 
 
         {/* ---------------------------------
@@ -502,6 +521,20 @@ function Converter() {
                   Convert to {outputExtension}
                 </button>
 
+                {onLoadFile && (
+                  <button
+                    className="secondary-file-button workspace-direct-btn"
+                    type="button"
+                    onClick={() => {
+                      onLoadFile(selectedFile);
+                      onClose?.();
+                    }}
+                    title="Open this file directly in BlackHole without converting"
+                  >
+                    Open as-is in Workspace
+                  </button>
+                )}
+
               </div>
 
 
@@ -568,7 +601,47 @@ function Converter() {
         </footer>
 
       </div>
+  );
 
+  if (isModal) {
+    return (
+      <div
+        className="converter-fullscreen-screen"
+        role="dialog"
+        aria-modal="true"
+        aria-label="BlackHole Document Converter"
+      >
+        <header className="converter-screen-topbar">
+          <button
+            type="button"
+            className="converter-screen-back-btn"
+            onClick={onClose}
+            title="Back to Workspace (Esc)"
+          >
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.2">
+              <path d="M19 12H5M12 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <span>Back to Workspace</span>
+          </button>
+
+          <span className="converter-screen-topbar-title">
+            <span className="converter-topbar-dot" />
+            BlackHole Converter
+          </span>
+
+          <span className="converter-screen-topbar-hint">Esc to exit</span>
+        </header>
+
+        <main className="converter-screen-content">
+          {converterBody}
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <section className="converter-page">
+      {converterBody}
     </section>
   );
 }
