@@ -23,15 +23,26 @@ export function Trace({ children, className = "" }) {
 
 export function TraceCollapsible({
   children,
-  defaultOpen = true,
+  open: controlledOpen,
+  defaultOpen = false,
+  onOpenChange,
   className = "",
 }) {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+  const isOpen = controlledOpen !== undefined ? controlledOpen : uncontrolledOpen;
+
+  const toggle = () => {
+    const nextState = !isOpen;
+    if (controlledOpen === undefined) {
+      setUncontrolledOpen(nextState);
+    }
+    if (onOpenChange) {
+      onOpenChange(nextState);
+    }
+  };
 
   return (
-    <TraceCollapsibleContext.Provider
-      value={{ isOpen, toggle: () => setIsOpen((prev) => !prev) }}
-    >
+    <TraceCollapsibleContext.Provider value={{ isOpen, toggle }}>
       <div
         className={`trace-collapsible ${isOpen ? "open" : "collapsed"} ${className}`}
       >
@@ -52,7 +63,7 @@ export function TraceCollapsibleTrigger({ children, className = "" }) {
       aria-expanded={isOpen}
     >
       <div className="trace-trigger-content">{children}</div>
-      <span className={`trace-chevron ${isOpen ? "chevron-open" : ""}`}>
+      <span className={`trace-chevron ${isOpen ? "chevron-open" : ""}`} aria-hidden="true">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2">
           <polyline points="6 9 12 15 18 9" />
         </svg>
@@ -61,7 +72,7 @@ export function TraceCollapsibleTrigger({ children, className = "" }) {
   );
 }
 
-export function TraceCollapsibleContent({ children, keepMounted = true, className = "" }) {
+export function TraceCollapsibleContent({ children, keepMounted = false, className = "" }) {
   const { isOpen } = useContext(TraceCollapsibleContext);
 
   if (!isOpen && !keepMounted) return null;
@@ -76,20 +87,25 @@ export function TraceCollapsibleContent({ children, keepMounted = true, classNam
 }
 
 export function TraceLine({
-  status = "default", // "running" | "completed" | "error" | "default"
+  status, // "running" | "error" | "pending" | undefined
   children,
   className = "",
+  ...props
 }) {
+  const statusClass = status ? `trace-status-${status}` : "";
   return (
-    <div className={`trace-line trace-status-${status} ${className}`}>
+    <span className={`trace-line ${statusClass} ${className}`} {...props}>
       {children}
-    </div>
+    </span>
   );
 }
 
 export function TraceIcon({ children, status, className = "" }) {
   return (
-    <span className={`trace-icon ${status ? `icon-${status}` : ""} ${className}`}>
+    <span
+      className={`trace-icon ${status ? `icon-${status}` : ""} ${className}`}
+      aria-hidden="true"
+    >
       {children || (
         status === "running" ? (
           <span className="trace-spinner" />
@@ -98,6 +114,10 @@ export function TraceIcon({ children, status, className = "" }) {
             <circle cx="12" cy="12" r="10" />
             <line x1="12" y1="8" x2="12" y2="12" />
             <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+        ) : status === "pending" ? (
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="10" strokeDasharray="3 3" />
           </svg>
         ) : (
           <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -122,6 +142,170 @@ export function Badge({ children, variant = "default", className = "" }) {
     <span className={`trace-badge badge-${variant} ${className}`}>
       {children}
     </span>
+  );
+}
+
+function getTraceDefaultIcon(iconType, status) {
+  if (status === "running") {
+    return <span className="trace-spinner" />;
+  }
+  if (status === "error") {
+    return (
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
+    );
+  }
+  if (status === "pending") {
+    return (
+      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10" strokeDasharray="3 3" />
+      </svg>
+    );
+  }
+
+  switch (iconType) {
+    case "terminal":
+      return (
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2">
+          <polyline points="4 17 10 11 4 5" />
+          <line x1="12" y1="19" x2="20" y2="19" />
+        </svg>
+      );
+    case "search":
+      return (
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+      );
+    case "file":
+    case "document":
+      return (
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+        </svg>
+      );
+    case "tool":
+    case "code":
+      return (
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2">
+          <polyline points="16 18 22 12 16 6" />
+          <polyline points="8 6 2 12 8 18" />
+        </svg>
+      );
+    case "source":
+    case "sources":
+      return (
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="2" y1="12" x2="22" y2="12" />
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+        </svg>
+      );
+    default:
+      return (
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      );
+  }
+}
+
+export function AgentTrace({ trace, className = "" }) {
+  if (!trace) return null;
+  const steps = trace.steps || [];
+
+  return (
+    <div className={`agent-trace-container ${className}`}>
+      <Trace>
+        {steps.map((step, idx) => {
+          const stepKey = step.id || `step-${idx}`;
+          const isCollapsible = Boolean(
+            step.collapsible || step.content || (step.sources && step.sources.length > 0)
+          );
+
+          if (isCollapsible) {
+            return (
+              <TraceCollapsible
+                key={stepKey}
+                defaultOpen={step.defaultOpen ?? (step.status === "running")}
+              >
+                <TraceCollapsibleTrigger>
+                  <TraceLine status={step.status}>
+                    <TraceIcon status={step.status}>
+                      {step.iconNode || getTraceDefaultIcon(step.icon, step.status)}
+                    </TraceIcon>
+                    <TraceTitle>{step.title}</TraceTitle>
+                    {step.description && (
+                      <TraceDescription>{step.description}</TraceDescription>
+                    )}
+                  </TraceLine>
+                </TraceCollapsibleTrigger>
+                <TraceCollapsibleContent keepMounted={step.keepMounted ?? true}>
+                  {step.content && (
+                    <div className="trace-detail-output">
+                      <code>{step.content}</code>
+                    </div>
+                  )}
+                  {step.sources && step.sources.length > 0 && (
+                    <div className="trace-sources-group">
+                      <span className="trace-sources-kicker">SOURCES REFERENCED:</span>
+                      <Trace className="trace-nested-sources">
+                        {step.sources.map((src, sIdx) => (
+                          <a
+                            key={sIdx}
+                            href={src.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="trace-link-anchor"
+                          >
+                            <TraceLine>
+                              <TraceIcon>
+                                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <circle cx="12" cy="12" r="10" />
+                                  <line x1="2" y1="12" x2="22" y2="12" />
+                                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                                </svg>
+                              </TraceIcon>
+                              <TraceTitle>
+                                {src.title}
+                                <span className="sr-only"> (opens in a new tab)</span>
+                              </TraceTitle>
+                              <TraceIcon>
+                                <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <line x1="7" y1="17" x2="17" y2="7" />
+                                  <polyline points="7 7 17 7 17 17" />
+                                </svg>
+                              </TraceIcon>
+                            </TraceLine>
+                          </a>
+                        ))}
+                      </Trace>
+                    </div>
+                  )}
+                </TraceCollapsibleContent>
+              </TraceCollapsible>
+            );
+          }
+
+          return (
+            <TraceLine key={stepKey} status={step.status}>
+              <TraceIcon status={step.status}>
+                {step.iconNode || getTraceDefaultIcon(step.icon, step.status)}
+              </TraceIcon>
+              <TraceTitle>{step.title}</TraceTitle>
+              {step.description && (
+                <TraceDescription>{step.description}</TraceDescription>
+              )}
+            </TraceLine>
+          );
+        })}
+      </Trace>
+    </div>
   );
 }
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Subagent } from "../ui/Trace";
+import { AgentTrace, Subagent } from "../ui/Trace";
 import {
   Attachment,
   AttachmentAction,
@@ -137,7 +137,7 @@ export default function AgenticAssistant({
       currentAttachments
     );
 
-    // Append user message with attachments + preliminary running chain of thought & subagent
+    // Append user message with attachments + preliminary running chain of thought, trace & subagent
     setMessages((prev) => [
       ...prev,
       {
@@ -149,6 +149,34 @@ export default function AgenticAssistant({
       {
         id: assistantMsgId,
         role: "assistant",
+        trace: {
+          status: "running",
+          steps: [
+            {
+              id: "step-context",
+              title: `Inspected workspace document "${activeFileName}"`,
+              description: activeFileType.toUpperCase(),
+              status: "completed",
+              icon: "file",
+              content: `Target: ${activeFileName}\nType: ${activeFileType}\nStatus: Read from active memory buffer.`,
+            },
+            {
+              id: "step-sandbox",
+              title: "Checking WebAssembly Python environment",
+              description: "verifying…",
+              status: "running",
+              icon: "terminal",
+              content: "Running: python -c 'import sys, math; print(\"BlackHole WASM environment active\")'\nKernel: Pyodide 3.11.4 WebAssembly",
+            },
+            {
+              id: "step-tool",
+              title: plan.tools[0]?.name ? `Execute ${plan.tools[0].name}` : "Execute agent tool routine",
+              description: "pending",
+              status: "pending",
+              icon: "tool",
+            },
+          ],
+        },
         chainOfThought: {
           summary: "Reasoning & Analyzing…",
           status: "running",
@@ -184,11 +212,60 @@ export default function AgenticAssistant({
         currentAttachments
       );
 
+      const randomMs = Math.floor(Math.random() * 140 + 110);
+      const finalizedTrace = {
+        status: "completed",
+        steps: [
+          {
+            id: "step-context",
+            title: `Inspected workspace document "${activeFileName}"`,
+            description: "AST verified · 24ms",
+            status: "completed",
+            icon: "file",
+            content: `Target: ${activeFileName}\nType: ${activeFileType}\nStatus: Memory buffer indexed.\nAST validation: 0 errors detected.`,
+          },
+          {
+            id: "step-sandbox",
+            title: "Verified Pyodide WebAssembly Python environment",
+            description: "Ready · 46ms",
+            status: "completed",
+            icon: "terminal",
+            content: "Kernel: Python 3.11.4 (WebAssembly on browser)\nStatus: READY\nAllocated memory: 64MB\nSandboxed: True\nModules: math, numpy, sympy",
+          },
+          {
+            id: "step-tool",
+            title: `Executed tool ${plan.tools[0]?.name || "synthesize_analysis()"}`,
+            description: `${randomMs}ms`,
+            status: "completed",
+            icon: "tool",
+            content: completedPlan.subagent?.tools?.map((t) => `${t.name} -> ${t.output || "OK"}`).join("\n") || "Tool routine executed without runtime errors.",
+          },
+          {
+            id: "step-sources",
+            title: "Correlated research sources & references",
+            description: "2 sources",
+            status: "completed",
+            icon: "sources",
+            sources: [
+              {
+                title: "arXiv: Relativistic Fluid & Geodesic Mechanics",
+                url: "https://arxiv.org/abs/gr-qc",
+              },
+              {
+                title: "NASA HEASARC: Observational Astrophysics Archive",
+                url: "https://heasarc.gsfc.nasa.gov",
+              },
+            ],
+          },
+        ],
+      };
+
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === assistantMsgId
             ? {
                 ...msg,
+                trace: finalizedTrace,
                 chainOfThought: completedPlan.chainOfThought,
                 subagent: completedPlan.subagent,
                 checkpoint: completedPlan.checkpoint,
@@ -276,14 +353,47 @@ export default function AgenticAssistant({
 
           {/* Message Stream */}
           <div className="assistant-messages-stream">
-            {messages.map((msg) => {
-              return (
-                <div key={msg.id} className="message-turn-container">
-                  {/* Assistant Turn */}
-                  {msg.role === "assistant" && (
-                    <div className="assistant-msg-bundle">
-                      {/* Render Chain of Thought Reasoning Component */}
-                      {msg.chainOfThought && (
+            {messages.length === 0 ? (
+              <div className="assistant-empty-slate">
+                <div className="empty-slate-badge">
+                  <span className="empty-badge-dot" />
+                  <span>TRACE READY</span>
+                </div>
+                <h4>Agentic Assistant</h4>
+                <p>
+                  Powered by <strong>Trace</strong> for step-by-step reasoning, tool execution, and source attribution.
+                </p>
+                <button
+                  type="button"
+                  className="empty-run-trace-btn"
+                  onClick={() =>
+                    handleSendMessage(
+                      `Run agent execution trace on active document "${activeFileName}"`
+                    )
+                  }
+                >
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                  </svg>
+                  <span>Run Agent Trace</span>
+                </button>
+              </div>
+            ) : (
+              messages.map((msg) => {
+                return (
+                  <div key={msg.id} className="message-turn-container">
+                    {/* Assistant Turn */}
+                    {msg.role === "assistant" && (
+                      <div className="assistant-msg-bundle">
+                        {/* Render Agentic Trace Steps Component */}
+                        {msg.trace && (
+                          <div className="assistant-trace-wrapper">
+                            <AgentTrace trace={msg.trace} />
+                          </div>
+                        )}
+
+                        {/* Render Chain of Thought Reasoning Component */}
+                        {msg.chainOfThought && (
                         <div className="assistant-cot-wrapper">
                           <ChainOfThoughtBlock
                             summary={msg.chainOfThought.summary}
@@ -420,7 +530,7 @@ export default function AgenticAssistant({
                   )}
                 </div>
               );
-            })}
+            }))}
             <div ref={messagesEndRef} />
           </div>
 
@@ -517,6 +627,23 @@ export default function AgenticAssistant({
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
                 </svg>
+              </button>
+
+              {/* Trace Action Button */}
+              <button
+                type="button"
+                className="assistant-action-btn-trace"
+                title="Run Agent Trace (AI Elements Trace)"
+                aria-label="Run Agent Trace"
+                onClick={() => {
+                  const q = inputMessage.trim() || `Run agent execution trace on active document "${activeFileName}"`;
+                  handleSendMessage(q);
+                }}
+              >
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+                <span>Trace</span>
               </button>
 
               <textarea

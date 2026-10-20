@@ -166,7 +166,43 @@
 }
 
 .trace-status-running .trace-title {
-  color: #ffd84d;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 216, 77, 0.4) 0%,
+    #ffd84d 50%,
+    rgba(255, 216, 77, 0.4) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: traceShimmer 2s ease-in-out infinite;
+}
+
+@keyframes traceShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trace-status-running .trace-title {
+    animation: none;
+    -webkit-text-fill-color: #ffd84d;
+  }
+}
+
+.trace-status-pending .trace-icon,
+.icon-pending {
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.3);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+.trace-status-pending .trace-title {
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .trace-status-error .trace-title {
@@ -178,6 +214,7 @@
   font-size: 11px;
   margin-left: 6px;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* ==================================================
@@ -389,4 +426,88 @@
 
 .subagent-attachment-group {
   padding-bottom: 2px;
+}
+
+/* ==================================================
+   Agent Trace Component & Sources
+================================================== */
+
+.agent-trace-container {
+  width: 100%;
+  margin: 6px 0;
+}
+
+.trace-detail-output {
+  padding: 8px 10px;
+  background: #030306;
+  border: 1px solid #161622;
+  border-radius: 6px;
+  font-family: var(--font-terminal);
+  font-size: 11px;
+  color: #ffd84d;
+  line-height: 1.45;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+.trace-sources-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.trace-sources-kicker {
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.6px;
+}
+
+.trace-nested-sources {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.trace-link-anchor {
+  text-decoration: none;
+  display: block;
+  border-radius: 6px;
+  transition: all 0.18s ease;
+}
+
+.trace-link-anchor .trace-line {
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: #090910;
+  border: 1px solid #161622;
+  transition: all 0.18s ease;
+}
+
+.trace-link-anchor:hover .trace-line {
+  background: #10101c;
+  border-color: rgba(255, 216, 77, 0.3);
+}
+
+.trace-link-anchor .trace-title {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  flex: 1;
+}
+
+.trace-link-anchor:hover .trace-title {
+  color: #ffd84d;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
