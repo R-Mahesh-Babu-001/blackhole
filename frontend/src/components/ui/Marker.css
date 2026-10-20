@@ -1,0 +1,62 @@
+/* ==================================================
+   Marker Component Styling
+   Solid obsidian dark aesthetic, cosmic yellow accents
+================================================== */
+
+.marker-root {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 10px 0;
+  position: relative;
+}
+
+.marker-line-before,
+.marker-line-after {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #1f1f2e 50%,
+    transparent 100%
+  );
+}
+
+.marker-variant-separator .marker-line-before {
+  background: linear-gradient(90deg, transparent, #222234);
+}
+
+.marker-variant-separator .marker-line-after {
+  background: linear-gradient(90deg, #222234, transparent);
+}
+
+/* Marker Content Pill */
+.marker-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 10px;
+  background: #090910;
+  border: 1px solid #1c1c28;
+  border-radius: 9999px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.65);
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: all 0.18s ease;
+  user-select: none;
+}
+
+.marker-content:hover {
+  border-color: rgba(255, 216, 77, 0.3);
+  color: #ffffff;
+}
+
+.marker-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffd84d;
+  flex-shrink: 0;
+}

@@ -151,6 +151,40 @@
   white-space: nowrap;
 }
 
+/* Checkpoint Restore Notification Banner */
+.assistant-restore-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(255, 216, 77, 0.1);
+  border-bottom: 1px solid rgba(255, 216, 77, 0.25);
+  color: #ffd84d;
+  font-size: 11px;
+  font-family: var(--font-terminal);
+  animation: fadeIn 0.2s ease;
+}
+
+.notice-close-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 216, 77, 0.6);
+  cursor: pointer;
+  padding: 0 4px;
+  font-size: 11px;
+}
+
+.notice-close-btn:hover {
+  color: #ffd84d;
+}
+
+.message-turn-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 /* ==================================================
    Quick Action Chips
 ================================================== */

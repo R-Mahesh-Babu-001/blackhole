@@ -12,6 +12,7 @@ import {
   AttachmentGroup,
 } from "../ui/Attachment";
 import { ChainOfThoughtBlock } from "../ui/ChainOfThought";
+import { Checkpoint } from "../ui/Checkpoint";
 import "./AgenticAssistant.css";
 
 // Realistic astrophysical research sample attachments for quick testing
@@ -66,11 +67,15 @@ export default function AgenticAssistant({
   const [inputMessage, setInputMessage] = useState("");
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [selectedAttachment, setSelectedAttachment] = useState(null);
+  const [restoreNotice, setRestoreNotice] = useState("");
 
   const [messages, setMessages] = useState([
     {
       id: "init-assistant-bundle",
       role: "assistant",
+      checkpoint: {
+        label: "Workspace initialized",
+      },
       chainOfThought: {
         summary: "Reasoned in 3 steps",
         status: "completed",
@@ -237,6 +242,19 @@ export default function AgenticAssistant({
     setAttachedFiles([]);
   };
 
+  /**
+   * Restore conversation thread to a previous checkpoint turn
+   * Drops every turn after it
+   */
+  const handleRestoreCheckpoint = (messageId, label) => {
+    const index = messages.findIndex((m) => m.id === messageId);
+    if (index !== -1) {
+      setMessages(messages.slice(0, index + 1));
+      setRestoreNotice(`Restored conversation to "${label}"`);
+      setTimeout(() => setRestoreNotice(""), 3500);
+    }
+  };
+
   const handleSendMessage = (textToSend) => {
     const text = (textToSend || inputMessage).trim();
     if (!text && attachedFiles.length === 0) return;
@@ -308,6 +326,7 @@ export default function AgenticAssistant({
                 ...msg,
                 chainOfThought: completedPlan.chainOfThought,
                 subagent: completedPlan.subagent,
+                checkpoint: completedPlan.checkpoint,
               }
             : msg
         )
@@ -323,6 +342,22 @@ export default function AgenticAssistant({
   };
 
   const handleActionChip = (chipAction) => {
+    if (chipAction === "checkpoint") {
+      const lastMsg = messages[messages.length - 1];
+      if (lastMsg) {
+        setMessages((prev) =>
+          prev.map((msg, idx) =>
+            idx === prev.length - 1
+              ? { ...msg, checkpoint: { label: `Checkpoint: Turn ${prev.length}` } }
+              : msg
+          )
+        );
+        setRestoreNotice(`Created checkpoint at turn ${messages.length}`);
+        setTimeout(() => setRestoreNotice(""), 3000);
+      }
+      return;
+    }
+
     if (chipAction === "think") {
       handleSendMessage("Perform deep Chain of Thought reasoning on Kerr frame dragging and innermost stable circular orbits (ISCO).");
       return;
@@ -336,6 +371,9 @@ export default function AgenticAssistant({
         {
           id: runId,
           role: "assistant",
+          checkpoint: {
+            label: "All notebook cells executed",
+          },
           chainOfThought: {
             summary: "Analyzing notebook execution flow…",
             status: "running",
@@ -367,6 +405,9 @@ export default function AgenticAssistant({
             msg.id === runId
               ? {
                   ...msg,
+                  checkpoint: {
+                    label: "Notebook execution verified",
+                  },
                   chainOfThought: {
                     summary: "Reasoned in 2 steps",
                     status: "completed",
@@ -442,6 +483,9 @@ print(f"Gravitational Potential: {u:.3e} Joules")`;
         {
           id: addId,
           role: "assistant",
+          checkpoint: {
+            label: "Gravitational code cell inserted",
+          },
           chainOfThought: {
             summary: "Drafted code in 2 steps",
             status: "completed",
@@ -558,6 +602,20 @@ print(f"Gravitational Potential: {u:.3e} Joules")`;
             </span>
           </div>
 
+          {/* Checkpoint Restore Notification Banner */}
+          {restoreNotice && (
+            <div className="assistant-restore-notice">
+              <span>↺ {restoreNotice}</span>
+              <button
+                type="button"
+                className="notice-close-btn"
+                onClick={() => setRestoreNotice("")}
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
           {/* Quick Action Chips */}
           <div className="assistant-quick-actions">
             <button
@@ -567,6 +625,15 @@ print(f"Gravitational Potential: {u:.3e} Joules")`;
               title="Generate a multi-step Chain of Thought reasoning trace"
             >
               🧠 Think
+            </button>
+
+            <button
+              type="button"
+              className="action-chip"
+              onClick={() => handleActionChip("checkpoint")}
+              title="Bookmark the latest turn with a restore point"
+            >
+              🚩 + Checkpoint
             </button>
 
             {activeFileType === "ipynb" ? (
@@ -637,114 +704,123 @@ print(f"Gravitational Potential: {u:.3e} Joules")`;
           {/* Message Stream */}
           <div className="assistant-messages-stream">
             {messages.map((msg) => {
-              if (msg.role === "assistant") {
-                return (
-                  <div key={msg.id} className="assistant-msg-bundle">
-                    {/* Render Chain of Thought Reasoning Component */}
-                    {msg.chainOfThought && (
-                      <div className="assistant-cot-wrapper">
-                        <ChainOfThoughtBlock
-                          summary={msg.chainOfThought.summary}
-                          status={msg.chainOfThought.status}
-                          duration={msg.chainOfThought.duration}
-                          steps={msg.chainOfThought.steps}
-                          defaultOpen={msg.chainOfThought.status === "running"}
-                        />
-                      </div>
-                    )}
-
-                    {/* Render Subagent Trace Card */}
-                    {msg.subagent && (
-                      <div className="assistant-subagent-wrapper">
-                        <Subagent
-                          name={msg.subagent.name}
-                          task={msg.subagent.task}
-                          model={msg.subagent.model}
-                          tools={msg.subagent.tools}
-                          status={msg.subagent.status}
-                          duration={msg.subagent.duration}
-                          result={msg.subagent.result}
-                          code={msg.subagent.code}
-                          attachments={msg.subagent.attachments}
-                          onPreviewAttachment={setSelectedAttachment}
-                          onInsertCode={onInsertSnippet}
-                          activeFileType={activeFileType}
-                          defaultOpen={true}
-                        />
-                      </div>
-                    )}
-
-                    {/* Fallback bubble if plain message text exists */}
-                    {!msg.subagent && !msg.chainOfThought && msg.text && (
-                      <div className="assistant-msg-bubble ai-bubble">
-                        <div className="bubble-text">{msg.text}</div>
-                      </div>
-                    )}
-                  </div>
-                );
-              }
-
               return (
-                <div
-                  key={msg.id}
-                  className={`assistant-msg-bubble ${
-                    msg.role === "user" ? "user-bubble" : "ai-bubble"
-                  }`}
-                >
-                  <div className="bubble-text">{msg.text}</div>
-
-                  {/* Render attachments sent with this message */}
-                  {msg.attachments && msg.attachments.length > 0 && (
-                    <AttachmentGroup className="message-attachments-group">
-                      {msg.attachments.map((att) => (
-                        <Attachment
-                          key={att.id}
-                          size="xs"
-                          state={att.state || "done"}
-                          orientation="horizontal"
-                        >
-                          <AttachmentMedia variant={att.variant || "icon"}>
-                            {att.variant === "image" && att.previewUrl ? (
-                              <img src={att.previewUrl} alt={att.name} />
-                            ) : (
-                              getFileIcon(att.name, att.type)
-                            )}
-                          </AttachmentMedia>
-                          <AttachmentContent>
-                            <AttachmentTitle>{att.name}</AttachmentTitle>
-                            <AttachmentDescription>
-                              {att.description || att.sizeStr}
-                            </AttachmentDescription>
-                          </AttachmentContent>
-                          <AttachmentTrigger
-                            aria-label={`Preview ${att.name}`}
-                            onClick={() => setSelectedAttachment(att)}
+                <div key={msg.id} className="message-turn-container">
+                  {/* Assistant Turn */}
+                  {msg.role === "assistant" && (
+                    <div className="assistant-msg-bundle">
+                      {/* Render Chain of Thought Reasoning Component */}
+                      {msg.chainOfThought && (
+                        <div className="assistant-cot-wrapper">
+                          <ChainOfThoughtBlock
+                            summary={msg.chainOfThought.summary}
+                            status={msg.chainOfThought.status}
+                            duration={msg.chainOfThought.duration}
+                            steps={msg.chainOfThought.steps}
+                            defaultOpen={msg.chainOfThought.status === "running"}
                           />
-                        </Attachment>
-                      ))}
-                    </AttachmentGroup>
+                        </div>
+                      )}
+
+                      {/* Render Subagent Trace Card */}
+                      {msg.subagent && (
+                        <div className="assistant-subagent-wrapper">
+                          <Subagent
+                            name={msg.subagent.name}
+                            task={msg.subagent.task}
+                            model={msg.subagent.model}
+                            tools={msg.subagent.tools}
+                            status={msg.subagent.status}
+                            duration={msg.subagent.duration}
+                            result={msg.subagent.result}
+                            code={msg.subagent.code}
+                            attachments={msg.subagent.attachments}
+                            onPreviewAttachment={setSelectedAttachment}
+                            onInsertCode={onInsertSnippet}
+                            activeFileType={activeFileType}
+                            defaultOpen={true}
+                          />
+                        </div>
+                      )}
+
+                      {/* Fallback bubble if plain message text exists */}
+                      {!msg.subagent && !msg.chainOfThought && msg.text && (
+                        <div className="assistant-msg-bubble ai-bubble">
+                          <div className="bubble-text">{msg.text}</div>
+                        </div>
+                      )}
+                    </div>
                   )}
 
-                  {msg.code && (
-                    <div className="bubble-code-container">
-                      <pre className="bubble-code">
-                        <code>{msg.code}</code>
-                      </pre>
-                      <button
-                        type="button"
-                        className="insert-code-btn"
-                        onClick={() =>
-                          onInsertSnippet &&
-                          onInsertSnippet(
-                            msg.code,
-                            activeFileType === "ipynb" ? "code" : "markdown"
-                          )
-                        }
-                        title="Insert this snippet directly into your active document"
-                      >
-                        + Insert into Document
-                      </button>
+                  {/* User Turn */}
+                  {msg.role === "user" && (
+                    <div className="assistant-msg-bubble user-bubble">
+                      <div className="bubble-text">{msg.text}</div>
+
+                      {/* Render attachments sent with this message */}
+                      {msg.attachments && msg.attachments.length > 0 && (
+                        <AttachmentGroup className="message-attachments-group">
+                          {msg.attachments.map((att) => (
+                            <Attachment
+                              key={att.id}
+                              size="xs"
+                              state={att.state || "done"}
+                              orientation="horizontal"
+                            >
+                              <AttachmentMedia variant={att.variant || "icon"}>
+                                {att.variant === "image" && att.previewUrl ? (
+                                  <img src={att.previewUrl} alt={att.name} />
+                                ) : (
+                                  getFileIcon(att.name, att.type)
+                                )}
+                              </AttachmentMedia>
+                              <AttachmentContent>
+                                <AttachmentTitle>{att.name}</AttachmentTitle>
+                                <AttachmentDescription>
+                                  {att.description || att.sizeStr}
+                                </AttachmentDescription>
+                              </AttachmentContent>
+                              <AttachmentTrigger
+                                aria-label={`Preview ${att.name}`}
+                                onClick={() => setSelectedAttachment(att)}
+                              />
+                            </Attachment>
+                          ))}
+                        </AttachmentGroup>
+                      )}
+
+                      {msg.code && (
+                        <div className="bubble-code-container">
+                          <pre className="bubble-code">
+                            <code>{msg.code}</code>
+                          </pre>
+                          <button
+                            type="button"
+                            className="insert-code-btn"
+                            onClick={() =>
+                              onInsertSnippet &&
+                              onInsertSnippet(
+                                msg.code,
+                                activeFileType === "ipynb" ? "code" : "markdown"
+                              )
+                            }
+                            title="Insert this snippet directly into your active document"
+                          >
+                            + Insert into Document
+                          </button>
+                        </div>
+                      )}
                     </div>
+                  )}
+
+                  {/* Checkpoint Marker following this turn */}
+                  {msg.checkpoint && (
+                    <Checkpoint
+                      label={msg.checkpoint.label}
+                      onRestore={() =>
+                        handleRestoreCheckpoint(msg.id, msg.checkpoint.label)
+                      }
+                    />
                   )}
                 </div>
               );
@@ -868,7 +944,7 @@ print(f"Gravitational Potential: {u:.3e} Joules")`;
               </button>
             </form>
             <span className="assistant-keyboard-hint">
-              Enter to send · Shift+Enter for new line · 🧠 Think for reasoning trace
+              Enter to send · Shift+Enter for new line · 🚩 Checkpoints let you restore turns
             </span>
           </div>
 
@@ -1033,6 +1109,7 @@ function planSubagentForQuery(query, fileType, fileName, attachments = []) {
     const firstAtt = attachments[0];
     return {
       name: "Multimodal Research Subagent",
+      checkpointLabel: `Attachment "${firstAtt.name}" analyzed`,
       task: `Inspect attached asset "${firstAtt.name}" (${firstAtt.sizeStr}) alongside active context "${fileName}".`,
       model: "gemini-1.5-flash",
       cotSteps: [
@@ -1061,6 +1138,7 @@ function planSubagentForQuery(query, fileType, fileName, attachments = []) {
   if (q.includes("think") || q.includes("reason") || q.includes("isco") || q.includes("frame dragging")) {
     return {
       name: "Astrophysics Reasoning Agent",
+      checkpointLabel: "ISCO boundary conditions derived",
       task: `Formulate rigorous relativistic derivation for "${fileName}" including ISCO and metric horizons.`,
       model: "gemini-1.5-flash",
       cotSteps: [
@@ -1094,6 +1172,7 @@ function planSubagentForQuery(query, fileType, fileName, attachments = []) {
   if (q.includes("debug") || q.includes("error") || q.includes("risk")) {
     return {
       name: "Code Diagnostics Agent",
+      checkpointLabel: "Singularity guards validated",
       task: `Inspect Python AST in "${fileName}" for syntax errors, boundary singularities, and performance bottlenecks.`,
       model: "gemini-1.5-flash",
       cotSteps: [
@@ -1122,6 +1201,7 @@ function planSubagentForQuery(query, fileType, fileName, attachments = []) {
   if (q.includes("explain") || q.includes("equation") || q.includes("formula")) {
     return {
       name: "Relativistic Physics Agent",
+      checkpointLabel: "Schwarzschild radius explained",
       task: `Derive mathematical formulas and relativistic metric properties for "${fileName}".`,
       model: "gemini-1.5-flash",
       cotSteps: [
@@ -1149,6 +1229,7 @@ function planSubagentForQuery(query, fileType, fileName, attachments = []) {
   if (q.includes("summarize") || q.includes("summary")) {
     return {
       name: "Workspace Summary Agent",
+      checkpointLabel: "Workspace summary compiled",
       task: `Compile executive synthesis of document structure, computational cells, and astrophysical data in "${fileName}".`,
       model: "gemini-1.5-flash",
       cotSteps: [
@@ -1172,6 +1253,7 @@ function planSubagentForQuery(query, fileType, fileName, attachments = []) {
   if (q.includes("plot") || q.includes("chart") || q.includes("graph")) {
     return {
       name: "Astrophysics Visualizer Agent",
+      checkpointLabel: "Curvature density chart projected",
       task: `Generate numerical curvature density distribution and plotting routines for "${fileName}".`,
       model: "gemini-1.5-flash",
       cotSteps: [
@@ -1194,6 +1276,7 @@ function planSubagentForQuery(query, fileType, fileName, attachments = []) {
 
   return {
     name: "Research Subagent",
+    checkpointLabel: "Calculation block created",
     task: `Process prompt: "${query.slice(0, 60)}..." against active context "${fileName}".`,
     model: "gemini-1.5-flash",
     cotSteps: [
@@ -1215,7 +1298,7 @@ function planSubagentForQuery(query, fileType, fileName, attachments = []) {
 }
 
 /**
- * Finalizes subagent and chain of thought execution with tool results, timing, code, and attachments
+ * Finalizes subagent and chain of thought execution with tool results, timing, code, attachments, and checkpoint
  */
 function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAttachments = []) {
   const q = query.toLowerCase();
@@ -1232,9 +1315,14 @@ function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAtt
     })),
   };
 
+  const checkpoint = {
+    label: plan.checkpointLabel || "Turn completed",
+  };
+
   if (userAttachments && userAttachments.length > 0) {
     const firstAtt = userAttachments[0];
     return {
+      checkpoint,
       chainOfThought: finalizedCot,
       subagent: {
         name: plan.name,
@@ -1282,6 +1370,7 @@ function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAtt
 
   if (q.includes("think") || q.includes("reason") || q.includes("isco") || q.includes("frame dragging")) {
     return {
+      checkpoint,
       chainOfThought: finalizedCot,
       subagent: {
         name: plan.name,
@@ -1319,6 +1408,7 @@ function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAtt
 
   if (q.includes("debug") || q.includes("error") || q.includes("risk")) {
     return {
+      checkpoint,
       chainOfThought: finalizedCot,
       subagent: {
         name: plan.name,
@@ -1353,6 +1443,7 @@ function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAtt
 
   if (q.includes("explain") || q.includes("equation") || q.includes("formula")) {
     return {
+      checkpoint,
       chainOfThought: finalizedCot,
       subagent: {
         name: plan.name,
@@ -1384,6 +1475,7 @@ function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAtt
 
   if (q.includes("summarize") || q.includes("summary")) {
     return {
+      checkpoint,
       chainOfThought: finalizedCot,
       subagent: {
         name: plan.name,
@@ -1416,6 +1508,7 @@ function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAtt
 
   if (q.includes("plot") || q.includes("chart") || q.includes("graph")) {
     return {
+      checkpoint,
       chainOfThought: finalizedCot,
       subagent: {
         name: plan.name,
@@ -1456,6 +1549,7 @@ function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAtt
   }
 
   return {
+    checkpoint,
     chainOfThought: finalizedCot,
     subagent: {
       name: plan.name,
