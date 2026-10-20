@@ -1,0 +1,211 @@
+/* ==================================================
+   Inline Citation Component Styles
+   Obsidian Theme with Gold Accents
+================================================== */
+
+.inline-citation {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: baseline;
+  margin: 0 3px;
+  position: relative;
+  line-height: 1;
+}
+
+.inline-citation-wrapper {
+  display: inline;
+}
+
+.inline-citation-card-root {
+  display: inline-flex;
+  vertical-align: baseline;
+}
+
+.inline-citation-btn {
+  height: 18px !important;
+  padding: 0 6px !important;
+  font-size: 9.5px !important;
+  font-family: var(--font-terminal, monospace) !important;
+  font-weight: 600 !important;
+  border-radius: 4px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #cbd5e1 !important;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+  vertical-align: baseline;
+}
+
+.inline-citation-btn:hover,
+.inline-citation-btn:focus-visible {
+  background: rgba(255, 216, 77, 0.12) !important;
+  border-color: rgba(255, 216, 77, 0.5) !important;
+  color: #ffd84d !important;
+  box-shadow: 0 0 8px rgba(255, 216, 77, 0.25);
+  outline: none;
+}
+
+.citation-badge-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.citation-icon {
+  font-size: 9px;
+  opacity: 0.85;
+}
+
+/* ==================================================
+   Inline Citation Popover (HoverCardContent)
+================================================== */
+
+.inline-citation-body {
+  width: 270px;
+  max-width: 90vw;
+  padding: 12px 14px;
+  background: #09090f;
+  border: 1px solid #222232;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75), 0 0 1px rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 100;
+  text-align: left;
+}
+
+.inline-citation-source {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inline-citation-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-terminal, monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.inline-citation-globe-icon {
+  color: #ffd84d;
+  flex-shrink: 0;
+}
+
+.inline-citation-host-tag {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inline-citation-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #f1f5f9;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.inline-citation-quote {
+  margin: 4px 0;
+  padding: 6px 9px;
+  border-left: 2px solid #ffd84d;
+  background: rgba(255, 216, 77, 0.06);
+  border-radius: 0 5px 5px 0;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8);
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.inline-citation-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #ffd84d;
+  text-decoration: none;
+  font-family: var(--font-terminal, monospace);
+  margin-top: 2px;
+  transition: color 0.15s ease;
+  width: fit-content;
+}
+
+.inline-citation-link:hover {
+  color: #ffe375;
+  text-decoration: underline;
+}
+
+.inline-citation-text {
+  color: inherit;
+}
+
+/* ==================================================
+   Carousel for Multiple Sources
+================================================== */
+
+.inline-citation-carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inline-citation-carousel-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.carousel-count {
+  font-size: 10px;
+  font-family: var(--font-terminal, monospace);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.carousel-btns {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.carousel-nav-btn {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 4px;
+  border: 1px solid #262638;
+  background: #141420;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  cursor: pointer;
+  line-height: 1;
+  transition: all 0.15s ease;
+}
+
+.carousel-nav-btn:hover {
+  background: #ffd84d;
+  color: #000000;
+  border-color: #ffd84d;
+}
+
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

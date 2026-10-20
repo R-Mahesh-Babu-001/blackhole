@@ -47,6 +47,8 @@ import {
   ConversationDownload,
 } from "../ui/Chat";
 import { ChangedFilesCard } from "../ui/FileTree";
+import { InlineCitation } from "../ui/InlineCitation";
+import { Sources } from "../ui/Sources";
 import { getBackendBaseUrl } from "../../services/api";
 import "./AgenticAssistant.css";
 
@@ -534,6 +536,7 @@ export default function AgenticAssistant({
                 changedTree: completedPlan.changedTree,
                 changedFiles: completedPlan.changedFiles,
                 changedTreeTitle: completedPlan.changedTreeTitle,
+                sources: completedPlan.sources || finalizedTrace.steps.find((s) => s.id === "step-sources")?.sources || [],
                 metadata: {
                   usage: {
                     inputTokens: Math.round(((text?.length || 0) + (activeFileName?.length || 0) * 12) / 4) + 1480,
@@ -778,7 +781,7 @@ export default function AgenticAssistant({
                                       tools={msg.subagent.tools}
                                       status={msg.subagent.status}
                                       duration={msg.subagent.duration}
-                                      result={msg.subagent.result}
+                                      result={renderTextWithCitations(msg.subagent.result, msg.sources)}
                                       code={msg.subagent.code}
                                       attachments={msg.subagent.attachments}
                                       onPreviewAttachment={setSelectedAttachment}
@@ -848,11 +851,22 @@ export default function AgenticAssistant({
                                 {/* 8. Text bubble using Bubble component */}
                                 {msg.text && (!msg.subagent || msg.subagent.result !== msg.text) && (
                                   <Bubble align="start" variant="default" className="ai-bubble">
-                                    <BubbleContent>{msg.text}</BubbleContent>
+                                    <BubbleContent>{renderTextWithCitations(msg.text, msg.sources)}</BubbleContent>
                                   </Bubble>
                                 )}
 
-                                {/* 9. Turn Context Usage Badge (AI Elements Context) */}
+                                {/* 9. Referenced Sources after reply (shadcn AI Elements Sources) */}
+                                {msg.sources && msg.sources.length > 0 && (
+                                  <div className="assistant-sources-wrapper" style={{ marginTop: "8px", marginBottom: "4px" }}>
+                                    <Sources
+                                      sources={msg.sources}
+                                      title="Referenced Sources"
+                                      defaultOpen={true}
+                                    />
+                                  </div>
+                                )}
+
+                                {/* 10. Turn Context Usage Badge (AI Elements Context) */}
                                 {msg.metadata?.usage && (
                                   <div className="assistant-turn-context-row">
                                     <Context
@@ -1526,6 +1540,73 @@ function countTreeNodes(tree) {
 }
 
 /**
+ * Transforms citation tags [1], [2], [citation:1], or [source:domain] in text into interactive
+ * InlineCitation hover cards built on HoverCard and Button (size="xs").
+ */
+function renderTextWithCitations(text, sources = []) {
+  if (!text || typeof text !== "string") return text;
+  if (!sources || sources.length === 0) return text;
+
+  const citationRegex = /\[(?:citation:)?(\d+)\]|\[source:([^\]]+)\]/g;
+  if (!citationRegex.test(text)) return text;
+  citationRegex.lastIndex = 0;
+
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = citationRegex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+
+    let source = null;
+    let label = null;
+
+    if (match[1]) {
+      const idx = parseInt(match[1], 10) - 1;
+      if (idx >= 0 && idx < sources.length) {
+        source = sources[idx];
+        label = `${idx + 1}`;
+      }
+    } else if (match[2]) {
+      const term = match[2].toLowerCase();
+      source =
+        sources.find(
+          (s) =>
+            s.hostname?.toLowerCase().includes(term) ||
+            s.url?.toLowerCase().includes(term) ||
+            s.title?.toLowerCase().includes(term)
+        ) || { url: match[2], hostname: match[2], title: match[2] };
+      label = source.hostname || match[2];
+    }
+
+    if (source) {
+      parts.push(
+        <InlineCitation
+          key={`cite-${match.index}`}
+          url={source.url}
+          title={source.title}
+          hostname={source.hostname}
+          quote={source.quote || source.snippet}
+          label={label}
+        />
+      );
+    } else {
+      parts.push(match[0]);
+    }
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts;
+}
+
+/**
  * Finalizes subagent and chain of thought execution with tool results, timing, code, attachments, and checkpoint
  */
 function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAttachments = [], liveTree = null) {
@@ -1789,9 +1870,25 @@ function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAtt
   }
 
   if (q.includes("think") || q.includes("reason") || q.includes("isco") || q.includes("frame dragging")) {
+    const iscoSources = [
+      {
+        title: "arXiv: Kerr ISCO & Relativistic Geodesics",
+        url: "https://arxiv.org/abs/gr-qc",
+        hostname: "arxiv.org",
+        quote: "The inflection point of the effective potential occurs at r = 6GM/c^2 = 3 Rs for non-rotating Schwarzschild spacetime.",
+      },
+      {
+        title: "NASA HEASARC: High Energy Astrophysics Science Archive",
+        url: "https://heasarc.gsfc.nasa.gov",
+        hostname: "nasa.gov",
+        quote: "Accretion flow telemetry confirms absence of stable circular emission inside the ISCO boundary.",
+      },
+    ];
+
     return {
       checkpoint,
       chainOfThought: finalizedCot,
+      sources: iscoSources,
       subagent: {
         name: plan.name,
         task: plan.task,
@@ -1816,7 +1913,7 @@ function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAtt
           },
         ],
         result:
-          "Deep reasoning complete: For a Schwarzschild black hole, circular orbits within r < 3 Rs become unstable, forcing matter to plunge directly through the event horizon without emitting further equilibrium radiation.",
+          "Deep reasoning complete: For a Schwarzschild black hole, geodesic mechanics dictate that circular orbits within r < 3 Rs become unstable [1]. Inward matter crosses the inflection boundary and plunges through the event horizon without emitting equilibrium radiation [2].",
         attachments: [],
         code:
           fileType === "ipynb"
@@ -1871,9 +1968,25 @@ function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAtt
   }
 
   if (q.includes("explain") || q.includes("equation") || q.includes("formula")) {
+    const eqSources = [
+      {
+        title: "Schwarzschild Metric & Gravitational Singularities",
+        url: "https://en.wikipedia.org/wiki/Schwarzschild_metric",
+        hostname: "wikipedia.org",
+        quote: "The Schwarzschild radius corresponds to the radius defining the event horizon of a static, uncharged black hole.",
+      },
+      {
+        title: "NASA Astrophysics Data System (ADS)",
+        url: "https://ui.adsabs.harvard.edu",
+        hostname: "harvard.edu",
+        quote: "Observational constraints on compact objects via gravitational wave ringdown telemetry.",
+      },
+    ];
+
     return {
       checkpoint,
       chainOfThought: finalizedCot,
+      sources: eqSources,
       subagent: {
         name: plan.name,
         task: plan.task,
@@ -1892,7 +2005,7 @@ function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAtt
             output: "metric: static spherically symmetric",
           },
         ],
-        result: `In "${fileName}", we model relativistic gravitational physics. The Schwarzschild radius defines the spherical boundary where escape velocity reaches $c$:`,
+        result: `In "${fileName}", we model relativistic gravitational physics [1]. The Schwarzschild radius defines the spherical boundary where escape velocity reaches $c$ [2]:`,
         attachments: [],
         code:
           fileType === "ipynb"
@@ -1977,9 +2090,25 @@ function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAtt
     };
   }
 
+  const defaultSources = [
+    {
+      title: "arXiv: Relativistic Fluid & Geodesic Mechanics",
+      url: "https://arxiv.org/abs/gr-qc",
+      hostname: "arxiv.org",
+      quote: "Accretion flow telemetry confirms absence of stable circular emission inside the ISCO boundary.",
+    },
+    {
+      title: "NASA HEASARC: High Energy Astrophysics Science Archive",
+      url: "https://heasarc.gsfc.nasa.gov",
+      hostname: "nasa.gov",
+      quote: "Continuum timing and high-resolution spectral archives for compact relativistic sources.",
+    },
+  ];
+
   return {
     checkpoint,
     chainOfThought: finalizedCot,
+    sources: defaultSources,
     subagent: {
       name: plan.name,
       task: plan.task,
@@ -1998,7 +2127,7 @@ function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAtt
           output: "synthesis complete",
         },
       ],
-      result: `The research subagent has drafted a computational block tailored for "${fileName}":`,
+      result: `The research subagent has synthesized a computational analysis grounded in relativistic mechanics [1] and observational telemetry [2] tailored for "${fileName}":`,
       attachments: [],
       code:
         fileType === "ipynb"
