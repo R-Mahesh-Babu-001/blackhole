@@ -228,6 +228,12 @@
   margin: 2px 0;
 }
 
+.assistant-cot-wrapper {
+  width: 100%;
+  max-width: 100%;
+  margin: 2px 0;
+}
+
 .ai-bubble {
   align-self: flex-start;
   color: rgba(255, 255, 255, 0.9);

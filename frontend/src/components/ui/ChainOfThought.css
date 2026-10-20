@@ -1,0 +1,138 @@
+/* ==================================================
+   Chain of Thought Component Styling
+   Solid obsidian dark aesthetic, cosmic yellow accents
+================================================== */
+
+.chain-of-thought-root {
+  margin: 4px 0;
+  width: 100%;
+}
+
+.cot-block {
+  width: 100%;
+}
+
+/* Header Trigger */
+.cot-header-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #0b0b12;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.18s ease;
+  border-radius: 8px;
+}
+
+.cot-header-trigger:hover {
+  background: #11111e;
+}
+
+.cot-header-title-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+/* Content Area */
+.cot-content {
+  padding: 10px 14px 12px 14px;
+  background: #06060a;
+  border-top: 1px solid #141420;
+}
+
+.cot-steps-trace {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 6px;
+  border-left: 2px solid #161624;
+  margin-left: 6px;
+}
+
+/* Step Item */
+.cot-step-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+}
+
+.cot-step-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cot-step-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #eeeeff;
+  line-height: 1.4;
+  white-space: normal;
+}
+
+.cot-step-desc {
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.45;
+  margin-left: 0;
+  white-space: normal;
+}
+
+.cot-step-children {
+  margin-left: 28px;
+  margin-top: 2px;
+}
+
+/* Search Results / Citations */
+.cot-search-results {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.cot-search-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  background: #12121c;
+  border: 1px solid #1f1f2e;
+  border-radius: 4px;
+  font-size: 9.5px;
+  color: #ffd84d;
+  font-family: var(--font-terminal);
+  transition: all 0.15s ease;
+  cursor: default;
+}
+
+.cot-search-badge:hover {
+  background: #181826;
+  border-color: rgba(255, 216, 77, 0.4);
+}
+
+.cot-search-badge svg {
+  color: rgba(255, 216, 77, 0.7);
+}
+
+/* Image Thumbnail in Step */
+.cot-image-wrapper {
+  margin-top: 6px;
+  max-width: 200px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #1c1c28;
+}
+
+.cot-image-wrapper img {
+  width: 100%;
+  display: block;
+}

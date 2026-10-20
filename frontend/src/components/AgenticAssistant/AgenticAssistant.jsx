@@ -11,6 +11,7 @@ import {
   AttachmentTrigger,
   AttachmentGroup,
 } from "../ui/Attachment";
+import { ChainOfThoughtBlock } from "../ui/ChainOfThought";
 import "./AgenticAssistant.css";
 
 // Realistic astrophysical research sample attachments for quick testing
@@ -68,8 +69,31 @@ export default function AgenticAssistant({
 
   const [messages, setMessages] = useState([
     {
-      id: "init-subagent",
+      id: "init-assistant-bundle",
       role: "assistant",
+      chainOfThought: {
+        summary: "Reasoned in 3 steps",
+        status: "completed",
+        duration: "115ms",
+        steps: [
+          {
+            title: "Parsed workspace environment and active document AST",
+            status: "completed",
+            description: `Loaded file "${activeFileName}" (${activeFileType}) into memory buffer.`,
+          },
+          {
+            title: "Indexed relativistic astrophysics references & constants",
+            status: "completed",
+            description: "Retrieved gravitational constant G and speed of light c from knowledge base.",
+            searchResults: ["nasa.gov/heasarc", "arxiv.org/astro-ph", "relativity.science"],
+          },
+          {
+            title: "Verified Pyodide WASM execution sandbox",
+            status: "completed",
+            description: "Confirmed WebAssembly runtime is ready for client-side python evaluation.",
+          },
+        ],
+      },
       subagent: {
         name: "Workspace Initializer Agent",
         task: `Index active workspace document "${activeFileName}", verify kernel runtime, and prepare context buffers.`,
@@ -218,7 +242,7 @@ export default function AgenticAssistant({
     if (!text && attachedFiles.length === 0) return;
 
     const userMsgId = Date.now().toString();
-    const subagentMsgId = (Date.now() + 1).toString();
+    const assistantMsgId = (Date.now() + 1).toString();
 
     const currentAttachments = [...attachedFiles];
     setAttachedFiles([]); // Clear composer attachments
@@ -230,7 +254,7 @@ export default function AgenticAssistant({
       currentAttachments
     );
 
-    // Append user message with attachments + preliminary running subagent message
+    // Append user message with attachments + preliminary running chain of thought & subagent
     setMessages((prev) => [
       ...prev,
       {
@@ -240,8 +264,17 @@ export default function AgenticAssistant({
         attachments: currentAttachments,
       },
       {
-        id: subagentMsgId,
+        id: assistantMsgId,
         role: "assistant",
+        chainOfThought: {
+          summary: "Reasoning & Analyzing…",
+          status: "running",
+          duration: "thinking…",
+          steps: plan.cotSteps.map((step) => ({
+            ...step,
+            status: "running",
+          })),
+        },
         subagent: {
           name: plan.name,
           task: plan.task,
@@ -257,7 +290,7 @@ export default function AgenticAssistant({
     ]);
     setInputMessage("");
 
-    // Simulate asynchronous subagent execution lifecycle
+    // Simulate asynchronous execution lifecycle
     setTimeout(() => {
       const completedPlan = finalizeSubagentPlan(
         plan,
@@ -270,12 +303,16 @@ export default function AgenticAssistant({
 
       setMessages((prev) =>
         prev.map((msg) =>
-          msg.id === subagentMsgId
-            ? { ...msg, subagent: completedPlan }
+          msg.id === assistantMsgId
+            ? {
+                ...msg,
+                chainOfThought: completedPlan.chainOfThought,
+                subagent: completedPlan.subagent,
+              }
             : msg
         )
       );
-    }, 520);
+    }, 540);
   };
 
   const handleKeyDown = (e) => {
@@ -286,6 +323,11 @@ export default function AgenticAssistant({
   };
 
   const handleActionChip = (chipAction) => {
+    if (chipAction === "think") {
+      handleSendMessage("Perform deep Chain of Thought reasoning on Kerr frame dragging and innermost stable circular orbits (ISCO).");
+      return;
+    }
+
     if (chipAction === "run_all") {
       if (onRunAllCells) onRunAllCells();
       const runId = Date.now().toString();
@@ -294,6 +336,15 @@ export default function AgenticAssistant({
         {
           id: runId,
           role: "assistant",
+          chainOfThought: {
+            summary: "Analyzing notebook execution flow…",
+            status: "running",
+            duration: "checking…",
+            steps: [
+              { title: "Building execution dependency DAG", status: "running" },
+              { title: "Evaluating kernel state readiness", status: "running" },
+            ],
+          },
           subagent: {
             name: "Notebook Execution Agent",
             task: "Execute all executable code cells in sequential order and pipe output streams.",
@@ -316,6 +367,23 @@ export default function AgenticAssistant({
             msg.id === runId
               ? {
                   ...msg,
+                  chainOfThought: {
+                    summary: "Reasoned in 2 steps",
+                    status: "completed",
+                    duration: "84ms",
+                    steps: [
+                      {
+                        title: "Built execution dependency DAG without cycles",
+                        status: "completed",
+                        description: "Verified all preceding variables in notebook memory.",
+                      },
+                      {
+                        title: "Executed cell sequence sequentially in sandbox",
+                        status: "completed",
+                        description: "Piped stdout to cell output elements.",
+                      },
+                    ],
+                  },
                   subagent: {
                     name: "Notebook Execution Agent",
                     task: "Execute all executable code cells in sequential order and pipe output streams.",
@@ -374,6 +442,23 @@ print(f"Gravitational Potential: {u:.3e} Joules")`;
         {
           id: addId,
           role: "assistant",
+          chainOfThought: {
+            summary: "Drafted code in 2 steps",
+            status: "completed",
+            duration: "68ms",
+            steps: [
+              {
+                title: "Fetched gravitational potential energy template",
+                status: "completed",
+                description: "Matched Newtonian gravitational field formula.",
+              },
+              {
+                title: "Injected calculation cell into active notebook",
+                status: "completed",
+                description: "Appended to bottom of notebook AST.",
+              },
+            ],
+          },
           subagent: {
             name: "Cell Generator Agent",
             task: "Generate gravitational potential snippet and append directly into active notebook.",
@@ -475,11 +560,20 @@ print(f"Gravitational Potential: {u:.3e} Joules")`;
 
           {/* Quick Action Chips */}
           <div className="assistant-quick-actions">
+            <button
+              type="button"
+              className="action-chip action-chip-accent"
+              onClick={() => handleActionChip("think")}
+              title="Generate a multi-step Chain of Thought reasoning trace"
+            >
+              🧠 Think
+            </button>
+
             {activeFileType === "ipynb" ? (
               <>
                 <button
                   type="button"
-                  className="action-chip action-chip-accent"
+                  className="action-chip"
                   onClick={() => handleActionChip("run_all")}
                   title="Run all code cells in the notebook"
                 >
@@ -497,7 +591,7 @@ print(f"Gravitational Potential: {u:.3e} Joules")`;
             ) : (
               <button
                 type="button"
-                className="action-chip action-chip-accent"
+                className="action-chip"
                 onClick={() => {
                   const sampleMd = `\n### Empirical Notes\n- Verified accretion disc luminosity model.\n- Peak radiation corresponds to innermost stable circular orbit (ISCO).`;
                   if (onInsertSnippet) onInsertSnippet(sampleMd, "markdown");
@@ -543,24 +637,49 @@ print(f"Gravitational Potential: {u:.3e} Joules")`;
           {/* Message Stream */}
           <div className="assistant-messages-stream">
             {messages.map((msg) => {
-              if (msg.subagent) {
+              if (msg.role === "assistant") {
                 return (
-                  <div key={msg.id} className="assistant-subagent-wrapper">
-                    <Subagent
-                      name={msg.subagent.name}
-                      task={msg.subagent.task}
-                      model={msg.subagent.model}
-                      tools={msg.subagent.tools}
-                      status={msg.subagent.status}
-                      duration={msg.subagent.duration}
-                      result={msg.subagent.result}
-                      code={msg.subagent.code}
-                      attachments={msg.subagent.attachments}
-                      onPreviewAttachment={setSelectedAttachment}
-                      onInsertCode={onInsertSnippet}
-                      activeFileType={activeFileType}
-                      defaultOpen={true}
-                    />
+                  <div key={msg.id} className="assistant-msg-bundle">
+                    {/* Render Chain of Thought Reasoning Component */}
+                    {msg.chainOfThought && (
+                      <div className="assistant-cot-wrapper">
+                        <ChainOfThoughtBlock
+                          summary={msg.chainOfThought.summary}
+                          status={msg.chainOfThought.status}
+                          duration={msg.chainOfThought.duration}
+                          steps={msg.chainOfThought.steps}
+                          defaultOpen={msg.chainOfThought.status === "running"}
+                        />
+                      </div>
+                    )}
+
+                    {/* Render Subagent Trace Card */}
+                    {msg.subagent && (
+                      <div className="assistant-subagent-wrapper">
+                        <Subagent
+                          name={msg.subagent.name}
+                          task={msg.subagent.task}
+                          model={msg.subagent.model}
+                          tools={msg.subagent.tools}
+                          status={msg.subagent.status}
+                          duration={msg.subagent.duration}
+                          result={msg.subagent.result}
+                          code={msg.subagent.code}
+                          attachments={msg.subagent.attachments}
+                          onPreviewAttachment={setSelectedAttachment}
+                          onInsertCode={onInsertSnippet}
+                          activeFileType={activeFileType}
+                          defaultOpen={true}
+                        />
+                      </div>
+                    )}
+
+                    {/* Fallback bubble if plain message text exists */}
+                    {!msg.subagent && !msg.chainOfThought && msg.text && (
+                      <div className="assistant-msg-bubble ai-bubble">
+                        <div className="bubble-text">{msg.text}</div>
+                      </div>
+                    )}
                   </div>
                 );
               }
@@ -733,7 +852,7 @@ print(f"Gravitational Potential: {u:.3e} Joules")`;
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask subagent to research, inspect attachment, or write code..."
+                placeholder="Ask assistant to reason, write code, or analyze..."
                 rows="1"
               />
 
@@ -741,7 +860,7 @@ print(f"Gravitational Potential: {u:.3e} Joules")`;
                 type="submit"
                 className="assistant-send-btn"
                 disabled={!inputMessage.trim() && attachedFiles.length === 0}
-                title="Send instruction to subagent"
+                title="Send instruction to assistant"
               >
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
@@ -749,11 +868,11 @@ print(f"Gravitational Potential: {u:.3e} Joules")`;
               </button>
             </form>
             <span className="assistant-keyboard-hint">
-              Enter to send · Shift+Enter for new line · Click 📎 to attach
+              Enter to send · Shift+Enter for new line · 🧠 Think for reasoning trace
             </span>
           </div>
 
-          {/* Attachment Preview Modal (when an attachment trigger is clicked) */}
+          {/* Attachment Preview Modal */}
           {selectedAttachment && (
             <div
               className="attachment-preview-backdrop"
@@ -904,7 +1023,7 @@ function getFileIcon(fileName = "", fileType = "") {
 }
 
 /**
- * Creates subagent plan configuration based on query intent and attached assets
+ * Creates subagent and chain of thought plan configuration based on query intent and attached assets
  */
 function planSubagentForQuery(query, fileType, fileName, attachments = []) {
   const q = query.toLowerCase();
@@ -916,10 +1035,58 @@ function planSubagentForQuery(query, fileType, fileName, attachments = []) {
       name: "Multimodal Research Subagent",
       task: `Inspect attached asset "${firstAtt.name}" (${firstAtt.sizeStr}) alongside active context "${fileName}".`,
       model: "gemini-1.5-flash",
+      cotSteps: [
+        {
+          title: `Stream attached asset "${firstAtt.name}" (${firstAtt.sizeStr})`,
+          description: "Read binary headers and verify encoding integrity.",
+        },
+        {
+          title: "Extract multimodal spacetime tensor representations",
+          description: "Projected high-dimensional features into coordinate frame.",
+          searchResults: ["fits.gsfc.nasa.gov", "astropy.org/docs"],
+        },
+        {
+          title: `Cross-correlate with active workspace "${fileName}"`,
+          description: "Matched metric variables with Schwarzschild geodesics.",
+        },
+      ],
       tools: [
         { name: `read_attachment_stream(file="${firstAtt.name}")`, status: "running" },
         { name: "extract_multimodal_features()", status: "running" },
         { name: `cross_reference_workspace(file="${fileName}")`, status: "running" },
+      ],
+    };
+  }
+
+  if (q.includes("think") || q.includes("reason") || q.includes("isco") || q.includes("frame dragging")) {
+    return {
+      name: "Astrophysics Reasoning Agent",
+      task: `Formulate rigorous relativistic derivation for "${fileName}" including ISCO and metric horizons.`,
+      model: "gemini-1.5-flash",
+      cotSteps: [
+        {
+          title: "Formulated Einstein Field Equations in vacuum (T_μν = 0)",
+          description: "Established boundary conditions for static spherically symmetric spacetime.",
+          searchResults: ["arxiv.org/abs/gr-qc", "gravity.perimeterinstitute.ca"],
+        },
+        {
+          title: "Solved geodesic equation for timelike test particles",
+          description: "Calculated effective potential V_eff(r) = -(GM/r) + (L^2/2r^2) - (GML^2/c^2 r^3).",
+        },
+        {
+          title: "Derived Innermost Stable Circular Orbit (ISCO = 3 Rs)",
+          description: "Identified inflection point d^2 V_eff / dr^2 = 0 where stable circular orbits cease.",
+          searchResults: ["relativity.nature.com", "nasa.gov/heasarc"],
+        },
+        {
+          title: "Evaluated gravitational redshift and Doppler beaming factor",
+          description: "Synthesized continuous relativistic equation block.",
+        },
+      ],
+      tools: [
+        { name: "derive_einstein_field_equations()", status: "running" },
+        { name: "solve_effective_potential_inflection()", status: "running" },
+        { name: "evaluate_isco_boundaries()", status: "running" },
       ],
     };
   }
@@ -929,6 +1096,21 @@ function planSubagentForQuery(query, fileType, fileName, attachments = []) {
       name: "Code Diagnostics Agent",
       task: `Inspect Python AST in "${fileName}" for syntax errors, boundary singularities, and performance bottlenecks.`,
       model: "gemini-1.5-flash",
+      cotSteps: [
+        {
+          title: `Scanned Python syntax tree for "${fileName}"`,
+          description: "Verified 0 unhandled tokens, validated import definitions.",
+          searchResults: ["docs.python.org/3/ast", "peps.python.org"],
+        },
+        {
+          title: "Audited coordinate singularity boundaries (r -> Rs, v -> c)",
+          description: "Detected potential division by zero when calculating lorentz factor.",
+        },
+        {
+          title: "Drafted guarded ValueError exception clause",
+          description: "Ensured clean error handling when inputs violate event horizon boundaries.",
+        },
+      ],
       tools: [
         { name: `scan_syntax_tree(file="${fileName}")`, status: "running" },
         { name: "check_singularity_guards(terms=['r_s', 'v_over_c'])", status: "running" },
@@ -942,6 +1124,21 @@ function planSubagentForQuery(query, fileType, fileName, attachments = []) {
       name: "Relativistic Physics Agent",
       task: `Derive mathematical formulas and relativistic metric properties for "${fileName}".`,
       model: "gemini-1.5-flash",
+      cotSteps: [
+        {
+          title: "Retrieved Schwarzschild metric components g_00 and g_11",
+          description: "Set escape velocity equal to c to locate event horizon radius.",
+          searchResults: ["arxiv.org/astro-ph", "nasa.gov/heasarc"],
+        },
+        {
+          title: "Integrated spatial curvature element dΩ^2 = dθ^2 + sin^2θ dφ^2",
+          description: "Verified spherical symmetry and asymptotic flatness as r -> infinity.",
+        },
+        {
+          title: "Derived exact Schwarzschild radius formula Rs = 2GM / c^2",
+          description: "Calculated numeric value for solar mass reference.",
+        },
+      ],
       tools: [
         { name: "query_astrophysics_knowledge_base(topic='Schwarzschild')", status: "running" },
         { name: "derive_metric_tensor(coords=['t', 'r', 'theta', 'phi'])", status: "running" },
@@ -954,6 +1151,17 @@ function planSubagentForQuery(query, fileType, fileName, attachments = []) {
       name: "Workspace Summary Agent",
       task: `Compile executive synthesis of document structure, computational cells, and astrophysical data in "${fileName}".`,
       model: "gemini-1.5-flash",
+      cotSteps: [
+        {
+          title: "Parsed document headers, markdown cells, and code AST",
+          description: "Collected telemetry counts and variable bindings.",
+        },
+        {
+          title: "Aggregated workspace performance & readiness scores",
+          description: "Checked client-side Pyodide WASM runtime and file format constraints.",
+          searchResults: ["pyodide.org", "jupyter.org/spec"],
+        },
+      ],
       tools: [
         { name: `parse_document_outline(target="${fileName}")`, status: "running" },
         { name: "aggregate_workspace_metrics()", status: "running" },
@@ -966,6 +1174,17 @@ function planSubagentForQuery(query, fileType, fileName, attachments = []) {
       name: "Astrophysics Visualizer Agent",
       task: `Generate numerical curvature density distribution and plotting routines for "${fileName}".`,
       model: "gemini-1.5-flash",
+      cotSteps: [
+        {
+          title: "Calculated spacetime curvature density grid across radius multiples",
+          description: "Sampled curvature density from 1.5 Rs to 10.0 Rs.",
+        },
+        {
+          title: "Generated vector chart preview artifact and ASCII projection",
+          description: "Rendered SVG gradient plot for radial gravitational field.",
+          searchResults: ["matplotlib.org", "scipy.org"],
+        },
+      ],
       tools: [
         { name: "compute_curvature_density_grid()", status: "running" },
         { name: "generate_ascii_projection()", status: "running" },
@@ -977,6 +1196,17 @@ function planSubagentForQuery(query, fileType, fileName, attachments = []) {
     name: "Research Subagent",
     task: `Process prompt: "${query.slice(0, 60)}..." against active context "${fileName}".`,
     model: "gemini-1.5-flash",
+    cotSteps: [
+      {
+        title: "Extracted context slice from active document",
+        description: `Inspected ${fileName} active formulas and variables.`,
+      },
+      {
+        title: "Searched astrophysics domain corpus for query matching",
+        description: "Synthesized computational solution aligned with general relativity.",
+        searchResults: ["arxiv.org", "wikipedia.org/wiki/General_relativity"],
+      },
+    ],
     tools: [
       { name: `read_context_slice(file="${fileName}")`, status: "running" },
       { name: `synthesize_response(query="${query.slice(0, 30)}")`, status: "running" },
@@ -985,147 +1215,249 @@ function planSubagentForQuery(query, fileType, fileName, attachments = []) {
 }
 
 /**
- * Finalizes subagent execution with tool results, timing, code, and generated artifact attachments
+ * Finalizes subagent and chain of thought execution with tool results, timing, code, and attachments
  */
 function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAttachments = []) {
   const q = query.toLowerCase();
   const randomMs = Math.floor(Math.random() * 160 + 130);
+  const cotMs = Math.floor(randomMs * 0.7);
+
+  const finalizedCot = {
+    summary: `Reasoned in ${plan.cotSteps.length} steps`,
+    status: "completed",
+    duration: `${cotMs}ms`,
+    steps: plan.cotSteps.map((s) => ({
+      ...s,
+      status: "completed",
+    })),
+  };
 
   if (userAttachments && userAttachments.length > 0) {
     const firstAtt = userAttachments[0];
     return {
-      name: plan.name,
-      task: plan.task,
-      model: plan.model,
-      status: "completed",
-      duration: `${randomMs}ms`,
-      tools: [
-        {
-          name: `read_attachment_stream(file="${firstAtt.name}")`,
-          status: "completed",
-          output: `parsed: ${firstAtt.type || "binary stream"}, length=${firstAtt.sizeStr}`,
-        },
-        {
-          name: "extract_multimodal_features()",
-          status: "completed",
-          output: "feature_tensor=[128, 512], correlation_confidence=0.98",
-        },
-        {
-          name: `cross_reference_workspace(file="${fileName}")`,
-          status: "completed",
-          output: "aligned with active spacetime equations",
-        },
-      ],
-      result: `Processed attached asset "${firstAtt.name}". The subagent correlated its properties with "${fileName}" and synthesized a verified computational telemetry block:`,
-      attachments: [
-        {
-          id: "derived-asset-1",
-          name: "derived_geodesic_analysis.json",
-          variant: "icon",
-          sizeStr: "16 KB",
-          description: "JSON · 16 KB · Analysis Output",
-          type: "application/json",
-          state: "done",
-          contentSnippet: `{\n  "source_attachment": "${firstAtt.name}",\n  "geodesic_confidence": 0.992,\n  "isco_radius_km": 8.86,\n  "doppler_beaming_factor": 1.42\n}`,
-        },
-      ],
-      code:
-        fileType === "ipynb"
-          ? `# Geodesic integration from attached data\nimport json\n\ndef evaluate_isco_telemetry(isco_km=8.86):\n    return f"Stable orbit confirmed outside horizon at {isco_km} km."\n\nprint(evaluate_isco_telemetry())`
-          : `### Geodesic Correlation Findings\n- **Source Attachment:** \`${firstAtt.name}\`\n- **Confidence:** $99.2\\%$\n- **Derived ISCO Radius:** $8.86\\text{ km}$`,
+      chainOfThought: finalizedCot,
+      subagent: {
+        name: plan.name,
+        task: plan.task,
+        model: plan.model,
+        status: "completed",
+        duration: `${randomMs}ms`,
+        tools: [
+          {
+            name: `read_attachment_stream(file="${firstAtt.name}")`,
+            status: "completed",
+            output: `parsed: ${firstAtt.type || "binary stream"}, length=${firstAtt.sizeStr}`,
+          },
+          {
+            name: "extract_multimodal_features()",
+            status: "completed",
+            output: "feature_tensor=[128, 512], correlation_confidence=0.98",
+          },
+          {
+            name: `cross_reference_workspace(file="${fileName}")`,
+            status: "completed",
+            output: "aligned with active spacetime equations",
+          },
+        ],
+        result: `Processed attached asset "${firstAtt.name}". The reasoning engine verified its properties and generated a verified computational telemetry block:`,
+        attachments: [
+          {
+            id: "derived-asset-1",
+            name: "derived_geodesic_analysis.json",
+            variant: "icon",
+            sizeStr: "16 KB",
+            description: "JSON · 16 KB · Analysis Output",
+            type: "application/json",
+            state: "done",
+            contentSnippet: `{\n  "source_attachment": "${firstAtt.name}",\n  "geodesic_confidence": 0.992,\n  "isco_radius_km": 8.86,\n  "doppler_beaming_factor": 1.42\n}`,
+          },
+        ],
+        code:
+          fileType === "ipynb"
+            ? `# Geodesic integration from attached data\nimport json\n\ndef evaluate_isco_telemetry(isco_km=8.86):\n    return f"Stable orbit confirmed outside horizon at {isco_km} km."\n\nprint(evaluate_isco_telemetry())`
+            : `### Geodesic Correlation Findings\n- **Source Attachment:** \`${firstAtt.name}\`\n- **Confidence:** $99.2\\%$\n- **Derived ISCO Radius:** $8.86\\text{ km}$`,
+      },
+    };
+  }
+
+  if (q.includes("think") || q.includes("reason") || q.includes("isco") || q.includes("frame dragging")) {
+    return {
+      chainOfThought: finalizedCot,
+      subagent: {
+        name: plan.name,
+        task: plan.task,
+        model: plan.model,
+        status: "completed",
+        duration: `${randomMs}ms`,
+        tools: [
+          {
+            name: "derive_einstein_field_equations()",
+            status: "completed",
+            output: "vacuum metric tensor confirmed: G_μν = 0",
+          },
+          {
+            name: "solve_effective_potential_inflection()",
+            status: "completed",
+            output: "inflection point at r = 6GM/c^2 = 3 Rs",
+          },
+          {
+            name: "evaluate_isco_boundaries()",
+            status: "completed",
+            output: "orbits stable for r > 3 Rs; dynamical plunge for r < 3 Rs",
+          },
+        ],
+        result:
+          "Deep reasoning complete: For a Schwarzschild black hole, circular orbits within r < 3 Rs become unstable, forcing matter to plunge directly through the event horizon without emitting further equilibrium radiation.",
+        attachments: [],
+        code:
+          fileType === "ipynb"
+            ? `# Effective Potential & ISCO Calculation\nimport math\n\ndef isco_radius(solar_masses):\n    G = 6.67430e-11\n    c = 2.99792e8\n    M = solar_masses * 1.989e30\n    r_s = (2 * G * M) / (c ** 2)\n    r_isco = 3.0 * r_s\n    return r_s / 1000, r_isco / 1000\n\nrs_km, isco_km = isco_radius(4.1e6) # Sagittarius A*\nprint(f"Sgr A* Event Horizon: {rs_km:,.1f} km | ISCO: {isco_km:,.1f} km")`
+            : `### Innermost Stable Circular Orbit (ISCO)\n$$r_{\\text{ISCO}} = 3 R_s = \\frac{6GM}{c^2}$$\n\n- At $r > r_{\\text{ISCO}}$: Stable circular accretion orbits exist.\n- At $r < r_{\\text{ISCO}}$: Inward radial plunge toward event horizon.`,
+      },
     };
   }
 
   if (q.includes("debug") || q.includes("error") || q.includes("risk")) {
     return {
-      name: plan.name,
-      task: plan.task,
-      model: plan.model,
-      status: "completed",
-      duration: `${randomMs}ms`,
-      tools: [
-        {
-          name: `scan_syntax_tree(file="${fileName}")`,
-          status: "completed",
-          output: "syntax: clean, 0 parse errors",
-        },
-        {
-          name: "check_singularity_guards(terms=['r_s', 'v_over_c'])",
-          status: "completed",
-          output: "warning: division by zero possible if r <= r_s",
-        },
-        {
-          name: "verify_numeric_stability()",
-          status: "completed",
-          output: "recommendation: add guarded exception check",
-        },
-      ],
-      result:
-        "Code diagnostics complete: Syntax tree is valid. Discovered potential coordinate singularity at event horizon ($r \\le R_s$). Guard clause generated below.",
-      attachments: [],
-      code: `if r <= r_s:\n    raise ValueError("Coordinate singularity at event horizon (r <= Rs)")\nt_dilation = 1.0 / math.sqrt(1 - (r_s / r))`,
+      chainOfThought: finalizedCot,
+      subagent: {
+        name: plan.name,
+        task: plan.task,
+        model: plan.model,
+        status: "completed",
+        duration: `${randomMs}ms`,
+        tools: [
+          {
+            name: `scan_syntax_tree(file="${fileName}")`,
+            status: "completed",
+            output: "syntax: clean, 0 parse errors",
+          },
+          {
+            name: "check_singularity_guards(terms=['r_s', 'v_over_c'])",
+            status: "completed",
+            output: "warning: division by zero possible if r <= r_s",
+          },
+          {
+            name: "verify_numeric_stability()",
+            status: "completed",
+            output: "recommendation: add guarded exception check",
+          },
+        ],
+        result:
+          "Code diagnostics complete: Syntax tree is valid. Discovered potential coordinate singularity at event horizon ($r \\le R_s$). Guard clause generated below.",
+        attachments: [],
+        code: `if r <= r_s:\n    raise ValueError("Coordinate singularity at event horizon (r <= Rs)")\nt_dilation = 1.0 / math.sqrt(1 - (r_s / r))`,
+      },
     };
   }
 
   if (q.includes("explain") || q.includes("equation") || q.includes("formula")) {
     return {
-      name: plan.name,
-      task: plan.task,
-      model: plan.model,
-      status: "completed",
-      duration: `${randomMs}ms`,
-      tools: [
-        {
-          name: "query_astrophysics_knowledge_base(topic='Schwarzschild')",
-          status: "completed",
-          output: "KB match: Schwarzschild radius formulation",
-        },
-        {
-          name: "derive_metric_tensor(coords=['t', 'r', 'theta', 'phi'])",
-          status: "completed",
-          output: "metric: static spherically symmetric",
-        },
-      ],
-      result: `In "${fileName}", we model relativistic gravitational physics. The Schwarzschild radius defines the spherical boundary where escape velocity reaches $c$:`,
-      attachments: [],
-      code:
-        fileType === "ipynb"
-          ? `# Schwarzschild radius calculation in kilometers\ndef r_schwarzschild(m_solar):\n    # G = 6.674e-11, c = 2.998e8, M_sun = 1.989e30\n    return (2 * 6.674e-11 * m_solar * 1.989e30) / (2.998e8 ** 2) / 1000\n\nprint("Solar mass event horizon:", r_schwarzschild(1.0), "km")`
-          : `$$R_s = \\frac{2GM}{c^2}$$\n\nWhere:\n- $G = 6.67430 \\times 10^{-11}\\text{ m}^3\\text{kg}^{-1}\\text{s}^{-2}$\n- $M$ is the object mass\n- $c = 299,792,458\\text{ m/s}$`,
+      chainOfThought: finalizedCot,
+      subagent: {
+        name: plan.name,
+        task: plan.task,
+        model: plan.model,
+        status: "completed",
+        duration: `${randomMs}ms`,
+        tools: [
+          {
+            name: "query_astrophysics_knowledge_base(topic='Schwarzschild')",
+            status: "completed",
+            output: "KB match: Schwarzschild radius formulation",
+          },
+          {
+            name: "derive_metric_tensor(coords=['t', 'r', 'theta', 'phi'])",
+            status: "completed",
+            output: "metric: static spherically symmetric",
+          },
+        ],
+        result: `In "${fileName}", we model relativistic gravitational physics. The Schwarzschild radius defines the spherical boundary where escape velocity reaches $c$:`,
+        attachments: [],
+        code:
+          fileType === "ipynb"
+            ? `# Schwarzschild radius calculation in kilometers\ndef r_schwarzschild(m_solar):\n    # G = 6.674e-11, c = 2.998e8, M_sun = 1.989e30\n    return (2 * 6.674e-11 * m_solar * 1.989e30) / (2.998e8 ** 2) / 1000\n\nprint("Solar mass event horizon:", r_schwarzschild(1.0), "km")`
+            : `$$R_s = \\frac{2GM}{c^2}$$\n\nWhere:\n- $G = 6.67430 \\times 10^{-11}\\text{ m}^3\\text{kg}^{-1}\\text{s}^{-2}$\n- $M$ is the object mass\n- $c = 299,792,458\\text{ m/s}$`,
+      },
     };
   }
 
   if (q.includes("summarize") || q.includes("summary")) {
     return {
-      name: plan.name,
-      task: plan.task,
-      model: plan.model,
-      status: "completed",
-      duration: `${randomMs}ms`,
-      tools: [
-        {
-          name: `parse_document_outline(target="${fileName}")`,
-          status: "completed",
-          output: `sections: 3, cells: 4`,
-        },
-        {
-          name: "aggregate_workspace_metrics()",
-          status: "completed",
-          output: "ready for live simulation",
-        },
-      ],
-      result: `Summary for "${fileName}":\n• Format: ${
-        fileType === "ipynb"
-          ? "Jupyter Notebook (Executable Python)"
-          : "Markdown Document (Split View)"
-      }\n• Focus: Relativistic mechanics, event horizon curvature, and observational data metrics.\n• Status: Ready for continuous editing and computational simulation.`,
-      attachments: [],
-      code: "",
+      chainOfThought: finalizedCot,
+      subagent: {
+        name: plan.name,
+        task: plan.task,
+        model: plan.model,
+        status: "completed",
+        duration: `${randomMs}ms`,
+        tools: [
+          {
+            name: `parse_document_outline(target="${fileName}")`,
+            status: "completed",
+            output: `sections: 3, cells: 4`,
+          },
+          {
+            name: "aggregate_workspace_metrics()",
+            status: "completed",
+            output: "ready for live simulation",
+          },
+        ],
+        result: `Summary for "${fileName}":\n• Format: ${
+          fileType === "ipynb"
+            ? "Jupyter Notebook (Executable Python)"
+            : "Markdown Document (Split View)"
+        }\n• Focus: Relativistic mechanics, event horizon curvature, and observational data metrics.\n• Status: Ready for continuous editing and computational simulation.`,
+        attachments: [],
+        code: "",
+      },
     };
   }
 
   if (q.includes("plot") || q.includes("chart") || q.includes("graph")) {
     return {
+      chainOfThought: finalizedCot,
+      subagent: {
+        name: plan.name,
+        task: plan.task,
+        model: plan.model,
+        status: "completed",
+        duration: `${randomMs}ms`,
+        tools: [
+          {
+            name: "compute_curvature_density_grid()",
+            status: "completed",
+            output: "grid computed across 1.5 to 10.0 Rs multiples",
+          },
+          {
+            name: "generate_ascii_projection()",
+            status: "completed",
+            output: "5 samples projected",
+          },
+        ],
+        result: "Here is an ASCII and numerical projection of gravitational curvature across distance multiples:",
+        attachments: [
+          {
+            id: "out-plot-1",
+            name: "curvature_gradient_preview.png",
+            variant: "image",
+            sizeStr: "240 KB",
+            description: "PNG · 240 KB · Generated plot",
+            type: "image/png",
+            state: "done",
+            previewUrl:
+              "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='160' viewBox='0 0 240 160'><rect width='240' height='160' fill='%23040408'/><path d='M10 140 Q 60 135 90 80 T 230 20' fill='none' stroke='%23ffd84d' stroke-width='3'/><circle cx='90' cy='80' r='4' fill='%23ff9900'/><text x='120' y='150' fill='%23888888' font-size='9' text-anchor='middle'>SPACETIME CURVATURE VS RADIUS</text></svg>",
+            contentSnippet: "Curvature density: R_curv ~ 1 / r^3 across event horizon multiples.",
+          },
+        ],
+        code: `# Tabular curvature density\nfor mult in [1.5, 2.0, 3.0, 5.0, 10.0]:\n    curvature = 1.0 / (mult ** 3)\n    bar = "█" * int(curvature * 30)\n    print(f"{mult:4.1f} Rs | {curvature:.4f} | {bar}")`,
+      },
+    };
+  }
+
+  return {
+    chainOfThought: finalizedCot,
+    subagent: {
       name: plan.name,
       task: plan.task,
       model: plan.model,
@@ -1133,58 +1465,22 @@ function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAtt
       duration: `${randomMs}ms`,
       tools: [
         {
-          name: "compute_curvature_density_grid()",
+          name: `read_context_slice(file="${fileName}")`,
           status: "completed",
-          output: "grid computed across 1.5 to 10.0 Rs multiples",
+          output: "context extracted: 1.2KB",
         },
         {
-          name: "generate_ascii_projection()",
+          name: `synthesize_response(query="${query.slice(0, 30)}")`,
           status: "completed",
-          output: "5 samples projected",
+          output: "synthesis complete",
         },
       ],
-      result: "Here is an ASCII and numerical projection of gravitational curvature across distance multiples:",
-      attachments: [
-        {
-          id: "out-plot-1",
-          name: "curvature_gradient_preview.png",
-          variant: "image",
-          sizeStr: "240 KB",
-          description: "PNG · 240 KB · Generated plot",
-          type: "image/png",
-          state: "done",
-          previewUrl:
-            "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='160' viewBox='0 0 240 160'><rect width='240' height='160' fill='%23040408'/><path d='M10 140 Q 60 135 90 80 T 230 20' fill='none' stroke='%23ffd84d' stroke-width='3'/><circle cx='90' cy='80' r='4' fill='%23ff9900'/><text x='120' y='150' fill='%23888888' font-size='9' text-anchor='middle'>SPACETIME CURVATURE VS RADIUS</text></svg>",
-          contentSnippet: "Curvature density: R_curv ~ 1 / r^3 across event horizon multiples.",
-        },
-      ],
-      code: `# Tabular curvature density\nfor mult in [1.5, 2.0, 3.0, 5.0, 10.0]:\n    curvature = 1.0 / (mult ** 3)\n    bar = "█" * int(curvature * 30)\n    print(f"{mult:4.1f} Rs | {curvature:.4f} | {bar}")`,
-    };
-  }
-
-  return {
-    name: plan.name,
-    task: plan.task,
-    model: plan.model,
-    status: "completed",
-    duration: `${randomMs}ms`,
-    tools: [
-      {
-        name: `read_context_slice(file="${fileName}")`,
-        status: "completed",
-        output: "context extracted: 1.2KB",
-      },
-      {
-        name: `synthesize_response(query="${query.slice(0, 30)}")`,
-        status: "completed",
-        output: "synthesis complete",
-      },
-    ],
-    result: `The research subagent has drafted a computational block tailored for "${fileName}":`,
-    attachments: [],
-    code:
-      fileType === "ipynb"
-        ? `# Generated by BlackHole Research Subagent\nimport math\n\ndef orbital_velocity(m_central, radius_meters):\n    G = 6.67430e-11\n    return math.sqrt((G * m_central) / radius_meters)\n\n# Earth around Sun\nv_earth = orbital_velocity(1.989e30, 1.496e11)\nprint(f"Earth orbital velocity: {v_earth / 1000:.2f} km/s")`
-        : `### Observational Notes\n- Monitored spectral Doppler relativistic shift in accretion inflow.\n- Observed Doppler beaming factor: $\\delta = [\\gamma (1 - \\beta \\cos \\theta)]^{-1}$.`,
+      result: `The research subagent has drafted a computational block tailored for "${fileName}":`,
+      attachments: [],
+      code:
+        fileType === "ipynb"
+          ? `# Generated by BlackHole Research Subagent\nimport math\n\ndef orbital_velocity(m_central, radius_meters):\n    G = 6.67430e-11\n    return math.sqrt((G * m_central) / radius_meters)\n\n# Earth around Sun\nv_earth = orbital_velocity(1.989e30, 1.496e11)\nprint(f"Earth orbital velocity: {v_earth / 1000:.2f} km/s")`
+          : `### Observational Notes\n- Monitored spectral Doppler relativistic shift in accretion inflow.\n- Observed Doppler beaming factor: $\\delta = [\\gamma (1 - \\beta \\cos \\theta)]^{-1}$.`,
+    },
   };
 }
