@@ -193,13 +193,13 @@ When viewing or editing a `.ipynb` notebook:
 Positioned on the left side of the workspace, the Agentic Assistant provides intelligent co-pilot capabilities:
 * **Context Awareness:** Automatically reads the active document title, type (`.md` or `.ipynb`), and content.
 * **Quick Action Chips:**
-  * ⚡ **Run All:** Triggers batch execution of all notebook cells.
-  * ➕ **Add Cell / Append Note:** Inserts tailored equations or computational code.
-  * 🔍 **Explain:** Explains the active equations (Schwarzschild radius, accretion dynamics, etc.).
-  * 📝 **Summary:** Generates a concise summary of the active document.
-  * 🛠️ **Debug:** Analyzes code for syntax or mathematical edge cases (e.g., coordinate singularities).
+  * **Run All:** Triggers batch execution of all notebook cells.
+  * **Add Cell / Append Note:** Inserts tailored equations or computational code.
+  * **Explain:** Explains the active equations (Schwarzschild radius, accretion dynamics, etc.).
+  * **Summary:** Generates a concise summary of the active document.
+  * **Debug:** Analyzes code for syntax or mathematical edge cases (e.g., coordinate singularities).
 * **Interactive Chat:** Allows freeform prompts with formatted responses.
-* **Direct Document Insertion:** Code blocks in assistant responses include an **"➕ Insert into Document"** button that appends directly into the active editor or notebook.
+* **Direct Document Insertion:** Code blocks in assistant responses include an **"Insert into Document"** button that appends directly into the active editor or notebook.
 * **Collapsible:** Users can collapse the left panel into a mini bar for a full-screen editing experience.
 
 ---
