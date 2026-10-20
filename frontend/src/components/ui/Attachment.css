@@ -1,0 +1,419 @@
+/* ==================================================
+   Attachment Component Styling
+   Solid obsidian dark aesthetic, cosmic yellow accents
+================================================== */
+
+.attachment-root {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #0d0d16;
+  border: 1px solid #1c1c28;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.attachment-root:hover {
+  border-color: rgba(255, 216, 77, 0.4);
+  background: #11111d;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* ==================================================
+   Orientations
+================================================== */
+
+.attachment-horizontal {
+  flex-direction: row;
+  gap: 10px;
+}
+
+.attachment-vertical {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  text-align: left;
+}
+
+/* ==================================================
+   Sizes
+================================================== */
+
+/* Default size */
+.attachment-size-default.attachment-horizontal {
+  height: 52px;
+  padding: 6px 10px;
+  min-width: 190px;
+  max-width: 260px;
+}
+
+.attachment-size-default.attachment-vertical {
+  width: 130px;
+  padding: 8px;
+}
+
+/* Small size (sm) */
+.attachment-size-sm.attachment-horizontal {
+  height: 42px;
+  padding: 4px 8px;
+  min-width: 160px;
+  max-width: 220px;
+}
+
+.attachment-size-sm.attachment-vertical {
+  width: 110px;
+  padding: 6px;
+}
+
+/* Extra Small size (xs) */
+.attachment-size-xs.attachment-horizontal {
+  height: 34px;
+  padding: 3px 6px;
+  min-width: 130px;
+  max-width: 180px;
+}
+
+.attachment-size-xs.attachment-vertical {
+  width: 90px;
+  padding: 5px;
+}
+
+/* ==================================================
+   States
+================================================== */
+
+.attachment-state-idle {
+  opacity: 0.8;
+}
+
+.attachment-state-uploading,
+.attachment-state-processing {
+  border-color: rgba(255, 216, 77, 0.35);
+  background: #0c0b05;
+}
+
+.attachment-state-error {
+  border-color: rgba(240, 75, 75, 0.5);
+  background: #180909;
+}
+
+.attachment-state-error:hover {
+  border-color: rgba(240, 75, 75, 0.8);
+}
+
+.attachment-state-done {
+  border-color: #1e1e2d;
+}
+
+/* ==================================================
+   Media (Icon or Image)
+================================================== */
+
+.attachment-media {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: #151522;
+  color: #ffd84d;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.attachment-media svg {
+  stroke-width: 2;
+}
+
+/* Icon variant sizing */
+.media-size-default {
+  width: 36px;
+  height: 36px;
+}
+.media-size-default svg {
+  width: 18px;
+  height: 18px;
+}
+
+.media-size-sm {
+  width: 28px;
+  height: 28px;
+}
+.media-size-sm svg {
+  width: 15px;
+  height: 15px;
+}
+
+.media-size-xs {
+  width: 22px;
+  height: 22px;
+}
+.media-size-xs svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Image variant */
+.media-image {
+  background: #08080c;
+}
+
+.media-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.attachment-vertical .media-size-default {
+  width: 100%;
+  height: 80px;
+}
+
+.attachment-vertical .media-size-sm {
+  width: 100%;
+  height: 64px;
+}
+
+.attachment-vertical .media-size-xs {
+  width: 100%;
+  height: 50px;
+}
+
+/* Media Shimmer overlay for in-progress uploads */
+.attachment-media-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 216, 77, 0.25) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: attachmentShimmer 1.4s infinite;
+}
+
+/* ==================================================
+   Content (Title & Description)
+================================================== */
+
+.attachment-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  flex: 1;
+  gap: 2px;
+  z-index: 1;
+}
+
+.attachment-title {
+  color: #ffffff;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.1px;
+}
+
+.attachment-size-sm .attachment-title {
+  font-size: 10.5px;
+}
+
+.attachment-size-xs .attachment-title {
+  font-size: 9.5px;
+}
+
+/* Title Shimmer Effect */
+.attachment-title-shimmer {
+  background: linear-gradient(
+    90deg,
+    #ffd84d 0%,
+    #ffffff 50%,
+    #ffd84d 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: attachmentShimmer 1.5s infinite;
+}
+
+@keyframes attachmentShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.attachment-description {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 9.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.attachment-size-sm .attachment-description {
+  font-size: 8.5px;
+}
+
+.attachment-size-xs .attachment-description {
+  font-size: 8px;
+}
+
+.description-error {
+  color: #ff6e6e !important;
+  font-weight: 500;
+}
+
+/* ==================================================
+   Actions (Close, Download, More)
+================================================== */
+
+.attachment-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  z-index: 3;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.attachment-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background: #161622;
+  border: 1px solid #242436;
+  color: rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.attachment-action:hover {
+  background: #ffd84d;
+  color: #000000;
+  border-color: #ffd84d;
+}
+
+/* Action sizes */
+.action-size-icon-xs {
+  width: 20px;
+  height: 20px;
+}
+.action-size-icon-xs svg {
+  width: 11px;
+  height: 11px;
+}
+
+.action-size-icon-sm {
+  width: 24px;
+  height: 24px;
+}
+.action-size-icon-sm svg {
+  width: 13px;
+  height: 13px;
+}
+
+.action-size-default {
+  width: 28px;
+  height: 28px;
+}
+.action-size-default svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* ==================================================
+   Trigger (Full Card Overlay Behind Actions)
+================================================== */
+
+.attachment-trigger {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+  outline: none;
+  padding: 0;
+  margin: 0;
+}
+
+.attachment-trigger:focus-visible {
+  box-shadow: inset 0 0 0 2px #ffd84d;
+}
+
+.attachment-trigger-wrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+}
+
+.attachment-trigger-wrapper > * {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  outline: none;
+}
+
+/* ==================================================
+   Attachment Group (Scrollable Row with Edge Fade)
+================================================== */
+
+.attachment-group {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #242436 transparent;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding: 2px 0;
+  outline: none;
+}
+
+.attachment-group::-webkit-scrollbar {
+  height: 3px;
+}
+
+.attachment-group::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.attachment-group::-webkit-scrollbar-thumb {
+  background: #242436;
+  border-radius: 3px;
+}
+
+.attachment-group:hover::-webkit-scrollbar-thumb {
+  background: #ffd84d;
+}
+
+.attachment-group-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  min-width: 100%;
+}
+
+.attachment-group-inner > .attachment-root {
+  scroll-snap-align: start;
+}

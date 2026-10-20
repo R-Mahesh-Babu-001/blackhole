@@ -1,4 +1,13 @@
 import { createContext, useContext, useState } from "react";
+import {
+  Attachment,
+  AttachmentMedia,
+  AttachmentContent,
+  AttachmentTitle,
+  AttachmentDescription,
+  AttachmentTrigger,
+  AttachmentGroup,
+} from "./Attachment";
 import "./Trace.css";
 
 // Collapsible Context for open/close state
@@ -128,7 +137,9 @@ export function Subagent({
   duration = "",
   result = "",
   code = "",
+  attachments = [],
   onInsertCode = null,
+  onPreviewAttachment = null,
   activeFileType = "ipynb",
   defaultOpen = true,
 }) {
@@ -205,6 +216,48 @@ export function Subagent({
           {result && (
             <div className="subagent-result-box">
               <div className="result-text">{result}</div>
+            </div>
+          )}
+
+          {/* Subagent Output Attachments */}
+          {attachments && attachments.length > 0 && (
+            <div className="subagent-attachments-container">
+              <span className="tools-heading">ATTACHMENTS / ARTIFACTS:</span>
+              <AttachmentGroup className="subagent-attachment-group">
+                {attachments.map((att) => (
+                  <Attachment
+                    key={att.id || att.name}
+                    size="sm"
+                    state={att.state || "done"}
+                    orientation="horizontal"
+                  >
+                    <AttachmentMedia variant={att.variant || "icon"}>
+                      {att.variant === "image" && att.previewUrl ? (
+                        <img src={att.previewUrl} alt={att.name} />
+                      ) : (
+                        att.icon || (
+                          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                          </svg>
+                        )
+                      )}
+                    </AttachmentMedia>
+                    <AttachmentContent>
+                      <AttachmentTitle>{att.name}</AttachmentTitle>
+                      <AttachmentDescription>
+                        {att.description || att.sizeStr || "Ready"}
+                      </AttachmentDescription>
+                    </AttachmentContent>
+                    {onPreviewAttachment && (
+                      <AttachmentTrigger
+                        aria-label={`Preview ${att.name}`}
+                        onClick={() => onPreviewAttachment(att)}
+                      />
+                    )}
+                  </Attachment>
+                ))}
+              </AttachmentGroup>
             </div>
           )}
 

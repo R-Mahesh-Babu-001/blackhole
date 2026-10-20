@@ -378,3 +378,15 @@
   white-space: pre-wrap;
   word-break: break-all;
 }
+
+/* Subagent Attachments Container */
+.subagent-attachments-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.subagent-attachment-group {
+  padding-bottom: 2px;
+}
