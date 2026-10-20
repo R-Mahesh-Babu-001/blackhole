@@ -91,6 +91,8 @@ import "./AgenticAssistant.css";
 
 const MODEL_CONTEXT_LIMIT = 128000;
 const MODEL_ID = "gemini-1.5-flash";
+const DEFAULT_PANEL_WIDTH = 420;
+const PRESET_PANEL_WIDTHS = [360, 440, 620, 820];
 
 export default function AgenticAssistant({
   activeFileType,
@@ -101,6 +103,61 @@ export default function AgenticAssistant({
   isOpen,
   onToggle,
 }) {
+  const [panelWidth, setPanelWidth] = useState(() => {
+    if (typeof window === "undefined") return DEFAULT_PANEL_WIDTH;
+    try {
+      const saved = localStorage.getItem("blackhole_assistant_width");
+      const num = Number(saved);
+      return num && num >= 300 && num <= 1200 ? num : DEFAULT_PANEL_WIDTH;
+    } catch {
+      return DEFAULT_PANEL_WIDTH;
+    }
+  });
+  const [isResizing, setIsResizing] = useState(false);
+
+  const handleMouseDownResizer = (e) => {
+    e.preventDefault();
+    setIsResizing(true);
+  };
+
+  useEffect(() => {
+    if (!isResizing) return;
+
+    const handleMouseMove = (e) => {
+      const maxAllowed = Math.max(340, window.innerWidth - 240);
+      const newWidth = Math.min(Math.max(300, e.clientX), maxAllowed);
+      setPanelWidth(newWidth);
+      try {
+        localStorage.setItem("blackhole_assistant_width", String(Math.round(newWidth)));
+      } catch {
+        // ignore
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isResizing]);
+
+  const handleCycleWidth = () => {
+    const currentIdx = PRESET_PANEL_WIDTHS.findIndex((w) => Math.abs(w - panelWidth) < 40);
+    const nextIdx = currentIdx === -1 ? 1 : (currentIdx + 1) % PRESET_PANEL_WIDTHS.length;
+    const nextWidth = PRESET_PANEL_WIDTHS[nextIdx];
+    setPanelWidth(nextWidth);
+    try {
+      localStorage.setItem("blackhole_assistant_width", String(nextWidth));
+    } catch {
+      // ignore
+    }
+  };
+
   const [inputMessage, setInputMessage] = useState("");
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [selectedAttachment, setSelectedAttachment] = useState(null);
@@ -719,7 +776,22 @@ export default function AgenticAssistant({
 
   return (
     <aside
-      className={`agentic-assistant-panel ${isOpen ? "assistant-open" : "assistant-collapsed"}`}
+      className={`agentic-assistant-panel ${isOpen ? "assistant-open" : "assistant-collapsed"} ${isResizing ? "resizing" : ""}`}
+      style={
+        isOpen
+          ? {
+              "--assistant-width": `${panelWidth}px`,
+              width: `${panelWidth}px`,
+              minWidth: `${panelWidth}px`,
+              maxWidth: `${panelWidth}px`,
+            }
+          : undefined
+      }
+      onClick={(e) => {
+        if (!isOpen && onToggle && (e.target === e.currentTarget || e.target.closest(".assistant-brand"))) {
+          onToggle();
+        }
+      }}
       aria-label="Agentic Workspace Assistant"
     >
       {/* Panel Header */}
@@ -742,6 +814,23 @@ export default function AgenticAssistant({
         </div>
 
         <div className="assistant-header-controls">
+          {isOpen && (
+            <button
+              type="button"
+              className="assistant-width-toggle-btn"
+              onClick={handleCycleWidth}
+              title={`Cycle width (${Math.round(panelWidth)}px) - Compact / Standard / Wide / Max`}
+              aria-label="Cycle assistant width"
+            >
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="15 3 21 3 21 9" />
+                <polyline points="9 21 3 21 3 15" />
+                <line x1="21" y1="3" x2="14" y2="10" />
+                <line x1="3" y1="21" x2="10" y2="14" />
+              </svg>
+            </button>
+          )}
+
           <button
             type="button"
             className="assistant-toggle-btn"
@@ -1554,6 +1643,24 @@ export default function AgenticAssistant({
             </div>
           )}
         </>
+      )}
+
+      {isOpen && (
+        <div
+          className={`assistant-resizer ${isResizing ? "resizing" : ""}`}
+          onMouseDown={handleMouseDownResizer}
+          onDoubleClick={() => {
+            setPanelWidth(DEFAULT_PANEL_WIDTH);
+            try {
+              localStorage.setItem("blackhole_assistant_width", String(DEFAULT_PANEL_WIDTH));
+            } catch {
+              // ignore
+            }
+          }}
+          title="Drag to resize assistant panel (Double-click to reset to default)"
+          role="separator"
+          aria-orientation="vertical"
+        />
       )}
     </aside>
   );

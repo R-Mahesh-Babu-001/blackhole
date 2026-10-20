@@ -668,6 +668,20 @@ export default function DocumentWorkspace({
         {/* Top Workspace Toolbar */}
         <header className="workspace-toolbar">
           <div className="toolbar-left">
+            {!isAssistantOpen && (
+              <button
+                type="button"
+                className="toolbar-action-btn assistant-reopen-btn"
+                onClick={() => setIsAssistantOpen(true)}
+                title="Open Agentic Assistant"
+                aria-label="Open Agentic Assistant"
+              >
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span>Assistant</span>
+              </button>
+            )}
             <div className="workspace-brand-cluster">
               <span className="workspace-brand-word">
                 <span className="workspace-brand-dot" />

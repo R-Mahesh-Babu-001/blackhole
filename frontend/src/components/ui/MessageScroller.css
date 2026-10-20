@@ -12,6 +12,7 @@
   flex-direction: column;
   overflow: hidden;
   min-height: 0;
+  min-width: 0;
   flex: 1;
 }
 
@@ -24,6 +25,7 @@
   scroll-behavior: smooth;
   position: relative;
   background: #000000;
+  min-width: 0;
 }
 
 .ui-message-scroller-viewport::-webkit-scrollbar {
@@ -46,10 +48,13 @@
   padding: 14px;
   gap: 12px;
   box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
 }
 
 .ui-message-scroller-item {
   width: 100%;
+  min-width: 0;
   box-sizing: border-box;
 }
 

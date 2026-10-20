@@ -106,6 +106,7 @@
   min-width: 0;
   font-size: 12px;
   line-height: 1.4;
+  flex-wrap: wrap;
 }
 
 .trace-icon {
@@ -160,9 +161,11 @@
   color: #ffffff;
   font-weight: 600;
   font-size: 12px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.4;
 }
 
 .trace-status-running .trace-title {
@@ -213,8 +216,8 @@
   color: rgba(255, 255, 255, 0.45);
   font-size: 11px;
   margin-left: 6px;
-  white-space: nowrap;
-  flex-shrink: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 /* ==================================================
@@ -264,14 +267,16 @@
   align-items: center;
   min-width: 0;
   flex: 1;
-  gap: 4px;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .subagent-badges-strip {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-left: 8px;
+  margin-left: auto;
+  flex-wrap: wrap;
 }
 
 .subagent-task-header {
@@ -355,7 +360,9 @@
 .result-text {
   font-size: 11.5px;
   color: rgba(255, 255, 255, 0.92);
-  line-height: 1.5;
+  line-height: 1.55;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Code Block with 1-click Insert */
@@ -364,6 +371,7 @@
   background: #000000;
   border: 1px solid #1c1c1c;
   overflow: hidden;
+  max-width: 100%;
 }
 
 .code-block-header {
@@ -413,7 +421,8 @@
   color: #ffffff;
   overflow-x: auto;
   white-space: pre-wrap;
-  word-break: break-all;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Subagent Attachments Container */

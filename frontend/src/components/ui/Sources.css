@@ -136,9 +136,9 @@
   font-weight: 600;
   color: #ffffff;
   line-height: 1.35;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .source-snippet {

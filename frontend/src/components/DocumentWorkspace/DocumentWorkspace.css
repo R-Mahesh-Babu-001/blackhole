@@ -212,7 +212,8 @@
 }
 
 .upload-trigger-btn,
-.import-trigger-btn {
+.import-trigger-btn,
+.assistant-reopen-btn {
   color: #ffffff;
   background: #121212;
   border: 1px solid #222230;

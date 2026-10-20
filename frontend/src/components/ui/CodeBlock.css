@@ -8,6 +8,8 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   border-radius: 8px;
   background: #000000;
   border: 1px solid #1c1c1c;
@@ -196,6 +198,9 @@
   overflow-y: hidden;
   background: transparent;
   outline: none;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .code-block-content code {
@@ -203,6 +208,7 @@
   font-size: inherit;
   line-height: inherit;
   display: block;
+  min-width: 0;
 }
 
 .code-block-scroll {
@@ -211,7 +217,8 @@
 
 .code-block-wrap {
   white-space: pre-wrap;
-  word-break: break-all;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .code-content-collapsed {

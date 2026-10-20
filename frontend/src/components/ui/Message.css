@@ -8,6 +8,8 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   box-sizing: border-box;
   margin: 4px 0;
   animation: messageFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -39,8 +41,11 @@
 .ui-message-content {
   display: flex;
   flex-direction: column;
-  max-width: 96%;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   gap: 6px;
+  box-sizing: border-box;
 }
 
 .message-align-end .ui-message-content {
@@ -63,7 +68,9 @@
   font-size: 12.5px;
   line-height: 1.5;
   word-break: break-word;
+  overflow-wrap: break-word;
   box-sizing: border-box;
+  max-width: 100%;
   transition: all 0.18s ease;
 }
 
