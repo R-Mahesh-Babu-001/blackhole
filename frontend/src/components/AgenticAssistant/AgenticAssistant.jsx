@@ -90,6 +90,7 @@ import { getBackendBaseUrl } from "../../services/api";
 import "./AgenticAssistant.css";
 
 const MODEL_CONTEXT_LIMIT = 128000;
+const MODEL_ID = "gemini-1.5-flash";
 
 export default function AgenticAssistant({
   activeFileType,
@@ -777,7 +778,7 @@ export default function AgenticAssistant({
                 usedTokens={cumulativeUsage.totalUsed}
                 maxTokens={MODEL_CONTEXT_LIMIT}
                 usage={cumulativeUsage}
-                modelId={MODEL_ID}
+                modelId={selectedModel || MODEL_ID}
                 triggerClassName="context-bar-trigger"
               />
             </div>
@@ -1106,7 +1107,7 @@ export default function AgenticAssistant({
                                       usedTokens={(msg.metadata.usage.inputTokens || 0) + (msg.metadata.usage.outputTokens || 0)}
                                       maxTokens={MODEL_CONTEXT_LIMIT}
                                       usage={msg.metadata.usage}
-                                      modelId={MODEL_ID}
+                                      modelId={msg.metadata?.model || selectedModel || MODEL_ID}
                                     >
                                       <ContextTrigger
                                         render={
