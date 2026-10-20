@@ -1,0 +1,106 @@
+/* ==================================================
+   Confirmation Component Styles
+   shadcn AI Elements - Asks for approval before a tool runs
+   Obsidian dark theme with glowing state indicators
+================================================== */
+
+.confirmation-wrapper {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  box-sizing: border-box;
+  animation: confirmationFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes confirmationFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tool-confirmation-card {
+  width: 100%;
+}
+
+/* Approval Requested State */
+.confirmation-state-approval-requested .confirmation-item {
+  border-color: rgba(255, 216, 77, 0.28);
+  background: linear-gradient(180deg, #0d0d14 0%, #08080c 100%);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), 0 0 16px rgba(255, 216, 77, 0.05);
+}
+
+.confirmation-state-approval-requested .confirmation-item:hover {
+  border-color: rgba(255, 216, 77, 0.45);
+}
+
+/* Resolved Trace Integration */
+.confirmation-resolved-trace {
+  margin: 4px 0 !important;
+  background: #09090e;
+  border-radius: 8px;
+  border: 1px solid #1a1a26;
+}
+
+/* Status Badges */
+.confirmation-approved-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+.confirmation-denied-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+/* Tool Execution Output Container */
+.confirmation-tool-output {
+  margin: 6px 10px 10px 10px;
+  padding: 10px 12px;
+  background: #040407;
+  border: 1px solid #1f1f2e;
+  border-radius: 6px;
+  overflow-x: auto;
+  max-height: 220px;
+}
+
+.confirmation-tool-output pre {
+  margin: 0;
+  padding: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #e2e8f0;
+}
+
+.confirmation-tool-output code {
+  font-family: inherit;
+  color: inherit;
+  white-space: pre;
+}

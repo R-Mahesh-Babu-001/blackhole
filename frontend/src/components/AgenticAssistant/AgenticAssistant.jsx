@@ -23,6 +23,7 @@ import {
   CodeBlockLine,
   CodeBlockCard,
 } from "../ui/CodeBlock";
+import { ToolConfirmation } from "../ui/Confirmation";
 import "./AgenticAssistant.css";
 
 export default function AgenticAssistant({
@@ -120,6 +121,96 @@ export default function AgenticAssistant({
     }
   };
 
+  /**
+   * Handle user approving a tool run (shadcn AI Elements Confirmation)
+   * The question was an Item with Deny and Approve buttons.
+   * Once approved, the call becomes an approved Tool line with streamed output.
+   */
+  const handleApproveConfirmation = (messageId) => {
+    setMessages((prev) =>
+      prev.map((msg) => {
+        if (msg.id === messageId && msg.confirmation) {
+          const cmd = msg.confirmation.command || "command";
+          const finalOutput =
+            msg.confirmation.output ||
+            `[stdout]\nExecuting: ${cmd}\nTask completed with exit code 0.`;
+          return {
+            ...msg,
+            confirmation: {
+              ...msg.confirmation,
+              state: "approved",
+              output: finalOutput,
+            },
+            text: msg.text
+              ? `${msg.text}\n\nApproved: Removed the dist folder.`
+              : `Removed the dist folder. Command "${cmd}" finished with status 0.`,
+          };
+        }
+        return msg;
+      })
+    );
+  };
+
+  /**
+   * Handle user denying a tool run (shadcn AI Elements Confirmation)
+   * Once denied, the call becomes a denied Tool line.
+   */
+  const handleDenyConfirmation = (messageId) => {
+    setMessages((prev) =>
+      prev.map((msg) => {
+        if (msg.id === messageId && msg.confirmation) {
+          return {
+            ...msg,
+            confirmation: {
+              ...msg.confirmation,
+              state: "denied",
+            },
+            text: msg.text
+              ? `${msg.text}\n\nOkay, I left the dist folder in place.`
+              : "Okay, I left the dist folder in place. Operation was cancelled.",
+          };
+        }
+        return msg;
+      })
+    );
+  };
+
+  /**
+   * Request confirmation for a tool call (demonstrating AI Elements Confirmation)
+   */
+  const handleRequestConfirmation = (
+    command = "rm -rf dist",
+    description = "The command runs in this project."
+  ) => {
+    const userMsgId = Date.now().toString();
+    const assistantMsgId = (Date.now() + 1).toString();
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: userMsgId,
+        role: "user",
+        text: `Clean up the build folder.`,
+        attachments: [],
+      },
+      {
+        id: assistantMsgId,
+        role: "assistant",
+        text: "I am ready to clean up the build folder, but this action requires your explicit approval.",
+        confirmation: {
+          id: `approval-${Date.now()}`,
+          command,
+          description,
+          state: "approval-requested",
+          output: `[stdout]\n$ ${command}\nCleaned up 16 build artifacts in dist/\nDone in 42ms. Exit code 0.`,
+        },
+        checkpoint: {
+          label: "Tool approval requested",
+        },
+      },
+    ]);
+  };
+
   const handleSendMessage = (textToSend) => {
     const text = (textToSend || inputMessage).trim();
     if (!text && attachedFiles.length === 0) return;
@@ -129,6 +220,50 @@ export default function AgenticAssistant({
 
     const currentAttachments = [...attachedFiles];
     setAttachedFiles([]); // Clear composer attachments
+
+    const lowerText = text.toLowerCase();
+    const isConfirmationRequest =
+      lowerText.includes("clean") ||
+      lowerText.includes("rm -rf") ||
+      lowerText.includes("build folder") ||
+      lowerText.includes("confirm") ||
+      lowerText.includes("approval") ||
+      lowerText.includes("approve") ||
+      lowerText.includes("deny");
+
+    if (isConfirmationRequest && !lowerText.includes("trace")) {
+      const targetCmd = lowerText.includes("rm") || lowerText.includes("clean")
+        ? "rm -rf dist"
+        : `python -m sandbox.execute --file "${activeFileName}"`;
+      const targetDesc = "The command runs in this project.";
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: userMsgId,
+          role: "user",
+          text: text,
+          attachments: currentAttachments,
+        },
+        {
+          id: assistantMsgId,
+          role: "assistant",
+          text: "I can run that tool, but it requires approval before execution in this workspace.",
+          confirmation: {
+            id: `approval-${Date.now()}`,
+            command: targetCmd,
+            description: targetDesc,
+            state: "approval-requested",
+            output: `[stdout]\n$ ${targetCmd}\nExecuting task...\nOperation completed successfully with exit code 0.`,
+          },
+          checkpoint: {
+            label: `Approval requested: ${targetCmd}`,
+          },
+        },
+      ]);
+      setInputMessage("");
+      return;
+    }
 
     const plan = planSubagentForQuery(
       text || `Analyze attached ${currentAttachments.map((a) => a.name).join(", ")}`,
@@ -357,26 +492,38 @@ export default function AgenticAssistant({
               <div className="assistant-empty-slate">
                 <div className="empty-slate-badge">
                   <span className="empty-badge-dot" />
-                  <span>TRACE READY</span>
+                  <span>TRACE & CONFIRMATION READY</span>
                 </div>
                 <h4>Agentic Assistant</h4>
                 <p>
-                  Powered by <strong>Trace</strong> for step-by-step reasoning, tool execution, and source attribution.
+                  Powered by <strong>Trace</strong> and <strong>Confirmation</strong> for step-by-step reasoning and tool approval flows.
                 </p>
-                <button
-                  type="button"
-                  className="empty-run-trace-btn"
-                  onClick={() =>
-                    handleSendMessage(
-                      `Run agent execution trace on active document "${activeFileName}"`
-                    )
-                  }
-                >
-                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                  </svg>
-                  <span>Run Agent Trace</span>
-                </button>
+                <div className="empty-slate-actions">
+                  <button
+                    type="button"
+                    className="empty-run-trace-btn"
+                    onClick={() =>
+                      handleSendMessage(
+                        `Run agent execution trace on active document "${activeFileName}"`
+                      )
+                    }
+                  >
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                    </svg>
+                    <span>Run Agent Trace</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="empty-run-confirm-btn"
+                    onClick={() => handleRequestConfirmation("rm -rf dist", "The command runs in this project.")}
+                  >
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                    <span>Ask for Tool Approval</span>
+                  </button>
+                </div>
               </div>
             ) : (
               messages.map((msg) => {
@@ -385,6 +532,21 @@ export default function AgenticAssistant({
                     {/* Assistant Turn */}
                     {msg.role === "assistant" && (
                       <div className="assistant-msg-bundle">
+                        {/* Tool Confirmation Item (shadcn AI Elements Confirmation) */}
+                        {msg.confirmation && (
+                          <div className="assistant-confirmation-wrapper">
+                            <ToolConfirmation
+                              id={msg.confirmation.id}
+                              command={msg.confirmation.command}
+                              description={msg.confirmation.description}
+                              state={msg.confirmation.state}
+                              output={msg.confirmation.output}
+                              onApprove={() => handleApproveConfirmation(msg.id)}
+                              onDeny={() => handleDenyConfirmation(msg.id)}
+                            />
+                          </div>
+                        )}
+
                         {/* Render Agentic Trace Steps Component */}
                         {msg.trace && (
                           <div className="assistant-trace-wrapper">
@@ -462,8 +624,13 @@ export default function AgenticAssistant({
                       )}
 
                       {/* Fallback bubble if plain message text exists */}
-                      {!msg.subagent && !msg.chainOfThought && msg.text && (
+                      {!msg.subagent && !msg.chainOfThought && !msg.confirmation && msg.text && (
                         <div className="assistant-msg-bubble ai-bubble">
+                          <div className="bubble-text">{msg.text}</div>
+                        </div>
+                      )}
+                      {msg.confirmation && msg.text && (
+                        <div className="assistant-msg-bubble ai-bubble" style={{ marginTop: "6px" }}>
                           <div className="bubble-text">{msg.text}</div>
                         </div>
                       )}
@@ -644,6 +811,22 @@ export default function AgenticAssistant({
                   <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
                 </svg>
                 <span>Trace</span>
+              </button>
+
+              {/* Confirmation Action Button */}
+              <button
+                type="button"
+                className="assistant-action-btn-confirm"
+                title="Request Tool Confirmation (AI Elements Confirmation)"
+                aria-label="Request Tool Confirmation"
+                onClick={() => {
+                  handleRequestConfirmation();
+                }}
+              >
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                <span>Confirm</span>
               </button>
 
               <textarea

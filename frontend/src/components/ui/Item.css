@@ -1,0 +1,221 @@
+/* ==================================================
+   Item & Button Component Styles
+   Obsidian black aesthetic with cosmic yellow accents
+================================================== */
+
+.ui-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+/* Item Variants */
+.item-variant-default {
+  background: #09090e;
+  border: 1px solid #1a1a26;
+}
+
+.item-variant-outline {
+  background: #07070b;
+  border: 1px solid #222232;
+}
+
+.item-variant-outline:hover {
+  border-color: #33334a;
+}
+
+.item-variant-solid {
+  background: #101018;
+  border: 1px solid transparent;
+}
+
+/* Item Sizes */
+.item-size-sm {
+  padding: 8px 12px;
+  border-radius: 7px;
+  gap: 10px;
+}
+
+.item-size-default {
+  padding: 12px 14px;
+}
+
+.item-size-lg {
+  padding: 16px 18px;
+}
+
+/* Item Media (Icon / Avatar slot) */
+.ui-item-media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.item-media-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(255, 216, 77, 0.1);
+  border: 1px solid rgba(255, 216, 77, 0.25);
+  color: #ffd84d;
+}
+
+.item-size-sm .item-media-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Item Content */
+.ui-item-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ui-item-title {
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-size-sm .ui-item-title {
+  font-size: 12px;
+}
+
+.ui-item-description {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.item-size-sm .ui-item-description {
+  font-size: 10.5px;
+}
+
+/* Item Actions */
+.ui-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* ==================================================
+   Button Styles
+================================================== */
+
+.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  transition: all 0.18s ease;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.ui-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Button Variants */
+.btn-variant-default {
+  background: #ffd84d;
+  color: #040406;
+  border: 1px solid #ffd84d;
+}
+
+.btn-variant-default:hover:not(:disabled) {
+  background: #ffe36e;
+  box-shadow: 0 0 10px rgba(255, 216, 77, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-variant-outline {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid #28283a;
+}
+
+.btn-variant-outline:hover:not(:disabled) {
+  background: #141420;
+  color: #ffffff;
+  border-color: #3e3e56;
+}
+
+.btn-variant-secondary {
+  background: #141420;
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid #242436;
+}
+
+.btn-variant-secondary:hover:not(:disabled) {
+  background: #1c1c2c;
+  color: #ffffff;
+}
+
+.btn-variant-destructive {
+  background: rgba(255, 90, 90, 0.15);
+  color: #ff7070;
+  border: 1px solid rgba(255, 90, 90, 0.3);
+}
+
+.btn-variant-destructive:hover:not(:disabled) {
+  background: rgba(255, 90, 90, 0.25);
+  border-color: #ff7070;
+}
+
+.btn-variant-ghost {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid transparent;
+}
+
+.btn-variant-ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+/* Button Sizes */
+.btn-size-sm {
+  height: 26px;
+  padding: 0 9px;
+  font-size: 11px;
+}
+
+.btn-size-default {
+  height: 32px;
+  padding: 0 14px;
+  font-size: 12px;
+}
+
+.btn-size-lg {
+  height: 38px;
+  padding: 0 18px;
+  font-size: 13px;
+}
+
+.btn-size-icon {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+}
