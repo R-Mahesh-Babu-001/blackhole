@@ -13,6 +13,16 @@ import {
 } from "../ui/Attachment";
 import { ChainOfThoughtBlock } from "../ui/ChainOfThought";
 import { Checkpoint } from "../ui/Checkpoint";
+import {
+  CodeBlock,
+  CodeBlockHeader,
+  CodeBlockTitle,
+  CodeBlockActions,
+  CodeBlockCopyButton,
+  CodeBlockContent,
+  CodeBlockLine,
+  CodeBlockCard,
+} from "../ui/CodeBlock";
 import "./AgenticAssistant.css";
 
 // Realistic astrophysical research sample attachments for quick testing
@@ -327,6 +337,7 @@ export default function AgenticAssistant({
                 chainOfThought: completedPlan.chainOfThought,
                 subagent: completedPlan.subagent,
                 checkpoint: completedPlan.checkpoint,
+                diffLines: completedPlan.diffLines,
               }
             : msg
         )
@@ -743,6 +754,41 @@ print(f"Gravitational Potential: {u:.3e} Joules")`;
                         </div>
                       )}
 
+                      {/* Render diff lines visualization if available */}
+                      {msg.diffLines && (
+                        <div style={{ marginTop: "6px" }}>
+                          <CodeBlock size="sm">
+                            <CodeBlockHeader>
+                              <CodeBlockTitle>
+                                <span className="lang-tag">diff</span>
+                                <span className="title-text">singularity_guard.py</span>
+                              </CodeBlockTitle>
+                              <CodeBlockActions>
+                                <CodeBlockCopyButton value={msg.subagent?.code || ""} />
+                              </CodeBlockActions>
+                            </CodeBlockHeader>
+                            <CodeBlockContent>
+                              {msg.diffLines.map((line, lIdx) => (
+                                <CodeBlockLine key={lIdx} variant={line.variant} lineNumber={lIdx + 1}>
+                                  {line.text}
+                                </CodeBlockLine>
+                              ))}
+                            </CodeBlockContent>
+                          </CodeBlock>
+                        </div>
+                      )}
+
+                      {/* Standalone code without subagent */}
+                      {!msg.subagent && msg.code && (
+                        <CodeBlockCard
+                          title={activeFileType === "ipynb" ? "simulation_cell.py" : "relativistic_notes.md"}
+                          language={activeFileType === "ipynb" ? "python" : "markdown"}
+                          code={msg.code}
+                          lineNumbers={true}
+                          onInsert={onInsertSnippet}
+                        />
+                      )}
+
                       {/* Fallback bubble if plain message text exists */}
                       {!msg.subagent && !msg.chainOfThought && msg.text && (
                         <div className="assistant-msg-bubble ai-bubble">
@@ -790,25 +836,13 @@ print(f"Gravitational Potential: {u:.3e} Joules")`;
                       )}
 
                       {msg.code && (
-                        <div className="bubble-code-container">
-                          <pre className="bubble-code">
-                            <code>{msg.code}</code>
-                          </pre>
-                          <button
-                            type="button"
-                            className="insert-code-btn"
-                            onClick={() =>
-                              onInsertSnippet &&
-                              onInsertSnippet(
-                                msg.code,
-                                activeFileType === "ipynb" ? "code" : "markdown"
-                              )
-                            }
-                            title="Insert this snippet directly into your active document"
-                          >
-                            + Insert into Document
-                          </button>
-                        </div>
+                        <CodeBlockCard
+                          size="sm"
+                          title="user_snippet.py"
+                          language={activeFileType === "ipynb" ? "python" : "markdown"}
+                          code={msg.code}
+                          lineNumbers={true}
+                        />
                       )}
                     </div>
                   )}
@@ -1438,6 +1472,15 @@ function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAtt
         attachments: [],
         code: `if r <= r_s:\n    raise ValueError("Coordinate singularity at event horizon (r <= Rs)")\nt_dilation = 1.0 / math.sqrt(1 - (r_s / r))`,
       },
+      diffLines: [
+        { text: "def calculate_lorentz_dilation(r, r_s):", variant: "default" },
+        { text: "    # Previous unguarded formulation (coordinate singularity risk):", variant: "default" },
+        { text: "    t_dilation = 1.0 / math.sqrt(1 - (r_s / r))", variant: "removed" },
+        { text: "    # Guarded against coordinate singularity:", variant: "default" },
+        { text: "    if r <= r_s:", variant: "added" },
+        { text: "        raise ValueError('Coordinate singularity at event horizon r <= Rs')", variant: "added" },
+        { text: "    return 1.0 / math.sqrt(1 - (r_s / r))", variant: "added" },
+      ],
     };
   }
 

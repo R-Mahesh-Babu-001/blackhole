@@ -8,6 +8,7 @@ import {
   AttachmentTrigger,
   AttachmentGroup,
 } from "./Attachment";
+import { CodeBlockCard } from "./CodeBlock";
 import "./Trace.css";
 
 // Collapsible Context for open/close state
@@ -261,31 +262,15 @@ export function Subagent({
             </div>
           )}
 
-          {/* Generated Code Block with 1-click Insert */}
+          {/* Generated Code Block with 1-click Insert, Copy, and Line Numbers */}
           {code && (
-            <div className="subagent-code-block">
-              <div className="code-block-header">
-                <span className="code-lang-tag">
-                  {activeFileType === "ipynb" ? "python" : "markdown"}
-                </span>
-                {onInsertCode && (
-                  <button
-                    type="button"
-                    className="subagent-insert-btn"
-                    onClick={() => onInsertCode(code, activeFileType === "ipynb" ? "code" : "markdown")}
-                    title="Insert directly into active workspace document"
-                  >
-                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 5v14M5 12h14" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                    <span>Insert into Document</span>
-                  </button>
-                )}
-              </div>
-              <pre className="code-block-pre">
-                <code>{code}</code>
-              </pre>
-            </div>
+            <CodeBlockCard
+              size="sm"
+              language={activeFileType === "ipynb" ? "python" : "markdown"}
+              code={code}
+              lineNumbers={true}
+              onInsert={onInsertCode}
+            />
           )}
         </TraceCollapsibleContent>
       </TraceCollapsible>

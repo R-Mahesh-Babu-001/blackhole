@@ -1,0 +1,309 @@
+/* ==================================================
+   CodeBlock Component Styling
+   Solid obsidian dark aesthetic, cosmic yellow accents
+================================================== */
+
+.code-block-root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-radius: 8px;
+  background: #040408;
+  border: 1px solid #1c1c28;
+  overflow: hidden;
+  margin: 6px 0;
+  box-sizing: border-box;
+}
+
+.code-block-root:hover {
+  border-color: #2a2a3e;
+}
+
+/* Tone Variants */
+.code-block-variant-destructive {
+  border-color: rgba(240, 75, 75, 0.4);
+  background: #0e0505;
+}
+
+.code-block-variant-destructive .lang-tag {
+  color: #ff6e6e !important;
+}
+
+/* Size Variants */
+.code-block-size-sm .code-block-header {
+  padding: 4px 8px;
+}
+
+.code-block-size-sm .code-block-content {
+  padding: 8px 10px;
+  font-size: 10.5px;
+}
+
+.code-block-size-sm .code-line-number {
+  min-width: 20px;
+  margin-right: 8px;
+  font-size: 9.5px;
+}
+
+/* ==================================================
+   Header
+================================================== */
+
+.code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: #090912;
+  border-bottom: 1px solid #161622;
+  min-height: 28px;
+  gap: 8px;
+}
+
+.code-block-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.lang-tag {
+  color: #ffd84d;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: var(--font-terminal);
+}
+
+.title-text {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  font-family: var(--font-terminal);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ==================================================
+   Actions
+================================================== */
+
+.code-block-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* Floating Actions when no header is present */
+.code-block-actions-floating {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  background: rgba(9, 9, 16, 0.85);
+  backdrop-filter: blur(4px);
+  padding: 3px;
+  border-radius: 6px;
+  border: 1px solid #222234;
+}
+
+.code-block-root:hover .code-block-actions-floating,
+.code-block-root:focus-within .code-block-actions-floating {
+  opacity: 1;
+}
+
+/* Buttons inside CodeBlock */
+.code-block-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 4px;
+  border: 1px solid #222232;
+  background: #14141e;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 10px;
+  font-family: var(--font-terminal);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.code-block-btn:hover {
+  background: #202030;
+  color: #ffd84d;
+  border-color: rgba(255, 216, 77, 0.4);
+}
+
+.code-block-btn.active {
+  background: rgba(255, 216, 77, 0.2);
+  color: #ffd84d;
+  border-color: rgba(255, 216, 77, 0.5);
+}
+
+.code-block-copy-btn.copied {
+  background: rgba(255, 216, 77, 0.2);
+  color: #ffd84d;
+  border-color: #ffd84d;
+}
+
+.btn-label {
+  font-size: 9.5px;
+  font-weight: 600;
+}
+
+/* 1-Click Insert Button */
+.code-block-insert-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 4px;
+  border: none;
+  background: #ffd84d;
+  color: #000000;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-terminal);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.code-block-insert-btn:hover {
+  background: #ffe36d;
+  box-shadow: 0 0 10px rgba(255, 216, 77, 0.4);
+}
+
+/* ==================================================
+   Content & Lines
+================================================== */
+
+.code-block-content {
+  margin: 0;
+  padding: 10px 12px;
+  font-family: var(--font-terminal);
+  font-size: 11px;
+  line-height: 1.5;
+  color: #ffd84d;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: transparent;
+  outline: none;
+}
+
+.code-block-content code {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  display: block;
+}
+
+.code-block-scroll {
+  white-space: pre;
+}
+
+.code-block-wrap {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.code-content-collapsed {
+  overflow-y: hidden;
+  mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+
+/* Line Number Gutter */
+.code-block-line {
+  display: flex;
+  align-items: baseline;
+  width: 100%;
+}
+
+.code-line-number {
+  display: inline-block;
+  min-width: 24px;
+  padding-right: 8px;
+  margin-right: 10px;
+  color: rgba(255, 255, 255, 0.25);
+  text-align: right;
+  font-size: 10px;
+  user-select: none;
+  border-right: 1px solid #161622;
+  flex-shrink: 0;
+}
+
+.code-line-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Diff and Highlight Line Variants */
+.line-variant-added {
+  background: rgba(80, 220, 100, 0.12);
+  color: #70ff90;
+}
+
+.line-variant-removed {
+  background: rgba(240, 75, 75, 0.15);
+  color: #ff8080;
+}
+
+.line-variant-highlighted {
+  background: rgba(255, 216, 77, 0.12);
+  color: #ffffff;
+}
+
+.code-diff-marker {
+  display: inline-block;
+  width: 14px;
+  font-weight: 700;
+  user-select: none;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+.line-variant-added .code-diff-marker {
+  color: #50e070;
+}
+
+.line-variant-removed .code-diff-marker {
+  color: #ff6060;
+}
+
+/* ==================================================
+   Footer (Expand / Show More)
+================================================== */
+
+.code-block-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  background: #07070e;
+  border-top: 1px solid #161622;
+}
+
+.code-block-expand-btn {
+  background: transparent;
+  border: 1px solid #222232;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 10px;
+  font-family: var(--font-terminal);
+  padding: 3px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.code-block-expand-btn:hover {
+  background: #14141e;
+  color: #ffd84d;
+  border-color: rgba(255, 216, 77, 0.4);
+}
