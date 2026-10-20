@@ -75,12 +75,17 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
 } from "../ui/DropdownMenu";
+import { InputGroupButton } from "../ui/InputGroup";
 import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupTextarea,
-} from "../ui/InputGroup";
+  PromptInput,
+  PromptInputHeader,
+  PromptInputTextarea,
+  PromptInputActionMenuTrigger,
+  PromptInputSubmit,
+  PromptInputActions,
+  PlusIcon,
+  ArrowUpIcon,
+} from "../ui/PromptInput";
 import { getBackendBaseUrl } from "../../services/api";
 import "./AgenticAssistant.css";
 
@@ -159,6 +164,7 @@ export default function AgenticAssistant({
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const fileInputRef = useRef(null);
+  const formRef = useRef(null);
 
   /**
    * Dynamically tracks conversation and active document context window usage
@@ -1189,72 +1195,8 @@ export default function AgenticAssistant({
             </MessageScroller>
           </MessageScrollerProvider>
 
-          {/* Input Footer with Attachment Bar and Composer */}
+          {/* Input Footer with Prompt Input (shadcn AI Elements Prompt Input) */}
           <div className="assistant-footer">
-            {/* Attached Files List in Composer (if any) */}
-            {attachedFiles.length > 0 && (
-              <div className="composer-attachments-bar">
-                <div className="composer-attachments-header">
-                  <span className="composer-attachments-kicker">
-                    ATTACHMENTS ({attachedFiles.length}):
-                  </span>
-                  <button
-                    type="button"
-                    className="composer-clear-attachments-btn"
-                    onClick={handleClearAllAttachments}
-                  >
-                    Clear all
-                  </button>
-                </div>
-                <AttachmentGroup>
-                  {attachedFiles.map((file) => (
-                    <Attachment
-                      key={file.id}
-                      size="sm"
-                      state={file.state}
-                      orientation="horizontal"
-                    >
-                      <AttachmentMedia variant={file.variant}>
-                        {file.variant === "image" && file.previewUrl ? (
-                          <img src={file.previewUrl} alt={file.name} />
-                        ) : (
-                          getFileIcon(file.name, file.type)
-                        )}
-                      </AttachmentMedia>
-                      <AttachmentContent>
-                        <AttachmentTitle>{file.name}</AttachmentTitle>
-                        <AttachmentDescription>
-                          {file.state === "uploading"
-                            ? "Uploading… 65%"
-                            : file.state === "processing"
-                            ? "Processing AST…"
-                            : file.state === "error"
-                            ? "Upload error"
-                            : file.description || file.sizeStr}
-                        </AttachmentDescription>
-                      </AttachmentContent>
-                      <AttachmentActions>
-                        <AttachmentAction
-                          size="icon-xs"
-                          aria-label={`Remove ${file.name}`}
-                          onClick={() => handleRemoveAttachment(file.id)}
-                        >
-                          <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2.5">
-                            <line x1="18" y1="6" x2="6" y2="18" />
-                            <line x1="6" y1="6" x2="18" y2="18" />
-                          </svg>
-                        </AttachmentAction>
-                      </AttachmentActions>
-                      <AttachmentTrigger
-                        aria-label={`Preview ${file.name}`}
-                        onClick={() => setSelectedAttachment(file)}
-                      />
-                    </Attachment>
-                  ))}
-                </AttachmentGroup>
-              </div>
-            )}
-
             {/* Hidden native file input */}
             <input
               type="file"
@@ -1264,169 +1206,224 @@ export default function AgenticAssistant({
               onChange={handleFileInputChange}
             />
 
-            <form
-              className="assistant-composer-form"
+            <PromptInput
+              formRef={formRef}
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSendMessage();
               }}
+              canSend={Boolean(inputMessage.trim() || attachedFiles.length > 0)}
+              className="assistant-prompt-input"
             >
-              <InputGroup className="assistant-input-group">
-                <InputGroupTextarea
-                  ref={inputRef}
-                  value={inputMessage}
-                  onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Ask assistant to reason, write code, or analyze..."
-                  rows="2"
-                  className="composer-textarea"
-                />
-
-                <InputGroupAddon align="block-end" className="composer-addon-bar">
-                  <div className="composer-actions-left">
-                    <InputGroupButton
+              {/* Block-start addon: Attached files chips with remove button */}
+              {attachedFiles.length > 0 && (
+                <PromptInputHeader>
+                  <div className="composer-attachments-header-row">
+                    <div className="composer-attachments-chips">
+                      {attachedFiles.map((file) => (
+                        <Attachment
+                          key={file.id}
+                          size="sm"
+                          state={file.state}
+                          orientation="horizontal"
+                          className="ui-prompt-input-chip"
+                        >
+                          <AttachmentMedia variant={file.variant}>
+                            {file.variant === "image" && file.previewUrl ? (
+                              <img src={file.previewUrl} alt={file.name} />
+                            ) : (
+                              getFileIcon(file.name, file.type)
+                            )}
+                          </AttachmentMedia>
+                          <AttachmentContent>
+                            <AttachmentTitle>{file.name}</AttachmentTitle>
+                            <AttachmentDescription>
+                              {file.state === "uploading"
+                                ? "Uploading… 65%"
+                                : file.state === "processing"
+                                ? "Processing AST…"
+                                : file.state === "error"
+                                ? "Upload error"
+                                : file.description || file.sizeStr}
+                            </AttachmentDescription>
+                          </AttachmentContent>
+                          <AttachmentActions>
+                            <AttachmentAction
+                              size="icon-xs"
+                              aria-label={`Remove ${file.name}`}
+                              onClick={() => handleRemoveAttachment(file.id)}
+                            >
+                              <svg viewBox="0 0 24 24" width="9" height="9" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                              </svg>
+                            </AttachmentAction>
+                          </AttachmentActions>
+                          <AttachmentTrigger
+                            aria-label={`Preview ${file.name}`}
+                            onClick={() => setSelectedAttachment(file)}
+                          />
+                        </Attachment>
+                      ))}
+                    </div>
+                    <button
                       type="button"
-                      variant="ghost"
-                      size="icon-sm"
-                      className="composer-attach-btn"
-                      title="Attach file or image"
-                      aria-label="Attach file or image"
-                      onClick={() => fileInputRef.current?.click()}
+                      className="composer-clear-attachments-btn"
+                      onClick={handleClearAllAttachments}
+                      title="Clear all attachments"
                     >
-                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-                      </svg>
-                    </InputGroupButton>
-
-                    {/* Model Selector Menu (shadcn DropdownMenu / ModelSelector) */}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger
-                        render={
-                          <InputGroupButton size="sm" variant="outline" className="model-selector-trigger-btn">
-                            <span className="model-trigger-icon">{getModelIcon(selectedModel)}</span>
-                            <span className="model-trigger-name">{getModelLabel(selectedModel)}</span>
-                            <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2">
-                              <polyline points="6 9 12 15 18 9" />
-                            </svg>
-                          </InputGroupButton>
-                        }
-                      />
-                      <DropdownMenuContent align="start" side="top" className="model-selector-dropdown-content">
-                        <DropdownMenuRadioGroup value={selectedModel} onValueChange={setSelectedModel}>
-                          <DropdownMenuGroup>
-                            <DropdownMenuLabel>Google Gemini</DropdownMenuLabel>
-                            <DropdownMenuRadioItem value="gemini-1.5-flash" closeOnClick>
-                              <div className="model-item-row">
-                                <span className="model-item-title">Gemini 1.5 Flash</span>
-                                <span className="model-item-badge">Fast · 1M Context</span>
-                              </div>
-                            </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="gemini-1.5-pro" closeOnClick>
-                              <div className="model-item-row">
-                                <span className="model-item-title">Gemini 1.5 Pro</span>
-                                <span className="model-item-badge">Deep Analysis · 2M Context</span>
-                              </div>
-                            </DropdownMenuRadioItem>
-                          </DropdownMenuGroup>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuGroup>
-                            <DropdownMenuLabel>Anthropic</DropdownMenuLabel>
-                            <DropdownMenuRadioItem value="claude-3-5-sonnet" closeOnClick>
-                              <div className="model-item-row">
-                                <span className="model-item-title">Claude 3.5 Sonnet</span>
-                                <span className="model-item-badge">Code & Geodesics</span>
-                              </div>
-                            </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="claude-3-5-haiku" closeOnClick>
-                              <div className="model-item-row">
-                                <span className="model-item-title">Claude 3.5 Haiku</span>
-                                <span className="model-item-badge">Fast Subagent</span>
-                              </div>
-                            </DropdownMenuRadioItem>
-                          </DropdownMenuGroup>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuGroup>
-                            <DropdownMenuLabel>OpenAI & DeepSeek</DropdownMenuLabel>
-                            <DropdownMenuRadioItem value="gpt-4o" closeOnClick>
-                              <div className="model-item-row">
-                                <span className="model-item-title">GPT-4o</span>
-                                <span className="model-item-badge">Omni Reasoning</span>
-                              </div>
-                            </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="deepseek-r1" closeOnClick>
-                              <div className="model-item-row">
-                                <span className="model-item-title">DeepSeek-R1</span>
-                                <span className="model-item-badge">Open Relativistic Reasoner</span>
-                              </div>
-                            </DropdownMenuRadioItem>
-                          </DropdownMenuGroup>
-                        </DropdownMenuRadioGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-
-                    {/* Reasoning Effort Menu (shadcn DropdownMenu) */}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger
-                        render={
-                          <InputGroupButton size="sm" variant="outline" className="effort-selector-trigger-btn">
-                            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2">
-                              <circle cx="12" cy="12" r="3" />
-                              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                            </svg>
-                            <span className="effort-trigger-name">{effort.charAt(0).toUpperCase() + effort.slice(1)}</span>
-                            <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2">
-                              <polyline points="6 9 12 15 18 9" />
-                            </svg>
-                          </InputGroupButton>
-                        }
-                      />
-                      <DropdownMenuContent align="start" side="top" className="effort-selector-dropdown-content">
-                        <DropdownMenuRadioGroup value={effort} onValueChange={setEffort}>
-                          <DropdownMenuGroup>
-                            <DropdownMenuLabel>Thinking & Reasoning Effort</DropdownMenuLabel>
-                            <DropdownMenuRadioItem value="low" closeOnClick>
-                              <div className="effort-item-row">
-                                <span className="effort-item-title">Low</span>
-                                <span className="effort-item-desc">Fast responses, minimal reasoning tokens</span>
-                              </div>
-                            </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="medium" closeOnClick>
-                              <div className="effort-item-row">
-                                <span className="effort-item-title">Medium</span>
-                                <span className="effort-item-desc">Balanced depth and verification</span>
-                              </div>
-                            </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="high" closeOnClick>
-                              <div className="effort-item-row">
-                                <span className="effort-item-title">High</span>
-                                <span className="effort-item-desc">Deep chain-of-thought analysis</span>
-                              </div>
-                            </DropdownMenuRadioItem>
-                          </DropdownMenuGroup>
-                        </DropdownMenuRadioGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                      Clear all
+                    </button>
                   </div>
+                </PromptInputHeader>
+              )}
 
-                  <InputGroupButton
-                    type="submit"
-                    variant="default"
-                    size="icon-sm"
-                    className="composer-send-btn ml-auto"
-                    disabled={!inputMessage.trim() && attachedFiles.length === 0}
-                    title="Send to assistant"
-                    aria-label="Send to assistant"
-                  >
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </InputGroupButton>
-                </InputGroupAddon>
-              </InputGroup>
-            </form>
+              {/* Textarea with className="p-3" */}
+              <PromptInputTextarea
+                ref={inputRef}
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Ask assistant to reason, write code, or analyze..."
+                rows="2"
+                className="composer-textarea"
+              />
+
+              {/* Block-end addon: Attach, Model & Effort with ml-auto on 1st menu, Submit */}
+              <PromptInputActions className="composer-addon-bar">
+                {/* Attach Button: size="icon-sm", variant="outline", rounded-full, PlusIcon */}
+                <PromptInputActionMenuTrigger
+                  title="Attach file or image"
+                  aria-label="Attach files"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="composer-attach-btn"
+                >
+                  <PlusIcon />
+                </PromptInputActionMenuTrigger>
+
+                {/* Model Selector Menu with ml-auto on trigger so menus sit next to send button */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    render={
+                      <InputGroupButton size="sm" variant="outline" className="model-selector-trigger-btn ml-auto">
+                        <span className="model-trigger-icon">{getModelIcon(selectedModel)}</span>
+                        <span className="model-trigger-name">{getModelLabel(selectedModel)}</span>
+                        <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </InputGroupButton>
+                    }
+                  />
+                  <DropdownMenuContent align="end" side="top" className="model-selector-dropdown-content">
+                    <DropdownMenuRadioGroup value={selectedModel} onValueChange={setSelectedModel}>
+                      <DropdownMenuGroup>
+                        <DropdownMenuLabel>Google Gemini</DropdownMenuLabel>
+                        <DropdownMenuRadioItem value="gemini-1.5-flash" closeOnClick>
+                          <div className="model-item-row">
+                            <span className="model-item-title">Gemini 1.5 Flash</span>
+                            <span className="model-item-badge">Fast · 1M Context</span>
+                          </div>
+                        </DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="gemini-1.5-pro" closeOnClick>
+                          <div className="model-item-row">
+                            <span className="model-item-title">Gemini 1.5 Pro</span>
+                            <span className="model-item-badge">Deep Analysis · 2M Context</span>
+                          </div>
+                        </DropdownMenuRadioItem>
+                      </DropdownMenuGroup>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuGroup>
+                        <DropdownMenuLabel>Anthropic</DropdownMenuLabel>
+                        <DropdownMenuRadioItem value="claude-3-5-sonnet" closeOnClick>
+                          <div className="model-item-row">
+                            <span className="model-item-title">Claude 3.5 Sonnet</span>
+                            <span className="model-item-badge">Code & Geodesics</span>
+                          </div>
+                        </DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="claude-3-5-haiku" closeOnClick>
+                          <div className="model-item-row">
+                            <span className="model-item-title">Claude 3.5 Haiku</span>
+                            <span className="model-item-badge">Fast Subagent</span>
+                          </div>
+                        </DropdownMenuRadioItem>
+                      </DropdownMenuGroup>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuGroup>
+                        <DropdownMenuLabel>OpenAI & DeepSeek</DropdownMenuLabel>
+                        <DropdownMenuRadioItem value="gpt-4o" closeOnClick>
+                          <div className="model-item-row">
+                            <span className="model-item-title">GPT-4o</span>
+                            <span className="model-item-badge">Omni Reasoning</span>
+                          </div>
+                        </DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="deepseek-r1" closeOnClick>
+                          <div className="model-item-row">
+                            <span className="model-item-title">DeepSeek-R1</span>
+                            <span className="model-item-badge">Open Relativistic Reasoner</span>
+                          </div>
+                        </DropdownMenuRadioItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Reasoning Effort Menu */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    render={
+                      <InputGroupButton size="sm" variant="outline" className="effort-selector-trigger-btn">
+                        <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle cx="12" cy="12" r="3" />
+                          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                        </svg>
+                        <span className="effort-trigger-name">{effort.charAt(0).toUpperCase() + effort.slice(1)}</span>
+                        <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </InputGroupButton>
+                    }
+                  />
+                  <DropdownMenuContent align="end" side="top" className="effort-selector-dropdown-content">
+                    <DropdownMenuRadioGroup value={effort} onValueChange={setEffort}>
+                      <DropdownMenuGroup>
+                        <DropdownMenuLabel>Thinking & Reasoning Effort</DropdownMenuLabel>
+                        <DropdownMenuRadioItem value="low" closeOnClick>
+                          <div className="effort-item-row">
+                            <span className="effort-item-title">Low</span>
+                            <span className="effort-item-desc">Fast responses, minimal reasoning tokens</span>
+                          </div>
+                        </DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="medium" closeOnClick>
+                          <div className="effort-item-row">
+                            <span className="effort-item-title">Medium</span>
+                            <span className="effort-item-desc">Balanced depth and verification</span>
+                          </div>
+                        </DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="high" closeOnClick>
+                          <div className="effort-item-row">
+                            <span className="effort-item-title">High</span>
+                            <span className="effort-item-desc">Deep chain-of-thought analysis</span>
+                          </div>
+                        </DropdownMenuRadioItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Send Button: size="icon-sm", variant="default", rounded-full, ArrowUpIcon */}
+                <PromptInputSubmit
+                  className="composer-send-btn"
+                  disabled={!inputMessage.trim() && attachedFiles.length === 0}
+                  title="Send to assistant"
+                  aria-label="Send"
+                >
+                  <ArrowUpIcon />
+                </PromptInputSubmit>
+              </PromptInputActions>
+            </PromptInput>
 
             <span className="assistant-keyboard-hint">
-              Press Enter to send · 🚩 Checkpoints enable turn rollbacks
+              Press Enter to send · Shift+Enter for new line · 🚩 Checkpoints enable turn rollbacks
             </span>
           </div>
 

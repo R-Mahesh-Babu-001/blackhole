@@ -42,6 +42,21 @@ import {
   PlanCircleDotIcon,
   PlanCircleIcon,
 } from "./Plan";
+import {
+  PromptInput,
+  PromptInputHeader,
+  PromptInputTextarea,
+  PromptInputActionMenuTrigger,
+  PromptInputSubmit,
+  PromptInputActions,
+  PromptInputAction,
+  PromptInputSelect,
+  PromptInputHoverCard,
+  PlusIcon,
+  ArrowUpIcon,
+  SquareIcon,
+  PaperclipIcon,
+} from "./PromptInput";
 import "./Chat.css";
 
 /**
@@ -204,4 +219,17 @@ export {
   PlanCircleCheckIcon,
   PlanCircleDotIcon,
   PlanCircleIcon,
+  PromptInput,
+  PromptInputHeader,
+  PromptInputTextarea,
+  PromptInputActionMenuTrigger,
+  PromptInputSubmit,
+  PromptInputActions,
+  PromptInputAction,
+  PromptInputSelect,
+  PromptInputHoverCard,
+  PlusIcon,
+  ArrowUpIcon,
+  SquareIcon,
+  PaperclipIcon,
 };

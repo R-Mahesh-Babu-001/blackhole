@@ -1,0 +1,172 @@
+/* ==================================================
+   Prompt Input Component Styles
+   shadcn AI Elements Specification
+   Pitch Black & Pure White Monochrome Theme
+================================================== */
+
+.ui-prompt-input-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.ui-prompt-input-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  overflow: visible;
+}
+
+.ui-prompt-input-group:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.ui-prompt-input-group:focus-within {
+  border-color: rgba(255, 255, 255, 0.38);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.22), 0 4px 20px rgba(0, 0, 0, 0.85);
+  background: #030303;
+}
+
+/* Block-start addon: Attached files chip bar */
+.ui-prompt-input-header {
+  padding: 8px 10px 6px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ui-prompt-input-attachments-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+  max-height: 120px;
+  overflow-y: auto;
+  align-items: center;
+}
+
+.ui-prompt-input-attachment-chip {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 8px !important;
+  padding: 3px 6px !important;
+  transition: all 0.16s ease !important;
+}
+
+.ui-prompt-input-attachment-chip:hover {
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Textarea inside prompt input */
+.ui-prompt-input-textarea {
+  width: 100%;
+  min-height: 56px;
+  max-height: 180px;
+  padding: 12px 14px 6px 14px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.ui-prompt-input-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.36);
+}
+
+/* Block-end actions bar */
+.ui-prompt-input-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px 8px 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Rounded-full utility */
+.rounded-full {
+  border-radius: 9999px !important;
+}
+
+/* Attach button */
+.ui-prompt-input-attach-btn {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 9999px !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer;
+  transition: all 0.15s ease !important;
+}
+
+.ui-prompt-input-attach-btn:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Submit button */
+.ui-prompt-input-submit-btn {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 9999px !important;
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: none !important;
+  font-weight: 600 !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer;
+  transition: all 0.16s ease !important;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
+}
+
+.ui-prompt-input-submit-btn:hover:not(:disabled) {
+  background: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.5) !important;
+}
+
+.ui-prompt-input-submit-btn:disabled {
+  opacity: 0.35 !important;
+  cursor: not-allowed !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: rgba(255, 255, 255, 0.35) !important;
+  box-shadow: none !important;
+}
+
+/* Alignment utilities */
+.ml-auto {
+  margin-left: auto !important;
+}
+
+.ui-prompt-input-action {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ui-prompt-input-select {
+  display: inline-flex;
+  align-items: center;
+}

@@ -515,10 +515,32 @@
   cursor: pointer;
   padding: 0;
   transition: color 0.15s ease;
+  white-space: nowrap;
 }
 
 .composer-clear-attachments-btn:hover {
-  color: #ff6e6e;
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.composer-attachments-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+}
+
+.composer-attachments-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ui-prompt-input-chip {
+  max-width: 220px;
 }
 
 .assistant-attach-btn {
