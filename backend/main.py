@@ -58,6 +58,48 @@ def health_check():
     }
 
 
+@app.get("/workspace/tree")
+def get_workspace_tree():
+    """
+    Scans the workspace directory tree and returns hierarchical structure
+    for the Agentic Assistant's FileTree component.
+    """
+    root_path = Path(__file__).resolve().parent.parent
+    ignore_dirs = {".git", ".github", ".venv", "node_modules", "__pycache__", "dist", ".ipynb_checkpoints"}
+
+    def build_tree(current_path: Path, rel_path: str = ""):
+        items = []
+        try:
+            for entry in sorted(current_path.iterdir(), key=lambda e: (not e.is_dir(), e.name.lower())):
+                if entry.name in ignore_dirs or entry.name.startswith(".system_generated"):
+                    continue
+                item_rel = f"{rel_path}/{entry.name}".lstrip("/")
+                if entry.is_dir():
+                    children = build_tree(entry, item_rel)
+                    if children:
+                        items.append({
+                            "name": entry.name,
+                            "type": "folder",
+                            "path": item_rel,
+                            "defaultOpen": entry.name in ["backend", "frontend", "src"],
+                            "children": children
+                        })
+                else:
+                    items.append({
+                        "name": entry.name,
+                        "type": "file",
+                        "path": item_rel,
+                        "size": entry.stat().st_size
+                    })
+        except Exception:
+            pass
+        return items
+
+    tree = build_tree(root_path)
+    return {"status": "success", "root": "blackhole", "tree": tree}
+
+
+
 @app.post("/execute")
 def execute_python_code(payload: ExecuteRequest):
     """
