@@ -1,6 +1,6 @@
 /* ==================================================
    Marker Component Styling
-   Solid obsidian dark aesthetic, cosmic yellow accents
+   Pitch Black Aesthetic with Monochrome White Accents
 ================================================== */
 
 .marker-root {
@@ -18,17 +18,17 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    #1f1f2e 50%,
+    #1c1c1c 50%,
     transparent 100%
   );
 }
 
 .marker-variant-separator .marker-line-before {
-  background: linear-gradient(90deg, transparent, #222234);
+  background: linear-gradient(90deg, transparent, #222222);
 }
 
 .marker-variant-separator .marker-line-after {
-  background: linear-gradient(90deg, #222234, transparent);
+  background: linear-gradient(90deg, #222222, transparent);
 }
 
 /* Marker Content Pill */
@@ -37,19 +37,19 @@
   align-items: center;
   gap: 8px;
   padding: 3px 10px;
-  background: #090910;
-  border: 1px solid #1c1c28;
+  background: #000000;
+  border: 1px solid #1c1c1c;
   border-radius: 9999px;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.7);
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
   transition: all 0.18s ease;
   user-select: none;
 }
 
 .marker-content:hover {
-  border-color: rgba(255, 216, 77, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
   color: #ffffff;
 }
 
@@ -57,6 +57,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #ffd84d;
+  color: #ffffff;
   flex-shrink: 0;
 }

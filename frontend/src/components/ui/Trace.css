@@ -1,6 +1,6 @@
 /* ==================================================
    Trace & Subagent Component Styling
-   Solid obsidian dark aesthetic, cosmic yellow accents
+   Pitch Black Aesthetic with Monochrome White Accents
 ================================================== */
 
 .trace-root {
@@ -16,19 +16,19 @@
 
 .trace-collapsible {
   border-radius: 10px;
-  background: #09090e;
-  border: 1px solid #1c1c28;
+  background: #000000;
+  border: 1px solid #1c1c1c;
   overflow: hidden;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .trace-collapsible:hover {
-  border-color: #28283c;
+  border-color: #2c2c2c;
 }
 
 .trace-collapsible.open {
-  border-color: rgba(255, 216, 77, 0.25);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
 }
 
 /* Trigger Header */
@@ -38,7 +38,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 14px;
-  background: #0d0d16;
+  background: #050505;
   border: none;
   cursor: pointer;
   text-align: left;
@@ -47,7 +47,7 @@
 }
 
 .trace-collapsible-trigger:hover {
-  background: #12121f;
+  background: #0e0e0e;
 }
 
 .trace-trigger-content {
@@ -68,7 +68,7 @@
 
 .trace-chevron.chevron-open {
   transform: rotate(180deg);
-  color: #ffd84d;
+  color: #ffffff;
 }
 
 /* Collapsible Content Area */
@@ -87,8 +87,8 @@
 
 .trace-content-inner {
   padding: 14px;
-  background: #07070a;
-  border-top: 1px solid #161622;
+  background: #000000;
+  border-top: 1px solid #1a1a1a;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -116,7 +116,7 @@
   justify-content: center;
   border-radius: 50%;
   flex-shrink: 0;
-  background: #14141e;
+  background: #0a0a0a;
   color: rgba(255, 255, 255, 0.7);
   transition: all 0.2s ease;
 }
@@ -124,15 +124,15 @@
 /* Status variants */
 .trace-status-completed .trace-icon,
 .icon-completed {
-  background: rgba(255, 216, 77, 0.15);
-  color: #ffd84d;
-  box-shadow: 0 0 8px rgba(255, 216, 77, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
 .trace-status-running .trace-icon,
 .icon-running {
-  background: rgba(255, 216, 77, 0.2);
-  color: #ffd84d;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
 }
 
 .trace-status-error .trace-icon,
@@ -144,8 +144,8 @@
 .trace-spinner {
   width: 10px;
   height: 10px;
-  border: 2px solid rgba(255, 216, 77, 0.3);
-  border-top-color: #ffd84d;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
   border-radius: 50%;
   animation: traceSpin 0.7s linear infinite;
 }
@@ -168,9 +168,9 @@
 .trace-status-running .trace-title {
   background: linear-gradient(
     90deg,
-    rgba(255, 216, 77, 0.4) 0%,
-    #ffd84d 50%,
-    rgba(255, 216, 77, 0.4) 100%
+    rgba(255, 255, 255, 0.4) 0%,
+    #ffffff 50%,
+    rgba(255, 255, 255, 0.4) 100%
   );
   background-size: 200% 100%;
   -webkit-background-clip: text;
@@ -190,7 +190,7 @@
 @media (prefers-reduced-motion: reduce) {
   .trace-status-running .trace-title {
     animation: none;
-    -webkit-text-fill-color: #ffd84d;
+    -webkit-text-fill-color: #ffffff;
   }
 }
 
@@ -210,7 +210,7 @@
 }
 
 .trace-description {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.45);
   font-size: 11px;
   margin-left: 6px;
   white-space: nowrap;
@@ -233,21 +233,21 @@
 }
 
 .badge-default {
-  background: #141420;
+  background: #0a0a0a;
   color: rgba(255, 255, 255, 0.7);
-  border: 1px solid #222232;
+  border: 1px solid #222222;
 }
 
 .badge-model {
-  background: rgba(255, 216, 77, 0.1);
-  color: #ffd84d;
-  border: 1px solid rgba(255, 216, 77, 0.28);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.28);
 }
 
 .badge-tool {
-  background: #111118;
+  background: #080808;
   color: rgba(255, 255, 255, 0.75);
-  border: 1px solid #1f1f2e;
+  border: 1px solid #1f1f1f;
 }
 
 /* ==================================================
@@ -279,13 +279,13 @@
   flex-direction: column;
   gap: 6px;
   padding: 8px 10px;
-  background: #0b0b12;
+  background: #050505;
   border-radius: 6px;
-  border: 1px solid #161622;
+  border: 1px solid #1a1a1a;
 }
 
 .task-kicker {
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.4);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.6px;
@@ -313,7 +313,7 @@
 }
 
 .tools-heading {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.45);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.6px;
@@ -324,7 +324,7 @@
   flex-direction: column;
   gap: 8px;
   padding-left: 8px;
-  border-left: 2px solid #1a1a26;
+  border-left: 2px solid #1c1c1c;
 }
 
 .tool-call-item {
@@ -336,33 +336,33 @@
 .tool-output-snippet {
   margin-left: 28px;
   padding: 4px 8px;
-  background: #020204;
-  border: 1px solid #161622;
+  background: #000000;
+  border: 1px solid #1a1a1a;
   border-radius: 4px;
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.7);
   overflow-x: auto;
 }
 
 /* Result Box */
 .subagent-result-box {
   padding: 10px;
-  background: #0c0c14;
-  border: 1px solid #1c1c28;
+  background: #050505;
+  border: 1px solid #1c1c1c;
   border-radius: 8px;
 }
 
 .result-text {
   font-size: 11.5px;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.92);
   line-height: 1.5;
 }
 
 /* Code Block with 1-click Insert */
 .subagent-code-block {
   border-radius: 8px;
-  background: #020205;
-  border: 1px solid #1c1c28;
+  background: #000000;
+  border: 1px solid #1c1c1c;
   overflow: hidden;
 }
 
@@ -371,12 +371,12 @@
   align-items: center;
   justify-content: space-between;
   padding: 6px 10px;
-  background: #0a0a10;
-  border-bottom: 1px solid #161620;
+  background: #050505;
+  border-bottom: 1px solid #1a1a1a;
 }
 
 .code-lang-tag {
-  color: #ffd84d;
+  color: #ffffff;
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
@@ -389,7 +389,7 @@
   gap: 4px;
   padding: 3px 8px;
   border-radius: 4px;
-  background: #ffd84d;
+  background: #ffffff;
   color: #000000;
   font-size: 10px;
   font-weight: 700;
@@ -400,8 +400,8 @@
 }
 
 .subagent-insert-btn:hover {
-  background: #ffe36d;
-  box-shadow: 0 0 10px rgba(255, 216, 77, 0.4);
+  background: #e6e6e6;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
 }
 
 .code-block-pre {
@@ -410,7 +410,7 @@
   font-family: var(--font-terminal);
   font-size: 11px;
   line-height: 1.45;
-  color: #ffd84d;
+  color: #ffffff;
   overflow-x: auto;
   white-space: pre-wrap;
   word-break: break-all;
@@ -439,12 +439,12 @@
 
 .trace-detail-output {
   padding: 8px 10px;
-  background: #030306;
-  border: 1px solid #161622;
+  background: #000000;
+  border: 1px solid #1c1c1c;
   border-radius: 6px;
   font-family: var(--font-terminal);
   font-size: 11px;
-  color: #ffd84d;
+  color: #ffffff;
   line-height: 1.45;
   overflow-x: auto;
   white-space: pre-wrap;
@@ -460,7 +460,7 @@
 .trace-sources-kicker {
   font-size: 9px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.45);
   letter-spacing: 0.6px;
 }
 
@@ -480,14 +480,14 @@
 .trace-link-anchor .trace-line {
   padding: 4px 6px;
   border-radius: 6px;
-  background: #090910;
-  border: 1px solid #161622;
+  background: #000000;
+  border: 1px solid #1c1c1c;
   transition: all 0.18s ease;
 }
 
 .trace-link-anchor:hover .trace-line {
-  background: #10101c;
-  border-color: rgba(255, 216, 77, 0.3);
+  background: #0e0e0e;
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .trace-link-anchor .trace-title {
@@ -497,7 +497,7 @@
 }
 
 .trace-link-anchor:hover .trace-title {
-  color: #ffd84d;
+  color: #ffffff;
 }
 
 .sr-only {

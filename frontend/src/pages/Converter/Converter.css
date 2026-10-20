@@ -90,7 +90,7 @@
 
   margin-bottom: 7px;
 
-  color: #ffd84d;
+  color: #ffffff;
 
   font-size: 10px;
   font-weight: 700;
@@ -206,17 +206,17 @@
 
 
 .conversion-option-active {
-  color: #111111;
+  color: #000000;
 
-  background: #ffd84d;
+  background: #ffffff;
 
   box-shadow:
-    0 5px 18px rgba(255, 216, 77, 0.15);
+    0 5px 18px rgba(255, 255, 255, 0.2);
 }
 
 
 .conversion-option-active:hover {
-  color: #111111;
+  color: #000000;
 }
 
 
@@ -313,7 +313,7 @@
 
   margin-bottom: 13px;
 
-  color: #ffd84d;
+  color: #ffffff;
 
   /*
     No circular glass background anymore.
@@ -372,9 +372,9 @@
 
   padding: 12px 23px;
 
-  color: #111111;
+  color: #000000;
 
-  background: #ffd84d;
+  background: #ffffff;
 
   border: none;
 
@@ -388,7 +388,7 @@
   cursor: pointer;
 
   box-shadow:
-    0 8px 28px rgba(255, 216, 77, 0.13);
+    0 8px 28px rgba(255, 255, 255, 0.2);
 
   transition:
     background 0.2s ease,
@@ -398,12 +398,12 @@
 
 
 .select-file-button:hover {
-  background: #ffe36d;
+  background: #e6e6e6;
 
   transform: translateY(-2px);
 
   box-shadow:
-    0 10px 30px rgba(255, 216, 77, 0.2);
+    0 10px 30px rgba(255, 255, 255, 0.35);
 }
 
 
@@ -435,12 +435,12 @@
   width: 6px;
   height: 6px;
 
-  background: #ffd84d;
+  background: #ffffff;
 
   border-radius: 50%;
 
   box-shadow:
-    0 0 10px rgba(255, 216, 77, 0.7);
+    0 0 10px rgba(255, 255, 255, 0.8);
 }
 
 
@@ -478,7 +478,7 @@
   height: 5px;
 
   background:
-    rgba(255, 216, 77, 0.7);
+    rgba(255, 255, 255, 0.7);
 
   border-radius: 50%;
 }
@@ -610,9 +610,9 @@
 .convert-file-button {
   padding: 11px 22px;
 
-  color: #111111;
+  color: #000000;
 
-  background: #ffd84d;
+  background: #ffffff;
 
   border: none;
 
@@ -627,7 +627,7 @@
 
   box-shadow:
     0 8px 28px
-    rgba(255, 216, 77, 0.14);
+    rgba(255, 255, 255, 0.2);
 
   transition:
     background 0.2s ease,
@@ -637,13 +637,13 @@
 
 
 .convert-file-button:hover {
-  background: #ffe36d;
+  background: #e6e6e6;
 
   transform: translateY(-2px);
 
   box-shadow:
     0 10px 30px
-    rgba(255, 216, 77, 0.2);
+    rgba(255, 255, 255, 0.35);
 }
 
 
@@ -655,7 +655,7 @@
 .converter-status {
   margin: 8px 0 0;
 
-  color: #ffd84d;
+  color: #ffffff;
 
   font-size: 11px;
 
@@ -797,8 +797,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 28px;
-  background: #08080c;
-  border-bottom: 1px solid #161622;
+  background: #000000;
+  border-bottom: 1px solid #1a1a1a;
   flex-shrink: 0;
   position: sticky;
   top: 0;
@@ -811,8 +811,8 @@
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background: #12121a;
-  border: 1px solid #222232;
+  background: #000000;
+  border: 1px solid #222222;
   border-radius: 8px;
   color: #ffffff;
   font-size: 13px;
@@ -823,10 +823,10 @@
 }
 
 .converter-screen-back-btn:hover {
-  background: #1a1a26;
-  border-color: #ffd84d;
-  color: #ffd84d;
-  box-shadow: 0 0 12px rgba(255, 216, 77, 0.25);
+  background: #141414;
+  border-color: #ffffff;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
   transform: translateX(-2px);
 }
 
@@ -845,8 +845,8 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #ffd84d;
-  box-shadow: 0 0 8px #ffd84d;
+  background: #ffffff;
+  box-shadow: 0 0 8px #ffffff;
 }
 
 .converter-screen-topbar-hint {
@@ -873,12 +873,12 @@
 
 .workspace-direct-btn {
   border-style: dashed !important;
-  border-color: rgba(255, 216, 77, 0.45) !important;
-  color: #ffd84d !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+  color: #ffffff !important;
 }
 
 .workspace-direct-btn:hover {
-  background: rgba(255, 216, 77, 0.12) !important;
-  border-color: #ffd84d !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: #ffffff !important;
   color: #ffffff !important;
 }

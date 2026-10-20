@@ -6,7 +6,24 @@ import {
   MessageScrollerItem,
   MessageScrollerButton,
 } from "./MessageScroller";
-import { Message, MessageContent, Bubble, BubbleContent } from "./Message";
+import {
+  Message,
+  MessageRoot,
+  MessageContent,
+  MessageBody,
+  Bubble,
+  BubbleContent,
+  MessageFooter,
+  MessageActions,
+  MessageAction,
+  MessageCopyAction,
+  MessageGoodAction,
+  MessageBadAction,
+  MessageRetryAction,
+  MessageEditAction,
+  MessageToolbar,
+  MessageResponse,
+} from "./Message";
 import { messagesToMarkdown } from "./chatUtils";
 import "./Chat.css";
 
@@ -140,7 +157,19 @@ export {
   MessageScrollerItem,
   MessageScrollerButton,
   Message,
+  MessageRoot,
   MessageContent,
+  MessageBody,
   Bubble,
   BubbleContent,
+  MessageFooter,
+  MessageActions,
+  MessageAction,
+  MessageCopyAction,
+  MessageGoodAction,
+  MessageBadAction,
+  MessageRetryAction,
+  MessageEditAction,
+  MessageToolbar,
+  MessageResponse,
 };

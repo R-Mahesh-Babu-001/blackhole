@@ -1,7 +1,7 @@
 /* ==================================================
    Chat & Conversation Styles
    shadcn AI Elements Chat Thread Specification
-   Obsidian Dark Theme
+   Pitch Black Aesthetic with Monochrome White Accents
 ================================================== */
 
 .ui-chat,
@@ -22,6 +22,7 @@
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+  background: #000000;
 }
 
 .conversation-content {
@@ -53,9 +54,9 @@
   font-size: 10px;
   font-weight: 600;
   font-family: inherit;
-  color: rgba(255, 255, 255, 0.65);
-  background: #09090f;
-  border: 1px solid #1c1c2a;
+  color: rgba(255, 255, 255, 0.7);
+  background: #000000;
+  border: 1px solid #222222;
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.18s ease;
@@ -63,7 +64,7 @@
 }
 
 .conversation-download-btn:hover {
-  color: #ffd84d;
-  background: #141420;
-  border-color: rgba(255, 216, 77, 0.4);
+  color: #ffffff;
+  background: #141414;
+  border-color: rgba(255, 255, 255, 0.4);
 }

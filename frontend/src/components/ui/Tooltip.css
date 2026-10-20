@@ -1,0 +1,67 @@
+/* ==================================================
+   Tooltip Component Styles
+   Pitch Black & White Monochrome Aesthetic
+================================================== */
+
+.ui-tooltip-root {
+  position: relative;
+  display: inline-flex;
+}
+
+.ui-tooltip-trigger {
+  display: inline-flex;
+}
+
+.ui-tooltip-content {
+  position: absolute;
+  z-index: 1000;
+  padding: 4px 8px;
+  background: #000000;
+  border: 1px solid #2e2e2e;
+  border-radius: 5px;
+  color: #ffffff;
+  font-size: 10.5px;
+  font-family: var(--font-terminal, monospace);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.9), 0 0 1px rgba(255, 255, 255, 0.2);
+  animation: tooltipFadeIn 0.14s ease-out;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(2px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Tooltip Sides */
+.ui-tooltip-content.tooltip-side-top {
+  bottom: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ui-tooltip-content.tooltip-side-bottom {
+  top: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ui-tooltip-content.tooltip-side-left {
+  right: calc(100% + 5px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.ui-tooltip-content.tooltip-side-right {
+  left: calc(100% + 5px);
+  top: 50%;
+  transform: translateY(-50%);
+}

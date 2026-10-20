@@ -1,7 +1,7 @@
 /* ==================================================
    FileTree Styles
    shadcn AI Elements File Tree Specification
-   Obsidian Dark Aesthetics with Rotating Chevron
+   Pitch Black Aesthetic with Monochrome White Accents
 ================================================== */
 
 .ui-file-tree {
@@ -39,8 +39,8 @@
 }
 
 .file-tree-folder-btn:hover {
-  background: #141420 !important;
-  color: #ffd84d;
+  background: #141414 !important;
+  color: #ffffff;
 }
 
 .file-tree-chevron {
@@ -52,17 +52,17 @@
 .group-data-panel-open\/button .file-tree-chevron,
 .collapsible-open .file-tree-chevron {
   transform: rotate(90deg);
-  color: #ffd84d;
+  color: #ffffff;
 }
 
 .file-tree-folder-icon {
-  color: #ffd84d;
+  color: #ffffff;
   flex-shrink: 0;
 }
 
 .file-tree-children {
   margin-left: 14px;
-  border-left: 1px solid #1a1a2a;
+  border-left: 1px solid #1c1c1c;
   padding-left: 6px;
   display: flex;
   flex-direction: column;
@@ -89,7 +89,7 @@
   padding: 0 6px !important;
   border-radius: 5px;
   background: transparent !important;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.75);
   font-weight: 400;
   font-size: 11px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -102,14 +102,14 @@
 }
 
 .file-tree-file-btn:hover {
-  background: #141420 !important;
+  background: #141414 !important;
   color: #ffffff;
 }
 
 .file-tree-file-btn.is-selected {
-  background: rgba(255, 216, 77, 0.12) !important;
-  color: #ffd84d;
-  font-weight: 500;
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: #ffffff;
+  font-weight: 600;
 }
 
 .file-tree-icon {
@@ -139,8 +139,8 @@
 .changed-files-card {
   width: 100%;
   margin: 6px 0;
-  background: #08080d;
-  border: 1px solid #1a1a28;
+  background: #000000;
+  border: 1px solid #1c1c1c;
   border-radius: 8px;
   overflow: hidden;
   box-sizing: border-box;
@@ -151,8 +151,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 7px 12px;
-  background: #0d0d14;
-  border-bottom: 1px solid #181826;
+  background: #050505;
+  border-bottom: 1px solid #1a1a1a;
 }
 
 .changed-files-header-left {
@@ -166,18 +166,20 @@
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.2px;
+  color: #ffffff;
 }
 
 .changed-files-badge {
   padding: 1px 6px;
   font-size: 9.5px;
   font-weight: 600;
-  color: #ffd84d;
-  background: rgba(255, 216, 77, 0.1);
-  border: 1px solid rgba(255, 216, 77, 0.25);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 10px;
 }
 
 .changed-files-body {
   padding: 6px 8px;
+  background: #000000;
 }

@@ -56,15 +56,11 @@
 
 
 .navbar-logo:hover {
-  /*
-    Warm sunlight yellow that fits
-    the BlackHole background.
-  */
-  color: #ffd84d;
+  color: #ffffff;
 
   text-shadow:
-    0 0 8px rgba(255, 216, 77, 0.55),
-    0 0 20px rgba(255, 216, 77, 0.25);
+    0 0 8px rgba(255, 255, 255, 0.6),
+    0 0 20px rgba(255, 255, 255, 0.3);
 
   transform: translateY(-1px);
 }
@@ -83,7 +79,7 @@
 
 
 .navbar-link {
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.7);
 
   font-size: 15px;
   font-weight: 500;
@@ -103,24 +99,25 @@
 
 
 .navbar-link:hover {
-  color: #ffd84d;
+  color: #ffffff;
 
   text-shadow:
-    0 0 7px rgba(255, 216, 77, 0.5),
-    0 0 17px rgba(255, 216, 77, 0.2);
+    0 0 7px rgba(255, 255, 255, 0.5),
+    0 0 17px rgba(255, 255, 255, 0.25);
 
   transform: translateY(-1px);
 }
 
 
 /*
-  Current page stays slightly highlighted.
+  Current page stays highlighted with clean white glow.
 */
 .navbar-link-active {
-  color: #ffd84d;
+  color: #ffffff;
+  font-weight: 600;
 
   text-shadow:
-    0 0 7px rgba(255, 216, 77, 0.35);
+    0 0 7px rgba(255, 255, 255, 0.4);
 }
 
 

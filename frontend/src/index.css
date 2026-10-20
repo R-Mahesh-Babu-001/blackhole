@@ -7,45 +7,50 @@
   box-sizing: border-box;
 }
 
-
 html,
 body,
 #root {
   width: 100%;
   min-height: 100%;
-
   margin: 0;
   padding: 0;
+  background: #000000;
 }
-
 
 html {
-  background: #000;
+  background: #000000;
 }
-
 
 :root {
   --font-terminal: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'SF Mono', Consolas, 'Liberation Mono', Menlo, Monaco, monospace;
+  --bg-pitch-black: #000000;
+  --bg-surface-0: #000000;
+  --bg-surface-1: #050505;
+  --bg-surface-2: #0a0a0a;
+  --bg-surface-3: #111111;
+  --border-subtle: #1c1c1c;
+  --border-strong: #2c2c2c;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.45);
+  --accent-white: #ffffff;
+  --accent-glow: rgba(255, 255, 255, 0.25);
 }
 
 body {
   min-width: 320px;
-
   overflow-x: hidden;
-
-  background: #000;
+  background: #000000;
+  color: #ffffff;
 
   /*
-    Use professional terminal typography throughout BlackHole.
+    Professional terminal typography throughout BlackHole.
   */
   font-family: var(--font-terminal);
   letter-spacing: -0.015em;
-
   -webkit-font-smoothing: antialiased;
-
   -moz-osx-font-smoothing: grayscale;
 }
-
 
 /*
   Controls should inherit our BlackHole terminal typography.
@@ -58,32 +63,31 @@ select {
   font-feature-settings: "liga" 0;
 }
 
-
 button,
 a {
   -webkit-tap-highlight-color: transparent;
 }
 
 /*
-  Universal Yellow Accent & Selection (Zero Blue across platform)
+  Pure Pitch Black & White Accents
 */
 ::selection {
-  background: rgba(255, 216, 77, 0.35);
+  background: rgba(255, 255, 255, 0.25);
   color: #ffffff;
 }
 
 ::-moz-selection {
-  background: rgba(255, 216, 77, 0.35);
+  background: rgba(255, 255, 255, 0.25);
   color: #ffffff;
 }
 
 :focus-visible {
-  outline: 2px solid #ffd84d;
+  outline: 2px solid #ffffff;
   outline-offset: 2px;
 }
 
 input,
 textarea,
 select {
-  accent-color: #ffd84d;
+  accent-color: #ffffff;
 }

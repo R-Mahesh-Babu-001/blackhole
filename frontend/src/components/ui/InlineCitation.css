@@ -1,6 +1,6 @@
 /* ==================================================
    Inline Citation Component Styles
-   Obsidian Theme with Gold Accents
+   Pitch Black Aesthetic with Monochrome White Accents
 ================================================== */
 
 .inline-citation {
@@ -28,9 +28,9 @@
   font-family: var(--font-terminal, monospace) !important;
   font-weight: 600 !important;
   border-radius: 4px !important;
-  background: rgba(255, 255, 255, 0.06) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  color: #cbd5e1 !important;
+  background: #111111 !important;
+  border: 1px solid #282828 !important;
+  color: #ffffff !important;
   cursor: pointer;
   transition: all 0.18s ease;
   user-select: none;
@@ -39,10 +39,10 @@
 
 .inline-citation-btn:hover,
 .inline-citation-btn:focus-visible {
-  background: rgba(255, 216, 77, 0.12) !important;
-  border-color: rgba(255, 216, 77, 0.5) !important;
-  color: #ffd84d !important;
-  box-shadow: 0 0 8px rgba(255, 216, 77, 0.25);
+  background: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #000000 !important;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
   outline: none;
 }
 
@@ -65,10 +65,10 @@
   width: 270px;
   max-width: 90vw;
   padding: 12px 14px;
-  background: #09090f;
-  border: 1px solid #222232;
+  background: #000000;
+  border: 1px solid #282828;
   border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75), 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.95), 0 0 1px rgba(255, 255, 255, 0.2);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -94,7 +94,7 @@
 }
 
 .inline-citation-globe-icon {
-  color: #ffd84d;
+  color: #ffffff;
   flex-shrink: 0;
 }
 
@@ -107,7 +107,7 @@
 .inline-citation-title {
   font-size: 12px;
   font-weight: 600;
-  color: #f1f5f9;
+  color: #ffffff;
   line-height: 1.4;
   word-break: break-word;
 }
@@ -115,11 +115,11 @@
 .inline-citation-quote {
   margin: 4px 0;
   padding: 6px 9px;
-  border-left: 2px solid #ffd84d;
-  background: rgba(255, 216, 77, 0.06);
+  border-left: 2px solid #ffffff;
+  background: rgba(255, 255, 255, 0.06);
   border-radius: 0 5px 5px 0;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.85);
   font-style: italic;
   line-height: 1.4;
 }
@@ -129,17 +129,17 @@
   align-items: center;
   gap: 5px;
   font-size: 11px;
-  color: #ffd84d;
-  text-decoration: none;
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
   font-family: var(--font-terminal, monospace);
   margin-top: 2px;
-  transition: color 0.15s ease;
+  transition: opacity 0.15s ease;
   width: fit-content;
 }
 
 .inline-citation-link:hover {
-  color: #ffe375;
-  text-decoration: underline;
+  opacity: 0.8;
 }
 
 .inline-citation-text {
@@ -161,7 +161,7 @@
   align-items: center;
   justify-content: space-between;
   padding-bottom: 6px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .carousel-count {
@@ -182,8 +182,8 @@
   display: grid;
   place-items: center;
   border-radius: 4px;
-  border: 1px solid #262638;
-  background: #141420;
+  border: 1px solid #282828;
+  background: #0a0a0a;
   color: rgba(255, 255, 255, 0.8);
   font-size: 13px;
   cursor: pointer;
@@ -192,9 +192,9 @@
 }
 
 .carousel-nav-btn:hover {
-  background: #ffd84d;
+  background: #ffffff;
   color: #000000;
-  border-color: #ffd84d;
+  border-color: #ffffff;
 }
 
 /* Screen reader only utility */

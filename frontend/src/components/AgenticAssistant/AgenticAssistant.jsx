@@ -44,6 +44,12 @@ import {
   MessageContent,
   Bubble,
   BubbleContent,
+  MessageFooter,
+  MessageCopyAction,
+  MessageGoodAction,
+  MessageBadAction,
+  MessageRetryAction,
+  MessageEditAction,
   ConversationDownload,
 } from "../ui/Chat";
 import { ChangedFilesCard } from "../ui/FileTree";
@@ -68,6 +74,7 @@ export default function AgenticAssistant({
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [selectedAttachment, setSelectedAttachment] = useState(null);
   const [restoreNotice, setRestoreNotice] = useState("");
+  const [feedbackState, setFeedbackState] = useState({});
 
   const [messages, setMessages] = useState([]);
 
@@ -194,6 +201,43 @@ export default function AgenticAssistant({
       setRestoreNotice(`Restored conversation to "${label}"`);
       setTimeout(() => setRestoreNotice(""), 3500);
     }
+  };
+
+  /**
+   * Handle Good / Bad response toggle on assistant turns (shadcn AI Elements Message)
+   */
+  const handleFeedbackToggle = (msgId, type) => {
+    setFeedbackState((prev) => ({
+      ...prev,
+      [msgId]: prev[msgId] === type ? null : type,
+    }));
+  };
+
+  /**
+   * Retry an assistant turn by finding the preceding user prompt and rerunning it
+   */
+  const handleRetryTurn = (msgId) => {
+    const msgIdx = messages.findIndex((m) => m.id === msgId);
+    let userText = "";
+    if (msgIdx > 0) {
+      for (let i = msgIdx - 1; i >= 0; i--) {
+        if (messages[i]?.role === "user" && messages[i]?.text) {
+          userText = messages[i].text;
+          break;
+        }
+      }
+    }
+    if (userText) {
+      handleSendMessage(userText);
+    }
+  };
+
+  /**
+   * Edit action on user turn puts the text back in the prompt input field
+   */
+  const handleEditUserMessage = (text) => {
+    setInputMessage(text);
+    inputRef.current?.focus();
   };
 
   /**
@@ -894,6 +938,24 @@ export default function AgenticAssistant({
                                     </Context>
                                   </div>
                                 )}
+
+                                {/* 11. Assistant Message Actions & Footer (shadcn AI Elements Message) */}
+                                <MessageFooter align="start">
+                                  <MessageCopyAction
+                                    getText={() => msg.text || msg.subagent?.result || msg.code || ""}
+                                  />
+                                  <MessageGoodAction
+                                    pressed={feedbackState[msg.id] === "good"}
+                                    onToggle={() => handleFeedbackToggle(msg.id, "good")}
+                                  />
+                                  <MessageBadAction
+                                    pressed={feedbackState[msg.id] === "bad"}
+                                    onToggle={() => handleFeedbackToggle(msg.id, "bad")}
+                                  />
+                                  <MessageRetryAction
+                                    onRetry={() => handleRetryTurn(msg.id)}
+                                  />
+                                </MessageFooter>
                               </MessageContent>
                             </Message>
                           )}
@@ -902,7 +964,7 @@ export default function AgenticAssistant({
                           {msg.role === "user" && (
                             <Message align="end" className="user-message-turn">
                               <MessageContent className="user-msg-bundle">
-                                <Bubble align="end" variant="accent" className="user-bubble">
+                                <Bubble align="end" variant="muted" className="user-bubble">
                                   <BubbleContent>{msg.text}</BubbleContent>
                                 </Bubble>
 
@@ -947,6 +1009,12 @@ export default function AgenticAssistant({
                                     lineNumbers={true}
                                   />
                                 )}
+
+                                {/* User Message Actions & Footer (shadcn AI Elements Message) */}
+                                <MessageFooter align="end">
+                                  <MessageCopyAction text={msg.text} />
+                                  <MessageEditAction onEdit={() => handleEditUserMessage(msg.text)} />
+                                </MessageFooter>
                               </MessageContent>
                             </Message>
                           )}
@@ -2081,7 +2149,7 @@ function finalizeSubagentPlan(plan, query, fileType, fileName, _content, userAtt
             type: "image/png",
             state: "done",
             previewUrl:
-              "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='160' viewBox='0 0 240 160'><rect width='240' height='160' fill='%23040408'/><path d='M10 140 Q 60 135 90 80 T 230 20' fill='none' stroke='%23ffd84d' stroke-width='3'/><circle cx='90' cy='80' r='4' fill='%23ff9900'/><text x='120' y='150' fill='%23888888' font-size='9' text-anchor='middle'>SPACETIME CURVATURE VS RADIUS</text></svg>",
+              "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='160' viewBox='0 0 240 160'><rect width='240' height='160' fill='%23000000'/><path d='M10 140 Q 60 135 90 80 T 230 20' fill='none' stroke='%23ffffff' stroke-width='3'/><circle cx='90' cy='80' r='4' fill='%23ffffff'/><text x='120' y='150' fill='%23888888' font-size='9' text-anchor='middle'>SPACETIME CURVATURE VS RADIUS</text></svg>",
             contentSnippet: "Curvature density: R_curv ~ 1 / r^3 across event horizon multiples.",
           },
         ],

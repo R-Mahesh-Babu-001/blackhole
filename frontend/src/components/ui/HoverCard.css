@@ -1,6 +1,6 @@
 /* ==================================================
    HoverCard Component Styles
-   Floating popover with Obsidian Dark aesthetics
+   Pitch Black Aesthetic with Monochrome White Accents
 ================================================== */
 
 .ui-hover-card-root {
@@ -25,12 +25,12 @@
   min-width: 250px;
   max-width: 320px;
   padding: 12px 14px;
-  background: rgba(9, 9, 15, 0.96);
+  background: #000000;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid #222234;
+  border: 1px solid #282828;
   border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75), 0 0 16px rgba(255, 216, 77, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.95), 0 0 16px rgba(255, 255, 255, 0.05);
   box-sizing: border-box;
   animation: hoverCardFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: auto;

@@ -1,6 +1,6 @@
 /* ==================================================
    Checkpoint Component Styling
-   Solid obsidian dark aesthetic, cosmic yellow accents
+   Pitch Black Aesthetic with Monochrome White Accents
 ================================================== */
 
 .checkpoint-root {
@@ -9,21 +9,21 @@
 
 .checkpoint-marker-content {
   gap: 8px;
-  background: #090910;
-  border: 1px solid #1e1e2d;
+  background: #000000;
+  border: 1px solid #1c1c1c;
   padding: 3px 8px 3px 10px;
   transition: all 0.2s ease;
 }
 
 .checkpoint-marker-content:hover {
-  border-color: rgba(255, 216, 77, 0.4);
-  box-shadow: 0 0 12px rgba(255, 216, 77, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
 }
 
 .checkpoint-label {
   font-size: 11px;
   font-family: var(--font-terminal);
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.8);
   max-width: 180px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -31,7 +31,7 @@
 }
 
 .checkpoint-icon {
-  color: #ffd84d;
+  color: #ffffff;
 }
 
 /* Restore Trigger Button */
@@ -50,16 +50,16 @@
 }
 
 .trigger-outline {
-  background: #141420;
-  border: 1px solid #28283c;
-  color: rgba(255, 255, 255, 0.8);
+  background: #0a0a0a;
+  border: 1px solid #282828;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .trigger-outline:hover {
-  background: #ffd84d;
+  background: #ffffff;
   color: #000000;
-  border-color: #ffd84d;
-  box-shadow: 0 0 8px rgba(255, 216, 77, 0.4);
+  border-color: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
 }
 
 .trigger-size-xs {

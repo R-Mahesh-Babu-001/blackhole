@@ -142,7 +142,7 @@ export function FileTreeIcon({ name = "", className = "" }) {
 
   if (ext === "py" || ext === "ipynb") {
     return (
-      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#ffd84d" strokeWidth="2" className={`file-tree-icon ${className}`}>
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#ffffff" strokeWidth="2" className={`file-tree-icon ${className}`}>
         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
       </svg>
     );
@@ -150,7 +150,7 @@ export function FileTreeIcon({ name = "", className = "" }) {
 
   if (ext === "md" || ext === "txt") {
     return (
-      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#60a5fa" strokeWidth="2" className={`file-tree-icon ${className}`}>
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#e0e0e0" strokeWidth="2" className={`file-tree-icon ${className}`}>
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
         <polyline points="14 2 14 8 20 8" />
         <line x1="16" y1="13" x2="8" y2="13" />

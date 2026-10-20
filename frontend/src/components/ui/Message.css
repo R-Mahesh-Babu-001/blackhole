@@ -1,7 +1,7 @@
 /* ==================================================
-   Message & Bubble Component Styles
+   Message, Bubble & Action Component Styles
    shadcn AI Elements Message Specification
-   Obsidian Dark Theme with Golden Yellow Accents
+   Pitch Black & Pure White Monochrome Theme
 ================================================== */
 
 .ui-message {
@@ -9,7 +9,7 @@
   flex-direction: column;
   width: 100%;
   box-sizing: border-box;
-  margin: 3px 0;
+  margin: 4px 0;
   animation: messageFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -39,8 +39,16 @@
 .ui-message-content {
   display: flex;
   flex-direction: column;
-  max-width: 95%;
+  max-width: 96%;
   gap: 6px;
+}
+
+.message-align-end .ui-message-content {
+  align-items: flex-end;
+}
+
+.message-align-start .ui-message-content {
+  align-items: flex-start;
 }
 
 /* ==================================================
@@ -67,32 +75,87 @@
   border-bottom-left-radius: 3px;
 }
 
-/* Bubble Variants */
+/* Bubble Variants (Pure Black & White) */
 .ui-bubble.bubble-variant-default {
-  background: #101018;
-  border: 1px solid #1c1c2a;
-  color: rgba(255, 255, 255, 0.92);
+  background: #000000;
+  border: 1px solid #222222;
+  color: #ffffff;
 }
 
 .ui-bubble.bubble-variant-muted {
-  background: #0c0c12;
-  border: 1px solid #181824;
-  color: rgba(255, 255, 255, 0.72);
+  background: #080808;
+  border: 1px solid #1c1c1c;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .ui-bubble.bubble-variant-accent {
-  background: #242008;
-  border: 1px solid rgba(255, 216, 77, 0.35);
+  background: #101010;
+  border: 1px solid #333333;
   color: #ffffff;
 }
 
 .ui-bubble.bubble-variant-outline {
   background: transparent;
-  border: 1px solid #222232;
-  color: #e2e8f0;
+  border: 1px solid #222222;
+  color: #ffffff;
 }
 
 .ui-bubble-content {
   margin: 0;
   padding: 0;
+}
+
+/* ==================================================
+   Message Footer & Actions
+================================================== */
+
+.ui-message-footer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  opacity: 0.85;
+  transition: opacity 0.18s ease;
+}
+
+.ui-message:hover .ui-message-footer {
+  opacity: 1;
+}
+
+.ui-message-footer.message-footer-align-end {
+  justify-content: flex-end;
+}
+
+.ui-message-footer.message-footer-align-start {
+  justify-content: flex-start;
+}
+
+.ui-message-action {
+  color: rgba(255, 255, 255, 0.6);
+  border-radius: 4px;
+  transition: all 0.16s ease;
+}
+
+.ui-message-action:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.ui-message-action.is-pressed,
+.ui-message-action[aria-pressed="true"] {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+.ui-message-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ui-message-response {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #ffffff;
 }

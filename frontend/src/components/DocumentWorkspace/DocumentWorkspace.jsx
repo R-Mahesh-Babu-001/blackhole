@@ -854,12 +854,12 @@ export default function DocumentWorkspace({
                       {/* Jupyter Logo SVG with Cosmic Yellow Orbit */}
                       <svg className="jupyter-brand-logo" viewBox="0 0 152 165" width="20" height="22">
                         <path
-                          fill="#ffd84d"
+                          fill="#ffffff"
                           d="M76.021 140.163c-32.64 0-61.145-11.927-75.942-29.58 5.51 15.84 15.781 29.567 29.39 39.278a80.17 80.17 0 0 0 46.57 14.929 80.17 80.17 0 0 0 46.57-14.929c13.61-9.711 23.88-23.437 29.391-39.278-14.833 17.653-43.338 29.58-75.979 29.58m-.005-114.832c32.64 0 61.146 11.927 75.943 29.58a80.9 80.9 0 0 0-29.391-39.278A80.16 80.16 0 0 0 75.998.705a80.16 80.16 0 0 0-46.57 14.928A80.9 80.9 0 0 0 .038 54.912c14.832-17.617 43.338-29.58 75.978-29.58"
                         />
-                        <circle fill="#ffd84d" cx="19.5" cy="82.5" r="14.5" />
-                        <circle fill="#ffd84d" cx="132.5" cy="82.5" r="14.5" />
-                        <circle fill="#ffd84d" cx="76" cy="14" r="8" />
+                        <circle fill="#ffffff" cx="19.5" cy="82.5" r="14.5" />
+                        <circle fill="#ffffff" cx="132.5" cy="82.5" r="14.5" />
+                        <circle fill="#ffffff" cx="76" cy="14" r="8" />
                       </svg>
                       <span className="jupyter-brand-word">jupyter</span>
                     </div>
@@ -1441,8 +1441,8 @@ export default function DocumentWorkspace({
                       title="Restart the kernel, then re-run the whole notebook"
                     >
                       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2">
-                        <polygon points="13 19 22 12 13 5 13 19" fill="#ffd84d" stroke="none" />
-                        <polygon points="2 19 11 12 2 5 2 19" fill="#ffd84d" stroke="none" />
+                        <polygon points="13 19 22 12 13 5 13 19" fill="#ffffff" stroke="none" />
+                        <polygon points="2 19 11 12 2 5 2 19" fill="#ffffff" stroke="none" />
                       </svg>
                     </button>
 
