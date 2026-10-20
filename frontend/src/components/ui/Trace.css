@@ -1,0 +1,380 @@
+/* ==================================================
+   Trace & Subagent Component Styling
+   Solid obsidian dark aesthetic, cosmic yellow accents
+================================================== */
+
+.trace-root {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+/* ==================================================
+   Collapsible Wrapper
+================================================== */
+
+.trace-collapsible {
+  border-radius: 10px;
+  background: #09090e;
+  border: 1px solid #1c1c28;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.trace-collapsible:hover {
+  border-color: #28283c;
+}
+
+.trace-collapsible.open {
+  border-color: rgba(255, 216, 77, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* Trigger Header */
+.trace-collapsible-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #0d0d16;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.18s ease;
+  font-family: var(--font-terminal);
+}
+
+.trace-collapsible-trigger:hover {
+  background: #12121f;
+}
+
+.trace-trigger-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.trace-chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.45);
+  margin-left: 10px;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
+}
+
+.trace-chevron.chevron-open {
+  transform: rotate(180deg);
+  color: #ffd84d;
+}
+
+/* Collapsible Content Area */
+.trace-collapsible-content {
+  overflow: hidden;
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+}
+
+.trace-collapsible-content.content-hidden {
+  display: none;
+}
+
+.trace-collapsible-content.content-visible {
+  display: block;
+}
+
+.trace-content-inner {
+  padding: 14px;
+  background: #07070a;
+  border-top: 1px solid #161622;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ==================================================
+   Trace Line & Status Indicators
+================================================== */
+
+.trace-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.trace-icon {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #14141e;
+  color: rgba(255, 255, 255, 0.7);
+  transition: all 0.2s ease;
+}
+
+/* Status variants */
+.trace-status-completed .trace-icon,
+.icon-completed {
+  background: rgba(255, 216, 77, 0.15);
+  color: #ffd84d;
+  box-shadow: 0 0 8px rgba(255, 216, 77, 0.3);
+}
+
+.trace-status-running .trace-icon,
+.icon-running {
+  background: rgba(255, 216, 77, 0.2);
+  color: #ffd84d;
+}
+
+.trace-status-error .trace-icon,
+.icon-error {
+  background: rgba(240, 80, 80, 0.15);
+  color: #ff7070;
+}
+
+.trace-spinner {
+  width: 10px;
+  height: 10px;
+  border: 2px solid rgba(255, 216, 77, 0.3);
+  border-top-color: #ffd84d;
+  border-radius: 50%;
+  animation: traceSpin 0.7s linear infinite;
+}
+
+@keyframes traceSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.trace-title {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trace-status-running .trace-title {
+  color: #ffd84d;
+}
+
+.trace-status-error .trace-title {
+  color: #ff8080;
+}
+
+.trace-description {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 11px;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+
+/* ==================================================
+   Badges (Model, Tools)
+================================================== */
+
+.trace-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.badge-default {
+  background: #141420;
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid #222232;
+}
+
+.badge-model {
+  background: rgba(255, 216, 77, 0.1);
+  color: #ffd84d;
+  border: 1px solid rgba(255, 216, 77, 0.28);
+}
+
+.badge-tool {
+  background: #111118;
+  color: rgba(255, 255, 255, 0.75);
+  border: 1px solid #1f1f2e;
+}
+
+/* ==================================================
+   Subagent Specific Styles
+================================================== */
+
+.subagent-trace-card {
+  margin: 4px 0;
+  width: 100%;
+}
+
+.subagent-trigger-main {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1;
+  gap: 4px;
+}
+
+.subagent-badges-strip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 8px;
+}
+
+.subagent-task-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  background: #0b0b12;
+  border-radius: 6px;
+  border: 1px solid #161622;
+}
+
+.task-kicker {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+}
+
+.task-text {
+  margin: 0;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.45;
+}
+
+.task-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+/* Tool Calls Section */
+.subagent-tools-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tools-heading {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+}
+
+.nested-tools-trace {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 8px;
+  border-left: 2px solid #1a1a26;
+}
+
+.tool-call-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tool-output-snippet {
+  margin-left: 28px;
+  padding: 4px 8px;
+  background: #020204;
+  border: 1px solid #161622;
+  border-radius: 4px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.65);
+  overflow-x: auto;
+}
+
+/* Result Box */
+.subagent-result-box {
+  padding: 10px;
+  background: #0c0c14;
+  border: 1px solid #1c1c28;
+  border-radius: 8px;
+}
+
+.result-text {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.5;
+}
+
+/* Code Block with 1-click Insert */
+.subagent-code-block {
+  border-radius: 8px;
+  background: #020205;
+  border: 1px solid #1c1c28;
+  overflow: hidden;
+}
+
+.code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: #0a0a10;
+  border-bottom: 1px solid #161620;
+}
+
+.code-lang-tag {
+  color: #ffd84d;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.subagent-insert-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: #ffd84d;
+  color: #000000;
+  font-size: 10px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-family: var(--font-terminal);
+}
+
+.subagent-insert-btn:hover {
+  background: #ffe36d;
+  box-shadow: 0 0 10px rgba(255, 216, 77, 0.4);
+}
+
+.code-block-pre {
+  margin: 0;
+  padding: 10px 12px;
+  font-family: var(--font-terminal);
+  font-size: 11px;
+  line-height: 1.45;
+  color: #ffd84d;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
